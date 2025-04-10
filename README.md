@@ -1,5 +1,9 @@
 # Group2Capstone-Ecommerce
 
+## Database Schema: Visual Diagram
+
+<img width="1444" alt="Screenshot 2025-04-10 at 3 32 05 PM" src="https://github.com/user-attachments/assets/f55aaf35-6feb-47bb-b9b5-d918deb3147d" />
+
 ## Database Schema: Tables & Reationships
 
 ### PRODUCTS(stores products info)
