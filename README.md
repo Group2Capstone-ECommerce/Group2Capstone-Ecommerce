@@ -12,7 +12,7 @@ CREATE TABLE products(
     price NUMERIC(10, 2) NOT NULL,
     tags TEXT[], --array of product tags
     image_urls TEXT[], -- optional array of image URLs
-    rating NUMERIC(1, 1) CHECK (rating >= 0 AND rating <= 5) DEFAULT 5
+    rating NUMERIC(2, 1) CHECK (rating >= 0 AND rating <= 5) DEFAULT 5
     stock_quantity INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
@@ -159,7 +159,7 @@ CREATE TABLE reviews (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-    rating NUMERIC(1, 1) CHECK (rating >= 0 AND rating <= 5),
+    rating NUMERIC(2, 1) CHECK (rating >= 0 AND rating <= 5),
     review_text TEXT,
     created_at TIMESTAMP DEFAULT NOW()
 );
