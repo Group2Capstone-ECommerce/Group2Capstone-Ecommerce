@@ -73,7 +73,30 @@ const createTables = async () => {
       );
     `);
 
-    
+    //Create cart 
+    await client.query(`
+      CREATE TABLE carts (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        is_active BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    //Join table
+    await client.query(`
+      
+      -- join table
+      CREATE TABLE cart_items (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        cart_id UUID REFERENCES carts(id) ON DELETE CASCADE,
+        product_id UUID REFERENCES products(id),
+        quantity INTEGER NOT NULL CHECK (quantity > 0),
+        created_at TIMESTAMP DEFAULT NOW(),
+        updatd_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
   }
 }
 
