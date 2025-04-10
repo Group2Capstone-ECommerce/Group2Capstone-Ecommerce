@@ -181,7 +181,7 @@ const createTables = async () => {
 };
 
 // Create User
-const createUser = async ({ username, password_hash }) => {
+const createUser = async ({ email, username, password_hash, is_admin = false, mailing_address, phone }) => {
   const SQL = /*sql*/ `
     INSERT INTO users (id, email, username, password_hash, is_admin, mailing_address, phone)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -191,11 +191,10 @@ const createUser = async ({ username, password_hash }) => {
     uuid.v4(),
     email,
     username,
-    password_hash,
+    await bcrypt.hash(password_hash, 5),
     is_admin,
     mailing_address,
-    phone,
-    await bcrypt.hash(password_hash, 5),
+    phone
   ]);
   return response.rows[0];
 };
