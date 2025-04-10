@@ -180,8 +180,29 @@ const createTables = async () => {
   }
 };
 
+// Create User
+const createUser = async ({ username, password_hash }) => {
+  const SQL = /*sql*/ `
+    INSERT INTO users (id, email, username, password_hash, is_admin, mailing_address, phone)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *;
+  `;
+  const response = await client.query(SQL, [
+    uuid.v4(),
+    email,
+    username,
+    password_hash,
+    is_admin,
+    mailing_address,
+    phone,
+    await bcrypt.hash(password_hash, 5),
+  ]);
+  return response.rows[0];
+};
+
 module.exports = {
   client,
   connectDB,
-  createTables
+  createTables,
+  createUser
 }
