@@ -23,12 +23,14 @@ const createTables = async () => {
     console.log("Creating tables...");
 
     // UUID generation function
-    await client.query(`CREATE EXTENSION IF NOT EXISTS "pgcrypto";`);
+    const enableUuidExtension = `CREATE EXTENSION IF NOT EXISTS "pgcrypto";`;
+    await client.query(enableUuidExtension);
 
+  
     //Create products
-    await client.query(`
+    const createProductsTable = `
       CREATE TABLE IF NOT EXISTS products (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         product_name VARCHAR(100) NOT NULL,
         descriptions TEXT,
         price NUMERIC(10, 2) NOT NULL,
@@ -39,10 +41,11 @@ const createTables = async () => {
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
-    `);
+    `;
+    await client.query(createProductsTable);
 
     //Create users
-    await client.query(`
+    const createUsersTable = `
       CREATE TABLE IF NOT EXISTS users (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         username VARCHAR(50) UNIQUE NOT NULL,
@@ -54,51 +57,56 @@ const createTables = async () => {
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
-    `);
+    `;
+    await client.query(createUsersTable);
 
     //Create general categories
-    await client.query(`
-      CREATE TABLE categories (
+      const createCategoriesTable = `
+      CREATE TABLE IF NOT EXISTS categories (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         name VARCHAR(50) UNIQUE NOT NULL
       );
-    `);
+    `;
+    await client.query(createCategoriesTable);
 
     //Create product categories
-    await client.query(`
-      CREATE TABLE product_categories (
+    const createProductCategoriesTable = `
+      CREATE TABLE IF NOT EXISTS product_categories (
         product_id UUID REFERENCES products(id) ON DELETE CASCADE,
         category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
-        CONSTRAINT unique_product_catagories UNIQUE (product_id, category_id)
+        CONSTRAINT unique_product_categories UNIQUE (product_id, category_id)
       );
-    `);
+    `;
+    await client.query(createProductCategoriesTable);
 
     //Create cart 
-    await client.query(`
-      CREATE TABLE carts (
+    const createCartsTable = `
+      CREATE TABLE IF NOT EXISTS carts (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id UUID REFERENCES users(id) ON DELETE CASCADE,
         is_active BOOLEAN DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
-    `);
+    `;
+    await client.query(createCartsTable);
 
     //Join table
-    await client.query(`
-      CREATE TABLE cart_items (
+    const createCartItemsTable = `
+      CREATE TABLE IF NOT EXISTS cart_items (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         cart_id UUID REFERENCES carts(id) ON DELETE CASCADE,
         product_id UUID REFERENCES products(id),
         quantity INTEGER NOT NULL CHECK (quantity > 0),
         created_at TIMESTAMP DEFAULT NOW(),
-        updatd_at TIMESTAMP DEFAULT NOW()
+        updated_at TIMESTAMP DEFAULT NOW()
       );
-    `);
+    `;
+    await client.query(createCartItemsTable);
       
     //Orders table
-    await client.query(`
-      CREATE TABLE orders (
+    const createOrdersTable = `
+      CREATE TABLE IF NOT EXISTS orders (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id UUID REFERENCES users(id) ON DELETE SET NULL,
         status VARCHAR(20) DEFAULT 'Created',
@@ -106,63 +114,65 @@ const createTables = async () => {
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
-    `);
+    `;
+    await client.query(createOrdersTable);
 
     //Order items table
-    await client.query(`
-      CREATE TABLE order_items (
+    const createOrderItemsTable = `
+      CREATE TABLE IF NOT EXISTS order_items (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
         product_id UUID REFERENCES products(id),
         quantity INTEGER NOT NULL,
         price_at_purchase NUMERIC(10, 2) NOT NULL
       );
-    `);
+    `;
+    await client.query(createOrderItemsTable);
     
     //Billing table
-    await client.query(`
-      CREATE TABLE billing_info (
+    const createBillingInfoTable = `
+      CREATE TABLE IF NOT EXISTS billing_info (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id UUID REFERENCES users(id) ON DELETE CASCADE,
         order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
-
         full_name VARCHAR(100) NOT NULL,
         email VARCHAR(100) NOT NULL,
         phone VARCHAR(20),
-  
         address_line1 TEXT NOT NULL,
         address_line2 TEXT,
         city VARCHAR(100) NOT NULL,
         state VARCHAR(100),
         postal_code VARCHAR(20),
         country VARCHAR(100) NOT NULL,
-
         company_name VARCHAR(100),
         tax_id VARCHAR(50),
-
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
-    `);
+    `;
+    await client.query(createBillingInfoTable);
 
     //Wishlist table -- optional
-    await client.query(`
-      CREATE TABLE wishlists (
+    const createWishlistsTable = `
+      CREATE TABLE IF NOT EXISTS wishlists (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id UUID REFERENCES users(id) ON DELETE CASCADE,
         name VARCHAR(100),
         is_shared BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT NOW()
       );
-    `);
+    `;
+    await client.query(createWishlistsTable);
 
     //Wishlist items -- optional
-    await client.query(`
-      CREATE TABLE wishlist_items (
+    const createWishlistItemsTable = `
+      CREATE TABLE IF NOT EXISTS wishlist_items (
         wishlist_id UUID REFERENCES wishlists(id) ON DELETE CASCADE,
         product_id UUID REFERENCES products(id),
-        CONSTRAINT unique_whishlist_product UNIQUE (wishlist_id, product_id)      );
-    `);
+        CONSTRAINT unique_wishlist_product UNIQUE (wishlist_id, product_id)
+      );
+    `;
+    await client.query(createWishlistItemsTable);
 
   console.log("All tables created.");
   } catch (error) {
