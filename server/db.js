@@ -144,8 +144,32 @@ const createTables = async () => {
         updated_at TIMESTAMP DEFAULT NOW()
       );
     `);
+
+    //Wishlist table -- optional
+    await client.query(`
+      CREATE TABLE wishlists (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        name VARCHAR(100),
+        is_shared BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    //Wishlist items -- optional
+    await client.query(`
+      CREATE TABLE wishlist_items (
+        wishlist_id UUID REFERENCES wishlists(id) ON DELETE CASCADE,
+        product_id UUID REFERENCES products(id),
+        PRIMARY KEY (wishlist_id, product_id)
+      );
+    `);
+
+  console.log("All tables created.");
+  } catch (error) {
+    console.error("Error creating tables:", error);
   }
-}
+};
 
 module.exports = {
   client,
