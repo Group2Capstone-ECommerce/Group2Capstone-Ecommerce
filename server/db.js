@@ -86,8 +86,6 @@ const createTables = async () => {
 
     //Join table
     await client.query(`
-      
-      -- join table
       CREATE TABLE cart_items (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         cart_id UUID REFERENCES carts(id) ON DELETE CASCADE,
@@ -97,6 +95,30 @@ const createTables = async () => {
         updatd_at TIMESTAMP DEFAULT NOW()
       );
     `);
+      
+    //Orders table
+    await client.query(`
+      CREATE TABLE orders (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+        status VARCHAR(20) DEFAULT 'Created',
+        total_price NUMERIC(10, 2),
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    //Order items table
+    await client.query(`
+      CREATE TABLE order_items (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
+        product_id UUID REFERENCES products(id),
+        quantity INTEGER NOT NULL,
+        price_at_purchase NUMERIC(10, 2) NOT NULL
+      );
+    `);
+
   }
 }
 
