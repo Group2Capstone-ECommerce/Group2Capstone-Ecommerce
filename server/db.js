@@ -55,6 +55,23 @@ const createTables = async () => {
         updated_at TIMESTAMP DEFAULT NOW()
       );
     `);
+
+    //Create general categories
+    await client.query(`
+      CREATE TABLE categories (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name VARCHAR(50) UNIQUE NOT NULL
+      );
+    `);
+
+    //Create product categories
+    await client.query(`
+      CREATE TABLE product_categories (
+        product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+        category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
+        PRIMARY KEY (product_id, category_id)
+      );
+    `);
   }
 }
 
