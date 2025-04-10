@@ -72,6 +72,8 @@ const createTables = async () => {
         PRIMARY KEY (product_id, category_id)
       );
     `);
+
+    
   }
 }
 
