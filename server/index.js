@@ -1,4 +1,4 @@
-const {client, connectDB, createTables, createUser } = require("./db.js");
+const {client, connectDB, createTables, createUser, authenticateUser } = require("./db.js");
 const { seedData } = require("./seed.js");
 
 const express = require("express");
@@ -40,6 +40,21 @@ app.post("/api/auth/register", async (req, res, next) => {
     res.status(201).json(newUser);
   } catch (error) {
     console.error(error);
+  }
+});
+
+// POST/api/auth/login route
+app.post("/api/auth/login", async (req, res, next) => {
+  try {
+    const {username, password} = req.body;
+    
+    if (!username || !password) {
+      res.status(400).json({error: "Username and/or password are required."});
+    }
+
+    res.send(await authenticateUser(req.body));
+  } catch (ex) {
+    next(ex);
   }
 });
 
