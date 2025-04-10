@@ -118,7 +118,32 @@ const createTables = async () => {
         price_at_purchase NUMERIC(10, 2) NOT NULL
       );
     `);
+    
+    //Billing table
+    await client.query(`
+      CREATE TABLE billing_info (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
 
+        full_name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) NOT NULL,
+        phone VARCHAR(20),
+  
+        address_line1 TEXT NOT NULL,
+        address_line2 TEXT,
+        city VARCHAR(100) NOT NULL,
+        state VARCHAR(100),
+        postal_code VARCHAR(20),
+        country VARCHAR(100) NOT NULL,
+
+        company_name VARCHAR(100),
+        tax_id VARCHAR(50),
+
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
   }
 }
 
