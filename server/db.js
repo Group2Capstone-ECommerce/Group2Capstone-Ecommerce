@@ -218,7 +218,7 @@ const authenticateUser = async ({ username, password }) => {
 
   const storedPasswordHash = response.rows[0].password_hash;
 
-  // Compare the provided password with the stored hash
+  // Compare provided password with the stored hash
   const isPasswordValid = await bcrypt.compare(password, storedPasswordHash);
 
   if (!isPasswordValid) {
