@@ -12,7 +12,7 @@ CREATE TABLE products(
     price NUMERIC(10, 2) NOT NULL,
     tags TEXT[], --array of product tags
     image_urls TEXT[], -- optional array of image URLs
-    rating NUMERIC(1, 1) CHECK (rating >= 0 AND rating <= 5) DEFAULT 5
+    rating NUMERIC(2, 1) CHECK (rating >= 0 AND rating <= 5) DEFAULT 5
     stock_quantity INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
@@ -51,7 +51,7 @@ CREATE TABLE categories (
 CREATE TABLE product_categories (
     product_id UUID REFERENCES products(id) ON DELETE CASCADE,
     category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
-    PRIMARY KEY (product_id, category_id)
+    CONSTRAINT unique_product_catagories UNIQUE (product_id, category_id)
 );
 ```
 
@@ -148,7 +148,7 @@ CREATE TABLE wishlists (
 CREATE TABLE wishlist_items (
     wishlist_id UUID REFERENCES wishlists(id) ON DELETE CASCADE,
     product_id UUID REFERENCES products(id),
-    PRIMARY KEY (wishlist_id, product_id)
+    CONSTRAINT unique_whishlist_product UNIQUE (wishlist_id, product_id)
 );
 ```
 
@@ -159,7 +159,7 @@ CREATE TABLE reviews (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-    rating NUMERIC(1, 1) CHECK (rating >= 0 AND rating <= 5),
+    rating NUMERIC(2, 1) CHECK (rating >= 0 AND rating <= 5),
     review_text TEXT,
     created_at TIMESTAMP DEFAULT NOW()
 );
