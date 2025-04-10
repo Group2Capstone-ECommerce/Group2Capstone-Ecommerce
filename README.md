@@ -51,7 +51,7 @@ CREATE TABLE categories (
 CREATE TABLE product_categories (
     product_id UUID REFERENCES products(id) ON DELETE CASCADE,
     category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
-    PRIMARY KEY (product_id, category_id)
+    CONSTRAINT unique_product_catagories UNIQUE (product_id, category_id)
 );
 ```
 
@@ -148,7 +148,7 @@ CREATE TABLE wishlists (
 CREATE TABLE wishlist_items (
     wishlist_id UUID REFERENCES wishlists(id) ON DELETE CASCADE,
     product_id UUID REFERENCES products(id),
-    PRIMARY KEY (wishlist_id, product_id)
+    CONSTRAINT unique_whishlist_product UNIQUE (wishlist_id, product_id)
 );
 ```
 
