@@ -330,7 +330,7 @@ const editProduct = async({token, product_id, product_name, descriptions, price,
     product_name || product.product_name, 
     descriptions || product.descriptions, 
     price || product.price, 
-    tags || product.tages, 
+    tags || product.tags, 
     image_urls ||  product.image_urls, 
     rating || product.rating, 
     stock_quantity || product.stock_quantity
