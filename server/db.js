@@ -1,7 +1,9 @@
 require("dotenv").config();
 
 const pg = require("pg");
-const client = new pg.Client(process.env.DATABASE_URL || "postgres://localhost:5432/group2capstone_db");
+const client = new pg.Client(
+  process.env.DATABASE_URL || "postgres://localhost:5432/group2capstone_db"
+);
 const uuid = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -26,7 +28,6 @@ const createTables = async () => {
     const enableUuidExtension = `CREATE EXTENSION IF NOT EXISTS "pgcrypto";`;
     await client.query(enableUuidExtension);
 
-  
     //Create products
     const createProductsTable = `
       CREATE TABLE IF NOT EXISTS products (
@@ -61,7 +62,7 @@ const createTables = async () => {
     await client.query(createUsersTable);
 
     //Create general categories
-      const createCategoriesTable = `
+    const createCategoriesTable = `
       CREATE TABLE IF NOT EXISTS categories (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         name VARCHAR(50) UNIQUE NOT NULL
@@ -79,7 +80,7 @@ const createTables = async () => {
     `;
     await client.query(createProductCategoriesTable);
 
-    //Create cart 
+    //Create cart
     const createCartsTable = `
       CREATE TABLE IF NOT EXISTS carts (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -103,7 +104,7 @@ const createTables = async () => {
       );
     `;
     await client.query(createCartItemsTable);
-      
+
     //Orders table
     const createOrdersTable = `
       CREATE TABLE IF NOT EXISTS orders (
@@ -128,7 +129,7 @@ const createTables = async () => {
       );
     `;
     await client.query(createOrderItemsTable);
-    
+
     //Billing table
     const createBillingInfoTable = `
       CREATE TABLE IF NOT EXISTS billing_info (
@@ -174,14 +175,21 @@ const createTables = async () => {
     `;
     await client.query(createWishlistItemsTable);
 
-  console.log("All tables created.");
+    console.log("All tables created.");
   } catch (error) {
     console.error("Error creating tables:", error);
   }
 };
 
 // Create User
-const createUser = async ({ email, username, password_hash, is_admin = false, mailing_address, phone }) => {
+const createUser = async ({
+  email,
+  username,
+  password_hash,
+  is_admin = false,
+  mailing_address,
+  phone,
+}) => {
   const SQL = /*sql*/ `
     INSERT INTO users (id, email, username, password_hash, is_admin, mailing_address, phone)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -194,7 +202,7 @@ const createUser = async ({ email, username, password_hash, is_admin = false, ma
     await bcrypt.hash(password_hash, 5),
     is_admin,
     mailing_address,
-    phone
+    phone,
   ]);
   return response.rows[0];
 };
@@ -240,5 +248,5 @@ module.exports = {
   connectDB,
   createTables,
   createUser,
-  authenticateUser
-}
+  authenticateUser,
+};
