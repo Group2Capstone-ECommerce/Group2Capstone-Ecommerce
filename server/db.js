@@ -265,12 +265,23 @@ const getUserById = async({userId}) => {
 }
 
 //get authenticated user
-const getAuthenticatedUser = async({token}) => {
-  const payload = verifyJWT(token)
-  const user = await getUserById({userId: payload.id})
-  console.log(user)
-  return user
-}
+const getAuthenticatedUser = async ({ token }) => {
+  try {
+    const payload = verifyJWT(token);
+    const user = await getUserById({ userId: payload.id });
+
+    if (!user) {
+      const error = new Error("Authenticated user not found");
+      error.status = 404;
+      throw error;
+    }
+
+    return user;
+  } catch (err) {
+    console.error("Error in getAuthenticatedUser:", err.message);
+    throw err;
+  }
+};
 
 //get admin status
 const getAdmin = async({token}) => {
@@ -297,25 +308,6 @@ const getProductById = async({product_id}) => {
   return response.rows[0]
 }
 
-// commented it out since Ana is working on it 
-//admin - Add, edit, and remove products 
-// const creatProduct = async({product_name, descriptions, price, tags, image_urls, rating, stock_quantity}) => {
-//   const SQL = /*sql*/`
-//     INSERT INTO products(product_name, descriptions, price, tags, image_urls, rating, stock_quantity) 
-//     VALUES ($1, $2, $3, $4, $5, $6, $7)
-//     RETURNING *
-//   `
-//   const response = await client.query(SQL, [{
-//     product_name, 
-//     descriptions, 
-//     price, 
-//     tags, 
-//     image_urls, 
-//     rating, 
-//     stock_quantity
-//   }])
-//   return response.rows[0]
-// }
 
 const editProduct = async({token, product_id, product_name, descriptions, price, tags, image_urls, rating, stock_quantity}) => {
   const SQL = /*sql*/`

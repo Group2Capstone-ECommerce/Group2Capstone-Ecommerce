@@ -63,13 +63,6 @@ router.get('/products', async(req, res, next) => {
 })
 
 //PUT /api/admin/products/:productId route
-// Must provide JWT token with call
-// Able to edit:
-// Quantity
-// Product name
-// Description
-// Anything else?
-// Returns updated product
 router.put('/admin/products/:productId', async(req, res, next) => {
     try {
         const token = req.headers.authorization
