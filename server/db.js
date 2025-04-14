@@ -36,7 +36,6 @@ const createTables = async () => {
         price NUMERIC(10, 2) NOT NULL,
         tags TEXT[],
         image_urls TEXT[],
-        rating NUMERIC(2, 1) CHECK (rating >= 0 AND rating <= 5) DEFAULT 5,
         stock_quantity INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
@@ -309,10 +308,10 @@ const getProductById = async({product_id}) => {
 }
 
 
-const editProduct = async({token, product_id, product_name, descriptions, price, tags, image_urls, rating, stock_quantity}) => {
+const editProduct = async({token, product_id, product_name, descriptions, price, tags, image_urls, stock_quantity}) => {
   const SQL = /*sql*/`
     UPDATE products 
-    SET  product_name = $2, descriptions = $3, price = $4, tags = $5, image_urls = $6, rating = $7, stock_quantity = $8, updated_at = NOW()
+    SET  product_name = $2, descriptions = $3, price = $4, tags = $5, image_urls = $6, stock_quantity = $7, updated_at = NOW()
     WHERE id = $1
     RETURNING *
   `
@@ -324,7 +323,6 @@ const editProduct = async({token, product_id, product_name, descriptions, price,
     price || product.price, 
     tags || product.tags, 
     image_urls ||  product.image_urls, 
-    rating || product.rating, 
     stock_quantity || product.stock_quantity
   ]
   const isAdmin = await getAdmin({token})

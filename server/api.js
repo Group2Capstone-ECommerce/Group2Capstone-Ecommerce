@@ -75,7 +75,6 @@ router.put('/admin/products/:productId', async(req, res, next) => {
             price: req.body.price,
             tags: req.body.tags,
             image_urls: req.body.image_urls,
-            rating: req.body.rating,
             stock_quantity: req.body.stock_quantity
         })
         res.status(200).send(response)
@@ -84,6 +83,7 @@ router.put('/admin/products/:productId', async(req, res, next) => {
     }
 })
 
+//DELETE /api/admin/products/:productId route
 router.delete('/admin/products/:productId', async(req, res, next) => {
     try {
         const token = req.headers.authorization
