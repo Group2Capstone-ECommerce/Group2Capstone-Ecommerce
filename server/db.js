@@ -36,7 +36,6 @@ const createTables = async () => {
         price NUMERIC(10, 2) NOT NULL,
         tags TEXT[],
         image_urls TEXT[],
-        rating NUMERIC(2, 1) CHECK (rating >= 0 AND rating <= 5) DEFAULT 5,
         stock_quantity INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
@@ -189,13 +188,12 @@ const createProduct = async({product_name})=> {
             descriptions, 
             price, tags, 
             image_urls, 
-            rating, 
             stock_quantity, 
             created_at, 
             updated_at
         ) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURN *;
     `;
-    const response = await client.query(SQL, [uuid.v4(), product_name, descriptions, price, tags, image_urls, rating, stock_quantity, created_at, updated_at])
+    const response = await client.query(SQL, [uuid.v4(), product_name, descriptions, price, tags, image_urls, stock_quantity, created_at, updated_at])
     return response.rows[0]
 }
 
