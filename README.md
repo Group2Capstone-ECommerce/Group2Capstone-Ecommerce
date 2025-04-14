@@ -16,7 +16,6 @@ CREATE TABLE products(
     price NUMERIC(10, 2) NOT NULL,
     tags TEXT[], --array of product tags
     image_urls TEXT[], -- optional array of image URLs
-    rating NUMERIC(2, 1) CHECK (rating >= 0 AND rating <= 5) DEFAULT 5
     stock_quantity INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
