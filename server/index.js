@@ -1,5 +1,5 @@
 const {client, connectDB, createTables, createUser, authenticateUser } = require("./db.js");
-const { seedData } = require("./seed.js");
+const { seedFakeData } = require("./seed.js");
 
 const express = require("express");
 const app = express();
@@ -9,7 +9,8 @@ app.use(express.json());
 const init = async () => {
   connectDB();
   createTables();
-  
+  seedFakeData();
+
   console.log('----------')
   console.log('Helpful CURL commands to test:');
   console.log(`curl -X POST http://localhost:3000/api/auth/register -H "Content-Type: application/json" -d '{"username":"megan","email":"megan@megan.com","password":"megan_pw","is_admin":false,"mailing_address":"123 Main St, Springfield","phone":"555-123-4567"}'`);
