@@ -2,7 +2,7 @@ const express = require('express');
 const uuid = require('uuid');
 
 const {
-    client,
+    pool,
     createProduct,
     createUser,
     createCategories,
@@ -14,11 +14,11 @@ const {
     createBillingInfo,
     createWishlist,
     createWishlistItem
-} = require('./db');
+} = require('./db.js');
 
 async function seedFakeData() {
     try {
-      await client.connect();
+      await pool.connect();
   
       // PRODUCTS
       const [
@@ -26,26 +26,29 @@ async function seedFakeData() {
         winter_shoes, winter_shirts, winter_jackets, winter_pants,
         summer_shoes, summer_shorts, summer_shirts, summer_pants
         ] = await Promise.all([
-        createProduct({ product_name: 'shoes', descriptions: 'casual shoes', price: '20', tags: 'casual', image_urls: '', stock_quantity: '12' }),
-        createProduct({ product_name: 'shirts', descriptions: 'casual shirt', price: '15', tags: 'casual', image_urls: '', stock_quantity: '32' }),
-        createProduct({ product_name: 'shorts', descriptions: 'casual shorts', price: '12', tags: 'casual', image_urls: '', stock_quantity: '56' }),
-        createProduct({ product_name: 'sweaters', descriptions: 'casual sweater', price: '25', tags: 'casual', image_urls: '', stock_quantity: '23' }),
-        createProduct({ product_name: 'pants', descriptions: 'casual pants', price: '20', tags: 'casual', image_urls: '', stock_quantity: '61' }),
-        createProduct({ product_name: 'Socks', descriptions: 'casual socks', price: '10', tags: 'casual', image_urls: '', stock_quantity: '42' }),
-        createProduct({ product_name: 'jackets', descriptions: 'casual jackets', price: '35', tags: 'casual', image_urls: '', stock_quantity: '13' }),
-        createProduct({ product_name: 'belts', descriptions: 'casual belts', price: '17', tags: 'casual', image_urls: '', stock_quantity: '29' }),
-        createProduct({ product_name: 'hoodies', descriptions: 'casual hoodies', price: '30', tags: 'casual', image_urls: '', stock_quantity: '30' }),
-        createProduct({ product_name: 'winter shoes', descriptions: 'winter shoes', price: '20', tags: 'winter', image_urls: '', stock_quantity: '19' }),
-        createProduct({ product_name: 'winter shirts', descriptions: 'winter shirt', price: '20', tags: 'winter', image_urls: '', stock_quantity: '28' }),
-        createProduct({ product_name: 'winter jackets', descriptions: 'winter jacket', price: '20', tags: 'winter', image_urls: '', stock_quantity: '22' }),
-        createProduct({ product_name: 'winter pants', descriptions: 'winter pants', price: '20', tags: 'winter', image_urls: '', stock_quantity: '25' }),
-        createProduct({ product_name: 'summer shoes', descriptions: 'summer shoes', price: '20', tags: 'summer', image_urls: '', stock_quantity: '12' }),
-        createProduct({ product_name: 'summer shorts', descriptions: 'summer shorts', price: '12', tags: 'summer', image_urls: '', stock_quantity: '21' }),
-        createProduct({ product_name: 'summer shirts', descriptions: 'summer shirts', price: '15', tags: 'summer', image_urls: '', stock_quantity: '41' }),
-        createProduct({ product_name: 'summer pants', descriptions: 'summer pants', price: '20', tags: 'summer', image_urls: '', stock_quantity: '23' }),
+        createProduct({ product_name: 'shoes', descriptions: 'casual shoes', price: '20',  stock_quantity: '12' }),
+        createProduct({ product_name: 'shirts', descriptions: 'casual shirt', price: '15',  stock_quantity: '32' }),
+        createProduct({ product_name: 'shorts', descriptions: 'casual shorts', price: '12',  stock_quantity: '56' }),
+        createProduct({ product_name: 'sweaters', descriptions: 'casual sweater', price: '25',  stock_quantity: '23' }),
+        createProduct({ product_name: 'pants', descriptions: 'casual pants', price: '20',  stock_quantity: '61' }),
+        createProduct({ product_name: 'Socks', descriptions: 'casual socks', price: '10',  stock_quantity: '42' }),
+        createProduct({ product_name: 'jackets', descriptions: 'casual jackets', price: '35',  stock_quantity: '13' }),
+        createProduct({ product_name: 'belts', descriptions: 'casual belts', price: '17',  stock_quantity: '29' }),
+        createProduct({ product_name: 'hoodies', descriptions: 'casual hoodies', price: '30',  stock_quantity: '30' }),
+        createProduct({ product_name: 'winter shoes', descriptions: 'winter shoes', price: '20',  stock_quantity: '19' }),
+        createProduct({ product_name: 'winter shirts', descriptions: 'winter shirt', price: '20',  stock_quantity: '28' }),
+        createProduct({ product_name: 'winter jackets', descriptions: 'winter jacket', price: '20',  stock_quantity: '22' }),
+        createProduct({ product_name: 'winter pants', descriptions: 'winter pants', price: '20',  stock_quantity: '25' }),
+        createProduct({ product_name: 'summer shoes', descriptions: 'summer shoes', price: '20',  stock_quantity: '12' }),
+        createProduct({ product_name: 'summer shorts', descriptions: 'summer shorts', price: '12',  stock_quantity: '21' }),
+        createProduct({ product_name: 'summer shirts', descriptions: 'summer shirts', price: '15',  stock_quantity: '41' }),
+        createProduct({ product_name: 'summer pants', descriptions: 'summer pants', price: '20',  stock_quantity: '23' }),
       ]);
 
       // USERS
+      console.log("Clearing existing users...");
+      await pool.query('DELETE FROM users');
+
       const [bob, ellie, jack, donna, rick, lisa, denise, oliver, samuel, wendy] = await Promise.all([
         createUser({username: 'Bob', email: 'bob@email.com', password_hash: 'bob_pw', is_admin: false, mailing_address: 'bobmailingaddress', phone: '219-555-9235'}),
         createUser({username: 'Ellie', email: 'Ellie@email.com', password_hash: 'ellie_pw', is_admin: true, mailing_address: 'elliemailingaddress', phone: '832-555-6172'}),
@@ -60,13 +63,16 @@ async function seedFakeData() {
     ])
 
     // CATEGORIES
-    const[onSale, casual, summer, winter, allProducts] = await Promise.all([
-        createCategories({name: 'On Sale'}),
-        createCategories({name: 'Casual'}),
-        createCategories({name: 'Summer'}),
-        createCategories({name: 'Winter'}),
-        createCategories({name: 'All Products'}),
-    ])
+    console.log("Clearing existing categories...");
+    await pool.query('DELETE FROM categories');
+    const categories = await createCategories([
+        "On Sale",
+        "Casual",
+        "Summer",
+        "Winter",
+        "All Products"
+      ]);
+      const [onSale, casual, summer, winter, allProducts] = categories;
 
     // Product Categories -
     await Promise.all([
@@ -110,33 +116,34 @@ async function seedFakeData() {
     ])
 
     // CARTS
-    const[cart1, cart2, cart3] = await Promise.all([
-        createCart({user_id: donna.id, is_active: true}),
-        createCart({user_id: lisa.id, is_active: true}),
-        createCart({user_id: samuel.id, is_active: true}),
-    ])
+    const [cartBob, cartJack, cartRick, cartOliver] = await Promise.all([
+        createCart(bob.id, true),
+        createCart(jack.id, true),
+        createCart(rick.id, true),
+        createCart(oliver.id, true)
+    ]);
 
     // CART ITEMS
     await Promise.all([
-        createCartItem({cart_id: cart1.id, product_id: shoes.id, quantity: 1}),
-        createCartItem({cart_id: cart1.id, product_id: socks.id, quantity: 3}),
-        createCartItem({cart_id: cart2.id, product_id: shorts.id , quantity: 1}),
-        createCartItem({cart_id: cart2.id, product_id: socks.id, quantity: 7}),
-        createCartItem({cart_id: cart2.id, product_id: shirts.id, quantity: 2}),
-        createCartItem({cart_id: cart2.id, product_id: summer_shoes.id, quantity: 1}),
-        createCartItem({cart_id: cart3.id, product_id: summer_shirts.id, quantity: 1}),
-        createCartItem({cart_id: cart3.id, product_id: shirts.id, quantity: 3}),
-
-    ])
+        createCartItem(cartBob.id, shoes.id, 1, new Date(), new Date()),
+        createCartItem(cartBob.id, socks.id, 3, new Date(), new Date()),
+        createCartItem(cartJack.id, shorts.id, 1, new Date(), new Date()),
+        createCartItem(cartJack.id, socks.id, 7, new Date(), new Date()),
+        createCartItem(cartJack.id, shirts.id, 2, new Date(), new Date()),
+        createCartItem(cartJack.id, summer_shoes.id, 1, new Date(), new Date()),
+        createCartItem(cartRick.id, summer_shirts.id, 1, new Date(), new Date()),
+        createCartItem(cartRick.id, shirts.id, 3, new Date(), new Date())
+    ]);
 
     // ORDERS
-    const[order1, order2, order3, order4] = await Promise.all([
-        createOrder({user_id: bob.id, status: 'Created', total_price: 42.67}),
-        createOrder({user_id: jack.id, status: 'Created', total_price: 25.93}),
-        createOrder({user_id: rick.id, status: 'Created', total_price: 34.22}),
-        createOrder({user_id: oliver.id, status: 'Created', total_price: 30.74}),
+    const now = new Date();
+    const [order1, order2, order3, order4] = await Promise.all([
+        createOrder(bob.id, cartBob.id, 'Created', 42.67, now, now),
+        createOrder(jack.id, cartJack.id, 'Created', 25.93, now, now),
+        createOrder(rick.id, cartRick.id, 'Created', 34.22, now, now),
+        createOrder(oliver.id, cartOliver.id, 'Created', 30.74, now, now),
+    ]);
 
-    ])
     // ORDER ITEMS
     await Promise.all([
         createOrderItem({order_id: order1.id, product_id: shoes.id, quantity: 1, price_at_purchase: 20}),
@@ -171,23 +178,26 @@ async function seedFakeData() {
     ]);
 
     // WISHLIST ITEMS
-    const[] = await Promise.all([
-        createWishlistItem({wishlist_id: wishlist1.id, product_id: shoes.id}),
-        createWishlistItem({wishlist_id: wishlist1.id, product_id: shirts.id}),
-        createWishlistItem({wishlist_id: wishlist1.id, product_id: socks.id}),
-        createWishlistItem({wishlist_id: wishlist2.id, product_id: summer_shirts.id}),
-        createWishlistItem({wishlist_id: wishlist2.id , product_id: winter_jackets.id}),
-        createWishlistItem({wishlist_id: wishlist3.id, product_id: shirts.id}),
-        createWishlistItem({wishlist_id: wishlist3.id, product_id: summer_pants.id}),
-        createWishlistItem({wishlist_id: wishlist4.id, product_id: shorts.id}),
-        createWishlistItem({wishlist_id: wishlist4.id, product_id: socks.id}),
-        createWishlistItem({wishlist_id: wishlist5.id, product_id: summer_shorts.id}),
+    await Promise.all([
+        createWishlistItem( wishlist1.id, shoes.id),
+        createWishlistItem( wishlist1.id, shirts.id),
+        createWishlistItem( wishlist1.id, socks.id),
+        createWishlistItem( wishlist2.id, summer_shirts.id),
+        createWishlistItem( wishlist2.id , winter_jackets.id),
+        createWishlistItem( wishlist3.id, shirts.id),
+        createWishlistItem( wishlist3.id, summer_pants.id),
+        createWishlistItem( wishlist4.id, shorts.id),
+        createWishlistItem( wishlist4.id, socks.id),
+        createWishlistItem( wishlist5.id, summer_shorts.id),
     ]);
 
     } catch (error) {
         console.error("Error during seeding:", error);
     } finally {
-        await client.end();
+        await pool.end();
     }
 }
 
+module.exports = {
+    seedFakeData
+}

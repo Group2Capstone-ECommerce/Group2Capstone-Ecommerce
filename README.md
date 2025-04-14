@@ -14,7 +14,6 @@ CREATE TABLE products(
     product_name VARCHAR(100) NOT NULL,
     descriptions TEXT,
     price NUMERIC(10, 2) NOT NULL,
-    tags TEXT[], --array of product tags
     image_urls TEXT[], -- optional array of image URLs
     stock_quantity INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW(),
