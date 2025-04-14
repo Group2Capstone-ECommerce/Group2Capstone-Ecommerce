@@ -52,15 +52,6 @@ router.post("/auth/register", async (req, res, next) => {
     }
   });
 
-//get all products
-router.get('/products', async(req, res, next) => {
-    try {
-        const response = await getAllProducts()
-        res.status(200).send(response)
-    } catch (error) {
-        next(error)
-    }
-})
 
 //PUT /api/admin/products/:productId route
 router.put('/admin/products/:productId', async(req, res, next) => {
