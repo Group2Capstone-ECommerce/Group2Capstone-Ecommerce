@@ -179,6 +179,61 @@ const createTables = async () => {
   }
 };
 
+// Create User
+const createUser = async ({ email, username, password_hash, is_admin = false, mailing_address, phone }) => {
+  const SQL = /*sql*/ `
+    INSERT INTO users (id, email, username, password_hash, is_admin, mailing_address, phone)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *;
+  `;
+  const response = await client.query(SQL, [
+    uuid.v4(),
+    email,
+    username,
+    await bcrypt.hash(password_hash, 5),
+    is_admin,
+    mailing_address,
+    phone
+  ]);
+  return response.rows[0];
+};
+
+// Authentication
+const authenticateUser = async ({ username, password }) => {
+  console.log("Authenticating user: ", username);
+  const SQL = /*sql*/ `
+    SELECT id, password_hash 
+    FROM users 
+    WHERE username = $1;
+  `;
+  const response = await client.query(SQL, [username]);
+
+  if (!response.rows.length) {
+    console.error("Invalid username or password");
+    const error = Error("Invalid username or password");
+    error.status = 401;
+    throw error;
+  }
+
+  const storedPasswordHash = response.rows[0].password_hash;
+
+  // Compare provided password with the stored hash
+  const isPasswordValid = await bcrypt.compare(password, storedPasswordHash);
+
+  if (!isPasswordValid) {
+    console.error("Invalid username or password");
+    const error = Error("Invalid username or password");
+    error.status = 401;
+    throw error;
+  }
+
+  const token = jwt.sign({ id: response.rows[0].id }, process.env.JWT, {
+    algorithm: "HS256",
+  });
+  console.log("Generated Token:", token);
+  return { token };
+};
+
 // Product -
 const createProduct = async({product_name})=> {
     const SQL = /*sql*/ `
@@ -197,24 +252,6 @@ const createProduct = async({product_name})=> {
     return response.rows[0]
 }
 
-// Users -
-const createUser = async({username})=> {
-    const SQL = /*sql*/ `
-        INSERT INTO users(
-            id, 
-            username, 
-            email, 
-            password_hash, 
-            is_admin, 
-            mailing_address, 
-            phone, 
-            created_at, 
-            updated_at
-        ) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURN *;
-    `;
-    const response = await client.query(SQL, [uuid.v4(), username, email, await bcrypt.hash(password, 5), is_admin, mailing_address, phone, created_at, updated_at])
-    return response.rows[0]
-}
 
 // Categories -
 const createCategories = async({name})=> {
@@ -358,6 +395,7 @@ module.exports = {
   client,
   connectDB,
   createTables,
+  authenticateUser,
   createProduct,
   createUser,
   createCategories,
