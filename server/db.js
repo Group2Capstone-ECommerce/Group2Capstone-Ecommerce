@@ -343,7 +343,7 @@ const createProductCategory = async ({ product_id, category_id }) => {
   return response.rows[0];
 };
 
-// Carts
+// Create cart
 const createCart = async (user_id, is_active) => {
   const created_at = new Date();
   const updated_at = new Date();
@@ -366,6 +366,30 @@ const createCart = async (user_id, is_active) => {
     updated_at,
   ]);
   return response.rows[0];
+};
+
+// Get cart
+const getCart = async (userId) => {
+  try {
+    const query = `
+      SELECT 
+        products.id AS product_id,
+        products.product_name,
+        products.price,
+        cart_items.quantity
+      FROM carts
+      JOIN cart_items ON carts.id = cart_items.cart_id
+      JOIN products ON cart_items.product_id = products.id
+      WHERE carts.user_id = $1
+    `;
+
+    const { rows } = await pool.query(query, [userId]);
+
+    return rows;
+  } catch (error) {
+    console.error("Error in getCart:", error);
+    throw error;
+  }
 };
 
 // Check if product exists before inserting
@@ -616,5 +640,6 @@ module.exports = {
   getAllUsers,
   getAllProducts,
   editProduct,
-  deleteProduct
+  deleteProduct,
+  getCart
 }
