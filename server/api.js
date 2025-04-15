@@ -8,7 +8,8 @@ const {
     getAllUsers,
     getAllProducts,
     editProduct,
-    deleteProduct
+    deleteProduct,
+    getCart
 } = require("./db");
 
 // POST /api/auth/register route
@@ -69,7 +70,7 @@ router.put('/admin/products/:productId', async(req, res, next) => {
   }
 });
 
-//DELETE /api/admin/products/:productId route
+// DELETE /api/admin/products/:productId route
 router.delete('/admin/products/:productId', async(req, res, next) => {
   try {
     const token = req.headers.authorization
@@ -79,6 +80,11 @@ router.delete('/admin/products/:productId', async(req, res, next) => {
   } catch (error) {
       next(error)
   }
+});
+
+// GET /api/cart
+router.get('/cart', async(req, res, next) => {
+
 });
 
 module.exports = router
