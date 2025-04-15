@@ -370,8 +370,27 @@ const createCart = async (user_id, is_active) => {
 };
 
 // Get cart
-const getCart = async () => {
+const getCart = async (userId) => {
+  try {
+    const query = `
+      SELECT 
+        products.id AS product_id,
+        products.product_name,
+        products.price,
+        cart_items.quantity
+      FROM carts
+      JOIN cart_items ON carts.id = cart_items.cart_id
+      JOIN products ON cart_items.product_id = products.id
+      WHERE carts.user_id = $1
+    `;
 
+    const { rows } = await pool.query(query, [userId]);
+
+    return rows;
+  } catch (error) {
+    console.error("Error in getCart:", error);
+    throw error;
+  }
 };
 
 // Check if product exists before inserting

@@ -84,7 +84,21 @@ router.delete('/admin/products/:productId', async(req, res, next) => {
 
 // GET /api/cart
 router.get('/cart', async(req, res, next) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    console.log("Token received:", token);
+    if (!token) {
+      return res.status(401).json({ error: "Authorization token is required" });
+    }
 
+    const user = await getAuthenticatedUser(token);
+    const cart = await getCart(user.id);
+
+    res.status(200).json(cart);
+  } catch (error) {
+    console.error("Error in /api/cart:", error);
+    next(error);
+  }
 });
 
 module.exports = router
