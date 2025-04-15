@@ -482,7 +482,7 @@ const createWishlistItem = async (wishlist_id, product_id) => {
   return response.rows[0];
 }
 
-//admin - get all users 
+// Admin - Get all users 
 const getAllUsers = async({token}) => {
   const user = await getAuthenticatedUser({token})
   const SQL = /*sql*/`
@@ -500,7 +500,7 @@ const getAllUsers = async({token}) => {
 
 }
 
-//get user by id
+// Get user by id
 const getUserById = async({userId}) => {
   const SQL = /*sql*/`
     SELECT id, username, email, is_admin, mailing_address, phone 
@@ -511,7 +511,7 @@ const getUserById = async({userId}) => {
   return response.rows[0]
 }
 
-//get authenticated user
+// Get authenticated user
 const getAuthenticatedUser = async ({ token }) => {
   try {
     const payload = verifyJWT(token);
@@ -530,14 +530,14 @@ const getAuthenticatedUser = async ({ token }) => {
   }
 };
 
-//get admin status
+// Get admin status
 const getAdmin = async({token}) => {
   const user = await getAuthenticatedUser({token})
   return user.is_admin
 }
 
 
-//get all products
+// Get all products
 const getAllProducts = async() => {
   const SQL = /*sql*/`
     SELECT * FROM products
