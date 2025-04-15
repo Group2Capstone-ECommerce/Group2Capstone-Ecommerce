@@ -28,7 +28,7 @@ function verifyToken(req, res, next) {
   }
   
 // POST/api/admin/products
-router.post('/api/admin/products', verifyToken, async (req, res) => {
+router.post('/admin/products', verifyToken, async (req, res) => {
     try {
       const{ name, price, description, category, imageUrl } = req.body;
   
