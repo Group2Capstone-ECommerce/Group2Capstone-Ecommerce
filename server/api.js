@@ -23,8 +23,10 @@ function verifyToken(req, res, next) {
     if (!token) return res.status(401).json({ message: 'No token provided.' });
   
     jwt.verify(token, process.env.JWT || 'shhh', (err, user) => {
-        console.log(err, user)
-      if (err) return res.status(403).json({ message: 'Invalid token.' });
+      if (err) {
+        console.error("Token verification failed:", err.message);
+        return res.status(403).json({ message: 'Invalid token.' });
+      }
       req.user = user;
       next();
     });
@@ -126,17 +128,10 @@ router.delete('/admin/products/:productId', async(req, res, next) => {
 });
 
 // GET /api/cart
-router.get('/cart', async(req, res, next) => {
+router.get('/cart', verifyToken, async(req, res, next) => {
   try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-    console.log("Token received:", token);
-    if (!token) {
-      return res.status(401).json({ error: "Authorization token is required" });
-    }
-
-    const user = await getAuthenticatedUser(token);
+    const user = req.user;
     const cart = await getCart(user.id);
-
     res.status(200).json(cart);
   } catch (error) {
     console.error("Error in /api/cart:", error);
