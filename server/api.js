@@ -1,7 +1,11 @@
+
+const pg = require('pg');
+const jwt = require('jsonwebtoken');
 const express = require('express')
 const router = express.Router()
 const {
     createUser, 
+    createProduct,
     authenticateUser,
     getAuthenticatedUser,
     getUserById,
@@ -10,6 +14,45 @@ const {
     editProduct,
     deleteProduct
 } = require("./db");
+
+function verifyToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
+  
+    if (!token) return res.status(401).json({ message: 'No token provided.' });
+  
+    jwt.verify(token, process.env.JWT || 'shhh', (err, user) => {
+        console.log(err, user)
+      if (err) return res.status(403).json({ message: 'Invalid token.' });
+      req.user = user;
+      next();
+    });
+  }
+  
+// POST/api/admin/products
+router.post('/admin/products', verifyToken, async (req, res) => {
+    try {
+      const{ product_name, price, descriptions, stock_quantity } = req.body;
+  
+      if (!product_name || !price) {
+        return res.status(400).json({ message: 'Name and price are required.' });
+      }
+
+
+      const product = createProduct({
+        product_name,
+        price,
+        descriptions,
+        stock_quantity
+      });
+  
+
+     res.json("PRODUCT CREATED").sendStatus(201)
+    } catch (error) {
+      console.error('Error adding product:', error);
+      res.status(500).json({ message: 'Server error while adding product.' });
+    }
+  });
 
 // POST /api/auth/register route
 router.post("/auth/register", async (req, res, next) => {
