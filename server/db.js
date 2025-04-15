@@ -556,10 +556,10 @@ const getProductById = async({product_id}) => {
 }
 
 
-const editProduct = async({token, product_id, product_name, descriptions, price, tags, image_urls, stock_quantity}) => {
+const editProduct = async({token, product_id, product_name, descriptions, price, stock_quantity}) => {
   const SQL = /*sql*/`
     UPDATE products 
-    SET  product_name = $2, descriptions = $3, price = $4, tags = $5, image_urls = $6, stock_quantity = $7, updated_at = NOW()
+    SET  product_name = $2, descriptions = $3, price = $4, stock_quantity = $5, updated_at = NOW()
     WHERE id = $1
     RETURNING *
   `
@@ -568,9 +568,7 @@ const editProduct = async({token, product_id, product_name, descriptions, price,
     product_id, 
     product_name || product.product_name, 
     descriptions || product.descriptions, 
-    price || product.price, 
-    tags || product.tags, 
-    image_urls ||  product.image_urls, 
+    price || product.price,
     stock_quantity || product.stock_quantity
   ]
   const isAdmin = await getAdmin({token})
