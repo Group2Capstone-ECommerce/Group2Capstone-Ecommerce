@@ -38,8 +38,7 @@ router.post('/admin/products', verifyToken, async (req, res) => {
         return res.status(400).json({ message: 'Name and price are required.' });
       }
 
-      console.log("BEFORE CREATE PRODUCT")
-  
+
       const product = createProduct({
         product_name,
         price,
@@ -47,8 +46,7 @@ router.post('/admin/products', verifyToken, async (req, res) => {
         stock_quantity
       });
   
-      console.log("AFTER CREATE PRODUCT")
-     // const savedProduct = await product.save();
+
      res.json("PRODUCT CREATED").sendStatus(201)
     } catch (error) {
       console.error('Error adding product:', error);
