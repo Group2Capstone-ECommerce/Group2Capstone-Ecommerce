@@ -28,9 +28,16 @@ function verifyToken(req, res, next) {
       next();
     });
   }
+
+function requireAdmin(req, res, next) {
+  if (req.user.role !== 'is_admin') {
+    return res.sendStatus(403).json({ message: 'Forbidden'});
+  }
+  next();
+}  
   
 // POST/api/admin/products
-router.post('/admin/products', verifyToken, async (req, res) => {
+router.post('/admin/products', verifyToken, requireAdmin, async (req, res) => {
     try {
       const{ product_name, price, descriptions, stock_quantity } = req.body;
   
