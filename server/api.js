@@ -5,6 +5,7 @@ const express = require('express')
 const router = express.Router()
 const {
     createUser, 
+    createProduct,
     authenticateUser,
     getAuthenticatedUser,
     getUserById,
@@ -20,7 +21,8 @@ function verifyToken(req, res, next) {
   
     if (!token) return res.status(401).json({ message: 'No token provided.' });
   
-    jwt.verify(token, process.env.JWT_SECRET || 'your_secret_key', (err, user) => {
+    jwt.verify(token, process.env.JWT || 'shhh', (err, user) => {
+        console.log(err, user)
       if (err) return res.status(403).json({ message: 'Invalid token.' });
       req.user = user;
       next();
@@ -30,21 +32,24 @@ function verifyToken(req, res, next) {
 // POST/api/admin/products
 router.post('/admin/products', verifyToken, async (req, res) => {
     try {
-      const{ name, price, description, category } = req.body;
+      const{ product_name, price, descriptions, stock_quantity } = req.body;
   
-      if (!name || !price) {
+      if (!product_name || !price) {
         return res.status(400).json({ message: 'Name and price are required.' });
       }
+
+      console.log("BEFORE CREATE PRODUCT")
   
-      const product = new Product({
-        name,
+      const product = createProduct({
+        product_name,
         price,
-        description,
-        category
+        descriptions,
+        stock_quantity
       });
   
-      const savedProduct = await product.save();
-      res.status(201).json(savedProduct);
+      console.log("AFTER CREATE PRODUCT")
+     // const savedProduct = await product.save();
+     res.json("PRODUCT CREATED").sendStatus(201)
     } catch (error) {
       console.error('Error adding product:', error);
       res.status(500).json({ message: 'Server error while adding product.' });
