@@ -30,7 +30,7 @@ function verifyToken(req, res, next) {
 // POST/api/admin/products
 router.post('/admin/products', verifyToken, async (req, res) => {
     try {
-      const{ name, price, description, category, imageUrl } = req.body;
+      const{ name, price, description, category } = req.body;
   
       if (!name || !price) {
         return res.status(400).json({ message: 'Name and price are required.' });
@@ -40,8 +40,7 @@ router.post('/admin/products', verifyToken, async (req, res) => {
         name,
         price,
         description,
-        category,
-        imageUrl
+        category
       });
   
       const savedProduct = await product.save();
