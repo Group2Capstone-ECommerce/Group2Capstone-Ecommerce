@@ -151,7 +151,7 @@ const createTables = async () => {
       CREATE TABLE IF NOT EXISTS order_items (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
-        product_id UUID REFERENCES products(id),
+        product_id UUID REFERENCES products(id) ON DELETE CASCADE,
         quantity INTEGER NOT NULL,
         price_at_purchase NUMERIC(10, 2) NOT NULL
       );
@@ -275,19 +275,17 @@ const authenticateUser = async ({ username, password }) => {
 };
 
 // Product
-const createProduct = async({ product_name, descriptions, price, stock_quantity, created_at, updated_at }) => {
+const createProduct = async({ product_name, descriptions, price, stock_quantity}) => {
   const SQL = /*sql*/ `
       INSERT INTO products(
           id, 
           product_name, 
           descriptions, 
           price,
-          stock_quantity, 
-          created_at, 
-          updated_at
-      ) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *;
+          stock_quantity
+      ) VALUES($1, $2, $3, $4, $5) RETURNING *;
   `;
-  const response = await pool.query(SQL, [uuid.v4(), product_name, descriptions, price, stock_quantity, created_at, updated_at]);
+  const response = await pool.query(SQL, [uuid.v4(), product_name, descriptions, price, stock_quantity]);
   return response.rows[0];
 };
 
@@ -507,7 +505,7 @@ const getUserById = async({userId}) => {
     FROM users 
     WHERE id = $1
   `
-  const response = await client.query(SQL, [userId])
+  const response = await pool.query(SQL, [userId])
   return response.rows[0]
 }
 
@@ -542,7 +540,7 @@ const getAllProducts = async() => {
   const SQL = /*sql*/`
     SELECT * FROM products
   `
-  const response = await client.query(SQL)
+  const response = await pool.query(SQL)
   return response.rows
 }
 
@@ -551,7 +549,7 @@ const getProductById = async({product_id}) => {
   const SQL = /*sql*/`
     SELECT * FROM products WHERE id = $1
   `
-  const response = await client.query(SQL, [product_id])
+  const response = await pool.query(SQL, [product_id])
   return response.rows[0]
 }
 
@@ -578,7 +576,7 @@ const editProduct = async({token, product_id, product_name, descriptions, price,
     error.status = 401
     throw error
   } 
-  const response = await client.query(SQL, values)
+  const response = await pool.query(SQL, values)
   return response.rows[0]
 
 }
@@ -593,7 +591,7 @@ const deleteProduct = async({token, product_id}) => {
     error.status = 401
     throw error
   } else {
-    return await client.query(SQL, [product_id])
+    return await pool.query(SQL, [product_id])
   }
 }
 
@@ -613,5 +611,11 @@ module.exports = {
   createOrderItem,
   createBillingInfo,
   createWishlist,
-  createWishlistItem
+  createWishlistItem,
+  getAuthenticatedUser,
+  getUserById,
+  getAllUsers,
+  getAllProducts,
+  editProduct,
+  deleteProduct
 }
