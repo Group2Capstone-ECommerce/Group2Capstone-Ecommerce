@@ -193,7 +193,7 @@ async function seedFakeData() {
     } catch (error) {
         console.error("Error during seeding:", error);
     } finally {
-        await pool.end();
+        
     }
 }
 
