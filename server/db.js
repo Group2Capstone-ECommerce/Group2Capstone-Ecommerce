@@ -56,7 +56,6 @@ const createTables = async () => {
         product_name VARCHAR(100) NOT NULL,
         descriptions TEXT,
         price NUMERIC(10, 2) NOT NULL,
-        rating NUMERIC(2, 1) CHECK (rating >= 0 AND rating <= 5) DEFAULT 5,
         stock_quantity INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
