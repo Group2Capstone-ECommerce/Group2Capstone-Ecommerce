@@ -18,18 +18,6 @@ router.post("/auth/register", async (req, res, next) => {
     if (!email || !username || !password) {
       return res.status(400).json({ error: "Email, username, password are required" });
     }
-
-    // No need to do this because the username and email has UNIQUE constraints in the table!
-    // // Check if user already exists in users database
-    // const checkUserSQL = /*sql*/`
-    //   SELECT * FROM users WHERE email = $1 OR username = $2;
-    // `;
-    // const checkResponse = await pool.query(checkUserSQL, [email, username]);
-
-    // if (checkResponse.rows.length > 0) {
-    //   return res.status(400).json({ error: "User with this email or username already exists." });
-    // }
-
     const newUser = await createUser({ email, username, password_hash: password, is_admin, mailing_address, phone });
     res.status(201).json(newUser);
   } catch (error) {
