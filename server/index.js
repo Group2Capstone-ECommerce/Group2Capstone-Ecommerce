@@ -1,16 +1,3 @@
-
-const {
-  client,
-  connectDB,
-  createTables,
-  createUser,
-  authenticateUser,
-} = require("./db.js");
-const { seedData } = require("./seed.js");
-
-const express = require("express");
-const app = express();
-const port = 3000;
 const apiRouter = require("./api.js");
 app.use("/api", apiRouter);
 app.use(express.json());

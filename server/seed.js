@@ -48,7 +48,6 @@ async function seedFakeData() {
       // USERS
       console.log("Clearing existing users...");
       await pool.query('DELETE FROM users');
-
       const [bob, ellie, jack, donna, rick, lisa, denise, oliver, samuel, wendy] = await Promise.all([
         createUser({username: 'Bob', email: 'bob@email.com', password_hash: 'bob_pw', is_admin: false, mailing_address: 'bobmailingaddress', phone: '219-555-9235'}),
         createUser({username: 'Ellie', email: 'Ellie@email.com', password_hash: 'ellie_pw', is_admin: true, mailing_address: 'elliemailingaddress', phone: '832-555-6172'}),
@@ -194,7 +193,7 @@ async function seedFakeData() {
     } catch (error) {
         console.error("Error during seeding:", error);
     } finally {
-        await pool.end();
+        
     }
 }
 

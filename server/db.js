@@ -47,7 +47,9 @@ const createTables = async () => {
 
     console.log('Creating products table...');
     
-    const createProductsTable = `
+    //Create products
+    const createProductsTable = /*sql*/`
+
       CREATE TABLE IF NOT EXISTS products (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         product_name VARCHAR(100) NOT NULL,
@@ -61,9 +63,9 @@ const createTables = async () => {
     await pool.query(createProductsTable);
     console.log('Products table created or already exists.');
 
-    // Create users table
+    //Create users
     console.log('Creating users table...');
-    const createUsersTable = `
+    const createUsersTable = /*sql*/`
       CREATE TABLE IF NOT EXISTS users (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         username VARCHAR(50) UNIQUE NOT NULL,
@@ -81,7 +83,8 @@ const createTables = async () => {
     // Create categories table
     console.log('Creating categories table...');
 
-    const createCategoriesTable = `
+    const createCategoriesTable = /*sql*/`
+
       CREATE TABLE IF NOT EXISTS categories (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         name VARCHAR(50) UNIQUE NOT NULL
@@ -91,7 +94,7 @@ const createTables = async () => {
 
     // Create product_categories table
     console.log('Creating product_categories table...');
-    const createProductCategoriesTable = `
+    const createProductCategoriesTable = /*sql*/`
       CREATE TABLE IF NOT EXISTS product_categories (
         product_id UUID REFERENCES products(id) ON DELETE CASCADE,
         category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
@@ -103,7 +106,8 @@ const createTables = async () => {
     // Create carts table
     console.log('Creating carts table...');
 
-    const createCartsTable = `
+    const createCartsTable = /*sql*/`
+
       CREATE TABLE IF NOT EXISTS carts (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -116,7 +120,7 @@ const createTables = async () => {
 
     // Create cart_items table
     console.log('Creating cart_items table...');
-    const createCartItemsTable = `
+    const createCartItemsTable = /*sql*/`
       CREATE TABLE IF NOT EXISTS cart_items (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         cart_id UUID REFERENCES carts(id) ON DELETE CASCADE,
@@ -132,7 +136,8 @@ const createTables = async () => {
     // Create orders table
     console.log('Creating orders table...');
 
-    const createOrdersTable = `
+    const createOrdersTable =/*sql*/ `
+
       CREATE TABLE IF NOT EXISTS orders (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       user_id UUID REFERENCES users(id) ON DELETE SET NULL,
@@ -147,11 +152,11 @@ const createTables = async () => {
 
     // Create order_items table
     console.log('Creating order_items table...');
-    const createOrderItemsTable = `
+    const createOrderItemsTable =/*sql*/ `
       CREATE TABLE IF NOT EXISTS order_items (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
-        product_id UUID REFERENCES products(id),
+        product_id UUID REFERENCES products(id) ON DELETE CASCADE,
         quantity INTEGER NOT NULL,
         price_at_purchase NUMERIC(10, 2) NOT NULL
       );
@@ -162,7 +167,8 @@ const createTables = async () => {
     // Create billing_info table
     console.log('Creating billing_info table...');
 
-    const createBillingInfoTable = `
+    const createBillingInfoTable = /*sql*/`
+
       CREATE TABLE IF NOT EXISTS billing_info (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -186,7 +192,7 @@ const createTables = async () => {
 
     // Create wishlists table
     console.log('Creating wishlists table...');
-    const createWishlistsTable = `
+    const createWishlistsTable = /*sql*/`
       CREATE TABLE IF NOT EXISTS wishlists (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -199,7 +205,7 @@ const createTables = async () => {
 
     // Create wishlist_items table
     console.log('Creating wishlist_items table...');
-    const createWishlistItemsTable = `
+    const createWishlistItemsTable =/*sql*/ `
       CREATE TABLE IF NOT EXISTS wishlist_items (
         wishlist_id UUID REFERENCES wishlists(id) ON DELETE CASCADE,
         product_id UUID REFERENCES products(id),
@@ -213,16 +219,17 @@ const createTables = async () => {
     console.error("Error creating tables:", error);
   }
 };
+ 
 
-// Create User
-const createUser = async ({
-  email,
-  username,
-  password_hash,
-  is_admin = false,
-  mailing_address,
-  phone,
-}) => {
+ // Verifies and decodes a JWT
+const verifyJWT = (token) => {
+  return jwt.verify(token, JWT);
+};
+
+
+// Create User - register
+const createUser = async ({ email, username, password_hash, is_admin = false, mailing_address, phone }) => {
+
   const SQL = /*sql*/ `
     INSERT INTO users (id, email, username, password_hash, is_admin, mailing_address, phone)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -239,6 +246,7 @@ const createUser = async ({
   ]);
   return response.rows[0];
 };
+
 
 // Authentication
 const authenticateUser = async ({ username, password }) => {
@@ -262,14 +270,14 @@ const authenticateUser = async ({ username, password }) => {
   // Compare provided password with the stored hash
   const isPasswordValid = await bcrypt.compare(password, storedPasswordHash);
 
-  if (!isPasswordValid) {
+  if (!response.rows.length || !isPasswordValid) {
     console.error("Invalid username or password");
     const error = Error("Invalid username or password");
     error.status = 401;
     throw error;
   }
 
-  const token = jwt.sign({ id: response.rows[0].id }, process.env.JWT, {
+  const token = jwt.sign({ id: response.rows[0].id }, JWT , {
     algorithm: "HS256",
   });
   console.log("Generated Token:", token);
@@ -277,19 +285,17 @@ const authenticateUser = async ({ username, password }) => {
 };
 
 // Product
-const createProduct = async({ product_name, descriptions, price, stock_quantity, created_at, updated_at }) => {
+const createProduct = async({ product_name, descriptions, price, stock_quantity}) => {
   const SQL = /*sql*/ `
       INSERT INTO products(
           id, 
           product_name, 
           descriptions, 
           price,
-          stock_quantity, 
-          created_at, 
-          updated_at
-      ) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *;
+          stock_quantity
+      ) VALUES($1, $2, $3, $4, $5) RETURNING *;
   `;
-  const response = await pool.query(SQL, [uuid.v4(), product_name, descriptions, price, stock_quantity, created_at, updated_at]);
+  const response = await pool.query(SQL, [uuid.v4(), product_name, descriptions, price, stock_quantity]);
   return response.rows[0];
 };
 
@@ -321,7 +327,6 @@ const createCategories = async (categoryNames) => {
       );
 
       createdCategories.push(insert.rows[0]);
-      console.log(`Inserted category: "${name}"`);
     } catch (err) {
       console.error(`Error inserting category "${name}":`, err);
     }
@@ -349,7 +354,7 @@ const createProductCategory = async ({ product_id, category_id }) => {
   return response.rows[0];
 };
 
-// Carts
+// Create cart
 const createCart = async (user_id, is_active) => {
   const created_at = new Date();
   const updated_at = new Date();
@@ -372,6 +377,30 @@ const createCart = async (user_id, is_active) => {
     updated_at,
   ]);
   return response.rows[0];
+};
+
+// Get cart
+const getCart = async (userId) => {
+  try {
+    const query = `
+      SELECT 
+        products.id AS product_id,
+        products.product_name,
+        products.price,
+        cart_items.quantity
+      FROM carts
+      JOIN cart_items ON carts.id = cart_items.cart_id
+      JOIN products ON cart_items.product_id = products.id
+      WHERE carts.user_id = $1
+    `;
+
+    const { rows } = await pool.query(query, [userId]);
+
+    return rows;
+  } catch (error) {
+    console.error("Error in getCart:", error);
+    throw error;
+  }
 };
 
 // Check if product exists before inserting
@@ -485,6 +514,121 @@ const createWishlistItem = async (wishlist_id, product_id) => {
   return response.rows[0];
 }
 
+// Admin - Get all users 
+const getAllUsers = async({token}) => {
+  const user = await getAuthenticatedUser({token})
+  const SQL = /*sql*/`
+    SELECT * FROM users
+  `
+  const response = await pool.query(SQL)
+  if(!user.is_admin){
+    console.error('User is not administor! No access!')
+    const error = Error('User is not administor! No access!')
+    error.status = 401
+    throw error
+  } else {
+    return response.rows
+  }
+
+}
+
+// Get user by id
+const getUserById = async({userId}) => {
+  const SQL = /*sql*/`
+    SELECT id, username, email, is_admin, mailing_address, phone 
+    FROM users 
+    WHERE id = $1
+  `
+  const response = await pool.query(SQL, [userId])
+  return response.rows[0]
+}
+
+// Get authenticated user
+const getAuthenticatedUser = async ({ token }) => {
+  try {
+    const payload = verifyJWT(token);
+    const user = await getUserById({ userId: payload.id });
+
+    if (!user) {
+      const error = new Error("Authenticated user not found");
+      error.status = 404;
+      throw error;
+    }
+
+    return user;
+  } catch (err) {
+    console.error("Error in getAuthenticatedUser:", err.message);
+    throw err;
+  }
+};
+
+// Get admin status
+const getAdmin = async({token}) => {
+  const user = await getAuthenticatedUser({token})
+  return user.is_admin
+}
+
+
+// Get all products
+const getAllProducts = async() => {
+  const SQL = /*sql*/`
+    SELECT * FROM products
+  `
+  const response = await pool.query(SQL)
+  return response.rows
+}
+
+//get product by product_id
+const getProductById = async({product_id}) => {
+  const SQL = /*sql*/`
+    SELECT * FROM products WHERE id = $1
+  `
+  const response = await pool.query(SQL, [product_id])
+  return response.rows[0]
+}
+
+
+const editProduct = async({token, product_id, product_name, descriptions, price, stock_quantity}) => {
+  const SQL = /*sql*/`
+    UPDATE products 
+    SET  product_name = $2, descriptions = $3, price = $4, stock_quantity = $5, updated_at = NOW()
+    WHERE id = $1
+    RETURNING *
+  `
+  const product = await getProductById({product_id})
+  values = [
+    product_id, 
+    product_name || product.product_name, 
+    descriptions || product.descriptions, 
+    price || product.price,
+    stock_quantity || product.stock_quantity
+  ]
+  const isAdmin = await getAdmin({token})
+  if(!isAdmin){
+    console.error('User is not administor! No access!')
+    const error = Error('User is not administor! No access!')
+    error.status = 401
+    throw error
+  } 
+  const response = await pool.query(SQL, values)
+  return response.rows[0]
+
+}
+const deleteProduct = async({token, product_id}) => {
+  const SQL = /*sql*/`
+    DELETE FROM products WHERE id = $1
+  `
+  const isAdmin = await getAdmin({token})
+  if(!isAdmin){
+    console.error('User is not administor! No access!')
+    const error = Error('User is not administor! No access!')
+    error.status = 401
+    throw error
+  } else {
+    return await pool.query(SQL, [product_id])
+  }
+}
+
 module.exports = {
   query: (text, params) => pool.query(text, params),
   pool,
@@ -502,5 +646,13 @@ module.exports = {
   createOrderItem,
   createBillingInfo,
   createWishlist,
-  createWishlistItem
+
+  createWishlistItem,
+  getAuthenticatedUser,
+  getUserById,
+  getAllUsers,
+  getAllProducts,
+  editProduct,
+  deleteProduct,
+  getCart
 }
