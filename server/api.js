@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const {
-    client, 
     createUser, 
     authenticateUser,
     getAuthenticatedUser,
@@ -10,7 +9,7 @@ const {
     getAllProducts,
     editProduct,
     deleteProduct
-} = require("./db.js");
+} = require("./db");
 
 // POST /api/auth/register route
 router.post("/auth/register", async (req, res, next) => {
@@ -20,15 +19,16 @@ router.post("/auth/register", async (req, res, next) => {
       return res.status(400).json({ error: "Email, username, password are required" });
     }
 
-    // Check if user already exists in users database
-    const checkUserSQL = /*sql*/`
-      SELECT * FROM users WHERE email = $1 OR username = $2;
-    `;
-    const checkResponse = await client.query(checkUserSQL, [email, username]);
+    // No need to do this because the username and email has UNIQUE constraints in the table!
+    // // Check if user already exists in users database
+    // const checkUserSQL = /*sql*/`
+    //   SELECT * FROM users WHERE email = $1 OR username = $2;
+    // `;
+    // const checkResponse = await pool.query(checkUserSQL, [email, username]);
 
-    if (checkResponse.rows.length > 0) {
-      return res.status(400).json({ error: "User with this email or username already exists." });
-    }
+    // if (checkResponse.rows.length > 0) {
+    //   return res.status(400).json({ error: "User with this email or username already exists." });
+    // }
 
     const newUser = await createUser({ email, username, password_hash: password, is_admin, mailing_address, phone });
     res.status(201).json(newUser);
@@ -51,6 +51,16 @@ router.post("/auth/login", async (req, res, next) => {
     next(ex);
   }
 });
+
+//GET /api/products
+router.get('/products', async(req, res, next) => {
+    try {
+        const response = await getAllProducts();
+        res.status(200).send(response)
+    } catch (error) {
+        next(error)
+    }
+})
 
 //PUT /api/admin/products/:productId route
 router.put('/admin/products/:productId', async(req, res, next) => {

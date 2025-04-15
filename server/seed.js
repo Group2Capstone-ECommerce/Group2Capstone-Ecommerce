@@ -193,7 +193,11 @@ async function seedFakeData() {
     } catch (error) {
         console.error("Error during seeding:", error);
     } finally {
-        await pool.end();
+        /*This cause the pool connect closed, since we are using the same pool in
+        db.js seed.js and api.js do not recommand using this unless we separeted
+        the pool or the app is finished (no more data to update)
+        */
+        //await pool.end(); 
     }
 }
 
