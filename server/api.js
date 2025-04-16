@@ -29,12 +29,7 @@ function verifyToken(req, res, next) {
     });
   }
 
-function requireAdmin(req, res, next) {
-  if (!req.user || req.user.admin !== true) {
-    return res.sendStatus(403).json({ message: 'Forbidden: Admins only.'});
-  }
-  next();
-}  
+ 
 
 // GET /api/admin/users
 router.get('/admin/users', verifyToken, async (req, res, next) => {
@@ -59,7 +54,7 @@ router.get('/admin/users', verifyToken, async (req, res, next) => {
 });
 
 // POST/api/admin/products
-router.post('/admin/products', verifyToken, requireAdmin, async (req, res) => {
+router.post('/admin/products', verifyToken, async (req, res) => {
     try {
       const{ product_name, price, descriptions, stock_quantity } = req.body;
   
