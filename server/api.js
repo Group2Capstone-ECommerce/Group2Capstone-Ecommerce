@@ -30,12 +30,22 @@ function verifyToken(req, res, next) {
   }
 
 function requireAdmin(req, res, next) {
-  if (req.user.role !== 'is_admin') {
-    return res.sendStatus(403).json({ message: 'Forbidden'});
+  if (!req.user || req.user.is_admin !== true) {
+    return res.sendStatus(403).json({ message: 'Forbidden: Admins only.'});
   }
   next();
 }  
-  
+// GET /api/admin/users
+
+router.get('/admin/users', verifyToken, requireAdmin, async (req, res, next) => {
+  try {
+    const users = await getAllUsers();
+    res.status(200).send(users)
+} catch (error) {
+    next(error)
+}
+});
+
 // POST/api/admin/products
 router.post('/admin/products', verifyToken, requireAdmin, async (req, res) => {
     try {
