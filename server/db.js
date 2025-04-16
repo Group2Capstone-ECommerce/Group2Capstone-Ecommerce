@@ -649,6 +649,55 @@ const deleteProductFromCart = async(userId, productId) => {
     return result.rows[0];
 };
 
+// Update cart item quantity
+const updateCartItemQuantity = async (userId, productId, quantity) => {
+  // First check if cart exists for the given user
+  const cart = await getCart(userId);
+  if (!cart) {
+    const error = Error('No cart found for user.');
+    error.status = 404;
+    throw error;
+  }
+
+  // If quantity is 0, then delete the item from the cartx
+  if (quantity === 0) {
+    const SQL = `
+      DELETE FROM cart_items
+      USING carts
+      WHERE cart_items.cart_id = carts.id
+        AND carts.user_id = $1
+        AND cart_items.product_id = $2
+      RETURNING cart_items.*;`;
+
+    const result = await pool.query(SQL, [userId, productId]);
+    if (result.rowCount === 0) {
+      const error = Error('Product not found in user\'s cart.');
+      error.status = 404;
+      throw error;
+    }
+    return { message: 'Product removed from cart.' };
+  }
+
+  // Otherwise, update the quantity
+  const SQL = `
+    UPDATE cart_items
+    SET quantity = $3, updated_at = NOW()
+    FROM carts
+    WHERE cart_items.cart_id = carts.id
+      AND carts.user_id = $1
+      AND cart_items.product_id = $2
+    RETURNING cart_items.*;`;
+
+  const result = await pool.query(SQL, [userId, productId, quantity]);
+  if (result.rowCount === 0) {
+    const error = Error('Product not found in user\'s cart.');
+    error.status = 404;
+    throw error;
+  }
+
+  return result.rows[0];
+};
+
 module.exports = {
   query: (text, params) => pool.query(text, params),
   pool,
@@ -673,5 +722,6 @@ module.exports = {
   editProduct,
   deleteProduct,
   getCart,
-  deleteProductFromCart
+  deleteProductFromCart,
+  updateCartItemQuantity
 }
