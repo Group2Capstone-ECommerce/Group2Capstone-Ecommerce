@@ -35,11 +35,23 @@ function requireAdmin(req, res, next) {
   }
   next();
 }  
-// GET /api/admin/users
 
-router.get('/admin/users', verifyToken, requireAdmin, async (req, res, next) => {
+// GET /api/admin/users
+router.get('/admin/users', verifyToken, async (req, res, next) => {
   try {
-    const users = await getAllUsers();
+    // Grab the token from the headers
+    const token = req.headers.authorization;
+    // Grab the userId so we can check the user's table to see if the user is an admin or not
+    const userId = req.user.id;
+    console.log(`user id => `, userId);
+    const user = await getUserById(userId);
+    console.log(`user => `, user.is_admin);
+    
+    if (user.is_admin !== true) {
+      return res.sendStatus(403).json({ message: 'Forbidden: Admins only.'});
+    }
+
+    const users = await getAllUsers(token);
     res.status(200).send(users)
 } catch (error) {
     next(error)
