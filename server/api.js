@@ -13,7 +13,8 @@ const {
     getAllProducts,
     editProduct,
     deleteProduct,
-    getCart
+    getCart,
+    deleteProductFromCart
 } = require("./db");
 
 function verifyToken(req, res, next) {
@@ -135,6 +136,21 @@ router.get('/cart', verifyToken, async(req, res, next) => {
     res.status(200).json(cart);
   } catch (error) {
     console.error("Error in /api/cart:", error);
+    next(error);
+  }
+});
+
+// DELETE /api/cart/:productId
+router.delete('/cart/:productId', verifyToken, async(req, res, next) => {
+  try {
+    const user = req.user;
+    const productId = req.params.productId;
+
+    const deletedProduct = await deleteProductFromCart(user.id, productId);
+
+    res.status(204).json({ message: "Product deleted from cart."});
+  } catch (error) {
+    console.error("Error in /api/cart/:productId", error);
     next(error);
   }
 });
