@@ -30,7 +30,7 @@ function verifyToken(req, res, next) {
   }
 
 function requireAdmin(req, res, next) {
-  if (!req.user || req.user.is_admin !== true) {
+  if (!req.user || req.user.admin !== true) {
     return res.sendStatus(403).json({ message: 'Forbidden: Admins only.'});
   }
   next();
