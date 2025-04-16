@@ -13,7 +13,9 @@ const {
     getAllProducts,
     editProduct,
     deleteProduct,
-    getCart
+    getCart,
+    deleteProductFromCart,
+    updateCartItemQuantity
 } = require("./db");
 
 function verifyToken(req, res, next) {
@@ -135,6 +137,47 @@ router.get('/cart', verifyToken, async(req, res, next) => {
     res.status(200).json(cart);
   } catch (error) {
     console.error("Error in /api/cart:", error);
+    next(error);
+  }
+});
+
+// DELETE /api/cart/:productId
+router.delete('/cart/:productId', verifyToken, async(req, res, next) => {
+  try {
+    const user = req.user;
+    const productId = req.params.productId;
+
+    const deletedProduct = await deleteProductFromCart(user.id, productId);
+
+    res.status(204).json({ message: "Product deleted from cart."});
+  } catch (error) {
+    console.error("Error in /api/cart/:productId", error);
+    next(error);
+  }
+});
+
+// PUT /api/cart/:productId
+router.put('/cart/:productId', verifyToken, async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const productId = req.params.productId;
+    const { quantity } = req.body;
+
+    if (typeof quantity !== 'number' || quantity < 0) {
+      const error = Error('Quantity must be a non-negative number.');
+      error.status = 400;
+      throw error;
+    }
+
+    const result = await updateCartItemQuantity(userId, productId, quantity);
+
+    if (quantity === 0) {
+      return res.status(200).json({ message: result.message });
+    }
+
+    res.status(200).json({ updatedItem: result });
+  } catch (error) {
+    console.error('Error updating cart item:', error);
     next(error);
   }
 });
