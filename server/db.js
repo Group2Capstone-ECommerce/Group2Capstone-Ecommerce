@@ -544,46 +544,13 @@ const getUserById = async(userId) => {
   return response.rows[0]
 }
 
-// Get authenticated user
-const getAuthenticatedUser = async ({ token }) => {
-  try {
-    const payload = verifyJWT(token);
-    const user = await getUserById({ userId: payload.id });
-
-    if (!user) {
-      const error = new Error("Authenticated user not found");
-      error.status = 404;
-      throw error;
-    }
-
-    return user;
-  } catch (err) {
-    console.error("Error in getAuthenticatedUser:", err.message);
-    throw err;
-  }
-};
-
-// Get admin status
-const getAdmin = async({token}) => {
-  const user = await getAuthenticatedUser({token})
-  return user.is_admin
-}
-
 
 // Get all products for admin
-const getAllProducts = async({token}) => {
+const getAllProducts = async() => {
   const SQL = /*sql*/`
     SELECT * FROM products
   `
   const response = await pool.query(SQL)
-  
-  const isAdmin = await getAdmin({token})
-  if(!isAdmin){
-    console.error('Not administor! No access!')
-    const error = Error('Not administor! No access!')
-    error.status = 401
-    throw error
-  }
   return response.rows
 }
 
@@ -606,7 +573,7 @@ const getProductById = async({product_id}) => {
 }
 
 
-const editProduct = async({token, product_id, product_name, descriptions, price, stock_quantity, is_available}) => {
+const editProduct = async({product_id, product_name, descriptions, price, stock_quantity, is_available}) => {
   const SQL = /*sql*/`
     UPDATE products 
     SET  product_name = $2, descriptions = $3, price = $4, stock_quantity = $5, is_available = $6, updated_at = NOW()
@@ -616,36 +583,22 @@ const editProduct = async({token, product_id, product_name, descriptions, price,
   const product = await getProductById({product_id})
   values = [
     product_id, 
-    product_name || product.product_name, 
-    descriptions || product.descriptions, 
-    price || product.price,
-    stock_quantity || product.stock_quantity,
+    product_name ?? product.product_name, 
+    descriptions ?? product.descriptions, 
+    price ?? product.price,
+    stock_quantity ?? product.stock_quantity,
     is_available ?? product.is_available
   ]
-  const isAdmin = await getAdmin({token})
-  if(!isAdmin){
-    console.error('User is not administor! No access!')
-    const error = Error('User is not administor! No access!')
-    error.status = 401
-    throw error
-  } 
   const response = await pool.query(SQL, values)
   return response.rows[0]
 };
 
-const deleteProduct = async({token, product_id}) => {
+const deleteProduct = async({product_id}) => {
   const SQL = /*sql*/`
     DELETE FROM products WHERE id = $1
   `
-  const isAdmin = await getAdmin({token})
-  if(!isAdmin){
-    console.error('User is not administor! No access!')
-    const error = Error('User is not administor! No access!')
-    error.status = 401
-    throw error
-  } else {
-    return await pool.query(SQL, [product_id])
-  }
+  return await pool.query(SQL, [product_id])
+
 }
 
 // Delete product from user's cart
@@ -745,11 +698,11 @@ module.exports = {
   createBillingInfo,
   createWishlist,
   createWishlistItem,
-  getAuthenticatedUser,
   getUserById,
   getAllUsers,
   getAllProducts,
   getAvailableProducts,
+  getProductById,
   editProduct,
   deleteProduct,
   checkActiveCartUnique,
