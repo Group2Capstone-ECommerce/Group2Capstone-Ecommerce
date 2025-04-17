@@ -14,6 +14,8 @@ const {
     getProductById,
     editProduct,
     deleteProduct,
+    createCart,
+    checkActiveCartUnique,
     getCart,
     deleteProductFromCart,
     updateCartItemQuantity
@@ -207,6 +209,27 @@ router.delete('/admin/products/:productId', verifyToken, async(req, res, next) =
       next(error)
   }
 });
+
+//POST /api/cart
+router.post('/carts',verifyToken,  async(req, res, next) => {
+  try {
+    const user_id = req.user.id;
+    const isUniqueActiveCart = await checkActiveCartUnique(user_id)
+    if(!isUniqueActiveCart){
+      const is_active = req.body.is_active ?? true;
+      const newCart = await createCart(user_id, is_active);
+      res.status(201).json(newCart);
+    } else {
+      console.log(isUniqueActiveCart)
+      res.status(400).json({
+        error: "User already has an active cart.",
+        cart: isUniqueActiveCart
+      });
+    }
+  } catch (error) {
+    next(error)
+  }
+})
 
 // GET /api/cart
 router.get('/cart', verifyToken, async(req, res, next) => {
