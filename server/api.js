@@ -87,6 +87,29 @@ router.post("/auth/login", async (req, res, next) => {
     next(ex);
   }
 });
+// POST /api/order
+router.post('/order', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized: Invalid token.' });
+    }
+    // get current cart
+    const cart = await getCart(userId);
+
+    if (!cart || cart.items.length === 0) {
+      return res.status(400).json({ message: 'Your cart is empty.'});
+    }
+    // Create new order
+    const order = await createOrder(userId, cart.items);
+
+    // Update product stock quantities 
+    for (const item of cart.items) {
+      await 
+    }
+  }
+})
 
 //GET /api/products
 router.get('/products', async(req, res, next) => {
