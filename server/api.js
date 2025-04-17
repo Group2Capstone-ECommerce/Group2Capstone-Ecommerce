@@ -12,6 +12,7 @@ const {
     getAllUsers,
     getAllProducts,
     getAvailableProducts,
+    getProductById,
     editProduct,
     deleteProduct,
     getCart,
@@ -143,6 +144,19 @@ router.get('/admin/products', async(req, res, next) => {
   try {
     const token = req.headers.authorization
     const response = await getAllProducts({token})
+    res.status(200).send(response)
+  } catch (error) {
+    next(error)
+  }
+})
+
+
+//GET /api/products/:productId
+router.get('/product/:productId', verifyToken, async(req, res, next) => {
+  try {
+    const token = req.headers.authorization
+    const product_id = req.params.productId
+    const response = await getProductById({token, product_id})
     res.status(200).send(response)
   } catch (error) {
     next(error)

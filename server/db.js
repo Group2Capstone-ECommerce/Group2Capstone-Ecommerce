@@ -578,12 +578,27 @@ const getAvailableProducts = async() => {
 }
 
 // Get product by product_id
-const getProductById = async({product_id}) => {
-  const SQL = /*sql*/`
-    SELECT * FROM products WHERE id = $1
-  `
-  const response = await pool.query(SQL, [product_id])
-  return response.rows[0]
+const getProductById = async({token, product_id}) => {
+  const isAdmin = getAdmin({token})
+  if(isAdmin){
+    const SQL = /*sql*/`
+      SELECT * FROM products WHERE id = $1
+    `
+    const response = await pool.query(SQL, [product_id])
+    return response.rows[0]
+  } else {
+    try {
+      const SQL = /*sql*/`
+      SELECT * FROM products 
+      WHERE is_available = true AND id = $2
+    `
+      const response = await pool.query(SQL, [product_id])
+      return response.rows[0]
+    } catch (error) {
+      console.Error(error)
+    }
+  }
+
 }
 
 
@@ -731,6 +746,7 @@ module.exports = {
   getAllUsers,
   getAllProducts,
   getAvailableProducts,
+  getProductById,
   editProduct,
   deleteProduct,
   getCart,
