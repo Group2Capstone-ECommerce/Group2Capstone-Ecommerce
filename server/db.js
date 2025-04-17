@@ -369,6 +369,25 @@ const createCart = async (user_id, is_active) => {
   return response.rows[0];
 };
 
+//Check if the user already has an active cart
+const checkActiveCartUnique = async(user_id) => {
+  try {
+    const SQL = /*sql*/`
+      SELECT * FROM carts 
+      WHERE user_id = $1 AND is_active = true
+      LIMIT 1;
+      `
+    const response = await pool.query(SQL, [user_id]);
+    if(response.rows.length > 0){
+      return response.rows[0]
+    } else {
+      return false
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
 // Get cart
 const getCart = async (userId) => {
   try {
@@ -609,7 +628,7 @@ const editProduct = async({token, product_id, product_name, descriptions, price,
     descriptions || product.descriptions, 
     price || product.price,
     stock_quantity || product.stock_quantity,
-    is_available
+    is_available ?? product.is_available
   ]
   const isAdmin = await getAdmin({token})
   if(!isAdmin){
@@ -741,6 +760,7 @@ module.exports = {
   getAvailableProducts,
   editProduct,
   deleteProduct,
+  checkActiveCartUnique,
   getCart,
   deleteProductFromCart,
   updateCartItemQuantity

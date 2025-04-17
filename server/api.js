@@ -14,6 +14,8 @@ const {
     getAvailableProducts,
     editProduct,
     deleteProduct,
+    createCart,
+    checkActiveCartUnique,
     getCart,
     deleteProductFromCart,
     updateCartItemQuantity
@@ -133,6 +135,7 @@ router.put('/admin/products/:productId', async(req, res, next) => {
 // DELETE /api/admin/products/:productId route
 router.delete('/admin/products/:productId', async(req, res, next) => {
   try {
+    
     const token = req.headers.authorization
     const product_id = req.params.productId
     await deleteProduct({token, product_id})
@@ -141,6 +144,27 @@ router.delete('/admin/products/:productId', async(req, res, next) => {
       next(error)
   }
 });
+
+//POST /api/cart
+router.post('/carts',verifyToken,  async(req, res, next) => {
+  try {
+    const user_id = req.user.id;
+    const isUniqueActiveCart = await checkActiveCartUnique(user_id)
+    if(!isUniqueActiveCart){
+      const is_active = req.body.is_active ?? true;
+      const newCart = await createCart(user_id, is_active);
+      res.status(201).json(newCart);
+    } else {
+      console.log(isUniqueActiveCart)
+      res.status(400).json({
+        error: "User already has an active cart.",
+        cart: isUniqueActiveCart
+      });
+    }
+  } catch (error) {
+    next(error)
+  }
+})
 
 // GET /api/cart
 router.get('/cart', verifyToken, async(req, res, next) => {
