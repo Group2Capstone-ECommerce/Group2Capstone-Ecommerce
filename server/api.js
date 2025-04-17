@@ -34,7 +34,7 @@ function verifyToken(req, res, next) {
     });
   }
   
-// POST/api/admin/products
+// POST /api/admin/products route
 router.post('/admin/products', verifyToken, async (req, res) => {
     try {
       const{ product_name, price, descriptions, stock_quantity } = req.body;
@@ -43,7 +43,6 @@ router.post('/admin/products', verifyToken, async (req, res) => {
         return res.status(400).json({ message: 'Name and price are required.' });
       }
 
-
       const product = createProduct({
         product_name,
         price,
@@ -51,8 +50,7 @@ router.post('/admin/products', verifyToken, async (req, res) => {
         stock_quantity
       });
   
-
-     res.json("PRODUCT CREATED").sendStatus(201)
+      res.status(201).json({message: "PRODUCT CREATED"});
     } catch (error) {
       console.error('Error adding product:', error);
       res.status(500).json({ message: 'Server error while adding product.' });
@@ -73,7 +71,7 @@ router.post("/auth/register", async (req, res, next) => {
   }
 });
   
-// POST/api/auth/login route
+// POST /api/auth/login route
 router.post("/auth/login", async (req, res, next) => {
   try {
     const {username, password} = req.body;
@@ -88,7 +86,7 @@ router.post("/auth/login", async (req, res, next) => {
   }
 });
 
-//GET /api/products
+// GET /api/products
 router.get('/products', async(req, res, next) => {
     try {
         const response = await getAllProducts();
@@ -98,7 +96,7 @@ router.get('/products', async(req, res, next) => {
     }
 })
 
-//PUT /api/admin/products/:productId route
+// PUT /api/admin/products/:productId route
 router.put('/admin/products/:productId', async(req, res, next) => {
   try {
     const token = req.headers.authorization
