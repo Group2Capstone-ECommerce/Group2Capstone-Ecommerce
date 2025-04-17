@@ -57,6 +57,7 @@ const createTables = async () => {
         descriptions TEXT,
         price NUMERIC(10, 2) NOT NULL,
         stock_quantity INTEGER DEFAULT 0,
+        is_available BOOLEAN DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
@@ -558,10 +559,27 @@ const getAdmin = async({token}) => {
 }
 
 
-// Get all products
-const getAllProducts = async() => {
+// Get all products for admin
+const getAllProducts = async({token}) => {
   const SQL = /*sql*/`
     SELECT * FROM products
+  `
+  const response = await pool.query(SQL)
+  
+  const isAdmin = await getAdmin({token})
+  if(!isAdmin){
+    console.error('Not administor! No access!')
+    const error = Error('Not administor! No access!')
+    error.status = 401
+    throw error
+  }
+  return response.rows
+}
+
+//get all available products for all users
+const getAvailableProducts = async() => {
+  const SQL = /*sql*/ `
+    SELECT * FROM products WHERE is_available = TRUE
   `
   const response = await pool.query(SQL)
   return response.rows
@@ -577,10 +595,10 @@ const getProductById = async({product_id}) => {
 }
 
 
-const editProduct = async({token, product_id, product_name, descriptions, price, stock_quantity}) => {
+const editProduct = async({token, product_id, product_name, descriptions, price, stock_quantity, is_available}) => {
   const SQL = /*sql*/`
     UPDATE products 
-    SET  product_name = $2, descriptions = $3, price = $4, stock_quantity = $5, updated_at = NOW()
+    SET  product_name = $2, descriptions = $3, price = $4, stock_quantity = $5, is_available = $6, updated_at = NOW()
     WHERE id = $1
     RETURNING *
   `
@@ -590,7 +608,8 @@ const editProduct = async({token, product_id, product_name, descriptions, price,
     product_name || product.product_name, 
     descriptions || product.descriptions, 
     price || product.price,
-    stock_quantity || product.stock_quantity
+    stock_quantity || product.stock_quantity,
+    is_available
   ]
   const isAdmin = await getAdmin({token})
   if(!isAdmin){
@@ -719,6 +738,7 @@ module.exports = {
   getUserById,
   getAllUsers,
   getAllProducts,
+  getAvailableProducts,
   editProduct,
   deleteProduct,
   getCart,

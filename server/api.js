@@ -11,6 +11,7 @@ const {
     getUserById,
     getAllUsers,
     getAllProducts,
+    getAvailableProducts,
     editProduct,
     deleteProduct,
     getCart,
@@ -91,11 +92,22 @@ router.post("/auth/login", async (req, res, next) => {
 //GET /api/products
 router.get('/products', async(req, res, next) => {
     try {
-        const response = await getAllProducts();
+        const response = await getAvailableProducts();
         res.status(200).send(response)
     } catch (error) {
         next(error)
     }
+})
+
+//GET /api/admin/products
+router.get('/admin/products', async(req, res, next) => {
+  try {
+    const token = req.headers.authorization
+    const response = await getAllProducts({token})
+    res.status(200).send(response)
+  } catch (error) {
+    next(error)
+  }
 })
 
 //PUT /api/admin/products/:productId route
@@ -109,7 +121,8 @@ router.put('/admin/products/:productId', async(req, res, next) => {
         product_name: req.body.product_name,
         descriptions: req.body.descriptions,
         price: req.body.price,
-        stock_quantity: req.body.stock_quantity
+        stock_quantity: req.body.stock_quantity,
+        is_available: req.body.is_available
     })
     res.status(200).send(response)
   } catch (error) {
