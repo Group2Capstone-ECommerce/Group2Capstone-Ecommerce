@@ -69,9 +69,9 @@ router.post('/admin/products', verifyToken, async (req, res) => {
     const user = await getUserById(userId);
     //console.log(`user => `, user.is_admin);
 
-    //if (!user || !user.is_admin) {
-    //  return res.status(403).json({ message: 'Forbidden: Admins only.'});
-    //}
+    if (!user || !user.is_admin) {
+      return res.status(403).json({ message: 'Forbidden: Admins only.'});
+    }
     
     const{ product_name, price, descriptions, stock_quantity } = req.body;
   
