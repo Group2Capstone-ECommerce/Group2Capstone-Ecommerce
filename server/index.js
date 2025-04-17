@@ -19,6 +19,7 @@ const init = async () => {
   console.log('----------')
   console.log('Helpful CURL commands to test:');
   console.log(`Seeded Admins: Ellie and Oliver`);
+  console.log(`Users with carts: Jack, Bob, Rick, Oliver`);
   console.log(`curl -X POST http://localhost:3000/api/auth/register -H "Content-Type: application/json" -d '{"username":"megan","email":"megan@megan.com","password":"megan_pw","is_admin":false,"mailing_address":"123 Main St, Springfield","phone":"555-123-4567"}'`);
   console.log(`curl -X POST http://localhost:3000/api/auth/login -H "Content-Type: application/json" -d '{"username": "Ellie", "password": "ellie_pw"}'`);
   console.log(`curl -X DELETE http://localhost:3000/api/cart/PRODUCT_ID_HERE -H "Authorization: Bearer ACCESS_TOKEN_HERE"`);
