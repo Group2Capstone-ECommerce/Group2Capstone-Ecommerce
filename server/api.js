@@ -33,27 +33,66 @@ function verifyToken(req, res, next) {
       next();
     });
   }
-  
+
+ 
+
+// GET /api/admin/users
+router.get('/admin/users', verifyToken, async (req, res, next) => {
+  try {
+    // Grab the token from the headers
+    const token = req.headers.authorization;
+    // Grab the userId so we can check the user's table to see if the user is an admin or not
+    const userId = req.user.id;
+    console.log(`user id => `, userId);
+    const user = await getUserById(userId);
+    console.log(`user => `, user.is_admin);
+    
+    if (user.is_admin !== true) {
+      return res.sendStatus(403).json({ message: 'Forbidden: Admins only.'});
+    }
+
+    const users = await getAllUsers(token);
+    res.status(200).send(users)
+} catch (error) {
+    next(error)
+}
+});
+
 // POST/api/admin/products
 router.post('/admin/products', verifyToken, async (req, res) => {
-    try {
-      const{ product_name, price, descriptions, stock_quantity } = req.body;
+  try {
+    const token = req.headers.authorization;
+    const userId = req.user.id;
+
+   // if (!userId) {
+      //return res.status(401).json({ message: 'Unauthorized: Invalid token.'});
+    //}
+
+    console.log(`user id => `, userId);
+    const user = await getUserById(userId);
+    console.log(`user => `, user.is_admin);
+
+    if (!user.is_admin) {
+      return res.status(403).json({ message: 'Forbidden: Admins only.'});
+    }
+    
+    const{ product_name, price, descriptions, stock_quantity } = req.body;
   
-      if (!product_name || !price) {
-        return res.status(400).json({ message: 'Name and price are required.' });
-      }
+    if (!product_name || !price) {
+      return res.status(400).json({ message: 'Name and price are required.' });
+    }
 
 
-      const product = createProduct({
-        product_name,
-        price,
-        descriptions,
-        stock_quantity
-      });
+    const product = await createProduct({
+      product_name,
+      price,
+      descriptions,
+      stock_quantity
+    });
   
 
-     res.json("PRODUCT CREATED").sendStatus(201)
-    } catch (error) {
+    res.status(201).json({ message: "PRODUCT CREATED", product });
+  } catch (error) {
       console.error('Error adding product:', error);
       res.status(500).json({ message: 'Server error while adding product.' });
     }

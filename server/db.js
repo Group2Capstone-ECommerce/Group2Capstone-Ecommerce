@@ -504,25 +504,17 @@ const createWishlistItem = async (wishlist_id, product_id) => {
 }
 
 // Admin - Get all users 
-const getAllUsers = async({token}) => {
-  const user = await getAuthenticatedUser({token})
+const getAllUsers = async(token) => {
+  console.log(`token => `, token);
   const SQL = /*sql*/`
-    SELECT * FROM users
-  `
-  const response = await pool.query(SQL)
-  if(!user.is_admin){
-    console.error('User is not administor! No access!')
-    const error = Error('User is not administor! No access!')
-    error.status = 401
-    throw error
-  } else {
-    return response.rows
-  }
-
+    SELECT * FROM users;
+  `;
+  const response = await pool.query(SQL);
+    return response.rows;
 }
 
 // Get user by id
-const getUserById = async({userId}) => {
+const getUserById = async(userId) => {
   const SQL = /*sql*/`
     SELECT id, username, email, is_admin, mailing_address, phone 
     FROM users 
