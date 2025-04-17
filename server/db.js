@@ -57,7 +57,7 @@ const createTables = async () => {
         descriptions TEXT,
         price NUMERIC(10, 2) NOT NULL,
         stock_quantity INTEGER DEFAULT 0,
-        is_available BOOLEAN DEFAULT TRUE,
+        is_available BOOLEAN NOT NULL DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
