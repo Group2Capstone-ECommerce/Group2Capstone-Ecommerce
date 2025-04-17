@@ -56,20 +56,18 @@ router.get('/admin/users', verifyToken, async (req, res, next) => {
 // POST/api/admin/products
 router.post('/admin/products', verifyToken, async (req, res) => {
   try {
-      // Grab the token from the headers
     const token = req.headers.authorization;
-    // Grab the userId so we can check the user's table to see if the user is an admin or not
     const userId = req.user.id;
 
-    if (!userId) {
-      return res.status(401).json({ message: 'Unauthorized: Invalid token.'});
-    }
+   // if (!userId) {
+      //return res.status(401).json({ message: 'Unauthorized: Invalid token.'});
+    //}
 
-    //console.log(`user id => `, userId);
+    console.log(`user id => `, userId);
     const user = await getUserById(userId);
-    //console.log(`user => `, user.is_admin);
+    console.log(`user => `, user.is_admin);
 
-    if (!user || !user.is_admin) {
+    if (!user.is_admin) {
       return res.status(403).json({ message: 'Forbidden: Admins only.'});
     }
     
