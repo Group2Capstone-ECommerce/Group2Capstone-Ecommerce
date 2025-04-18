@@ -15,7 +15,11 @@ const {
     deleteProduct,
     getCart,
     deleteProductFromCart,
-    updateCartItemQuantity
+    updateCartItemQuantity,
+    createOrder,
+    createCart,
+    getProductById
+
 } = require("./db");
 
 function verifyToken(req, res, next) {
@@ -126,29 +130,64 @@ router.post("/auth/login", async (req, res, next) => {
     next(ex);
   }
 });
+
 // POST /api/order
 router.post('/order', verifyToken, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.id; // now coming from verifyToken middleware
+    console.log('USER ID:', userId);
 
-    if (!userId) {
-      return res.status(401).json({ message: 'Unauthorized: Invalid token.' });
-    }
-    // get current cart
+
+    // 1. Get the user's active cart
     const cart = await getCart(userId);
-
-    if (!cart || cart.items.length === 0) {
-      return res.status(400).json({ message: 'Your cart is empty.'});
+    console.log("CART:", cart);
+    if (!cart || !cart.cart_id) {
+      return res.status(400).json({ error: "No active cart found." });
     }
-    // Create new order
-    const order = await createOrder(userId, cart.items);
 
-    // Update product stock quantities 
-    for (const item of cart.items) {
-      await 
+    // 2. Get items in the cart
+    const cartItems = await getCartItems(cart.cart_id);
+    console.log('CART ITEMS:', cartItems);
+    if (cartItems.length === 0) {
+      return res.status(400).json({ error: "Cart is empty." });
     }
+
+    // 3. Check product stock and update quantities
+    for (const item of cartItems) {
+      const product = await getProductById(item.product_id);
+      console.log(`Checking stock for ${product.name}: ${product.quantity} left`);
+      if (product.quantity < item.quantity) {
+        return res.status(400).json({ error: `Not enough stock for ${product.name}.` });
+      }
+
+      await updateProductQuantity(item.product_id, product.quantity - item.quantity);
+    }
+
+    // 4. Create the order
+    const order = await createOrder({
+      cart_id: cart.cart_id,
+      is_completed: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
+    // 5. Mark the cart as inactive
+    await db.client.query(`UPDATE cart SET is_active = false WHERE cart_id = $1`, [cart.cart_id]);
+
+    // 6. Create a new active cart for the user
+    await createCart(userId, true);
+
+    // 7. Return confirmation
+    res.status(201).json({
+      message: "Order placed successfully!",
+      orderNumber: order.order_id,
+    });
+
+  } catch (err) {
+    console.error("Error placing order:", err);
+    res.status(500).json({ error: "Something went wrong while placing your order." });
   }
-})
+});
 
 //GET /api/products
 router.get('/products', async(req, res, next) => {

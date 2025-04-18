@@ -385,6 +385,10 @@ const getCart = async (userId) => {
 
     const { rows } = await pool.query(query, [userId]);
 
+    if (rows.length === 0) {
+      return null;
+    }
+
     return rows;
   } catch (error) {
     console.error("Error in getCart:", error);
@@ -715,5 +719,6 @@ module.exports = {
   deleteProduct,
   getCart,
   deleteProductFromCart,
-  updateCartItemQuantity
+  updateCartItemQuantity,
+  getProductById
 }
