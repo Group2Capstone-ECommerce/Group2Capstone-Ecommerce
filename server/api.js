@@ -175,7 +175,7 @@ router.post('/order', verifyToken, async (req, res) => {
     await db.client.query(`UPDATE cart SET is_active = false WHERE cart_id = $1`, [cart.cart_id]);
 
     // 6. Create a new active cart for the user
-    await createCart(userId, true);
+    //await createCart(userId, true);
 
     // 7. Return confirmation
     res.status(201).json({
