@@ -13,8 +13,8 @@ app.use(express.json());
 app.use('/api', router)
 const init = async () => {
   connectDB();
-  createTables();
-  seedFakeData();
+  await createTables();
+  await seedFakeData();
 
   console.log('----------')
   console.log('Helpful CURL commands to test:');

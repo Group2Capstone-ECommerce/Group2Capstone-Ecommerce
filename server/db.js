@@ -31,21 +31,23 @@ const createTables = async () => {
     const enableUuidExtension = `CREATE EXTENSION IF NOT EXISTS "pgcrypto";`;
     await pool.query(enableUuidExtension);
 
-    // // Drop tables if exist
-    // const dropTablesIfExist = `
-    //   DROP TABLE IF EXISTS products CASCADE;
-    //   DROP TABLE IF EXISTS users CASCADE;
-    //   DROP TABLE IF EXISTS categories CASCADE;
-    //   DROP TABLE IF EXISTS product_categories CASCADE;
-    //   DROP TABLE IF EXISTS carts CASCADE;
-    //   DROP TABLE IF EXISTS cart_items CASCADE;
-    //   DROP TABLE IF EXISTS orders CASCADE;
-    //   DROP TABLE IF EXISTS order_items CASCADE;
-    //   DROP TABLE IF EXISTS billing_info CASCADE;
-    //   DROP TABLE IF EXISTS wishlists CASCADE;
-    //   DROP TABLE IF EXISTS wishlist_items CASCADE;
-    // ;`
-    // await pool.query(dropTablesIfExist);
+    console.log('Running dropTablesIfExist query...')
+    // Drop tables if exist
+      const dropTablesIfExist = `
+      DROP TABLE IF EXISTS products CASCADE;
+      DROP TABLE IF EXISTS users CASCADE;
+      DROP TABLE IF EXISTS categories CASCADE;
+      DROP TABLE IF EXISTS product_categories CASCADE;
+      DROP TABLE IF EXISTS carts CASCADE;
+      DROP TABLE IF EXISTS cart_items CASCADE;
+      DROP TABLE IF EXISTS orders CASCADE;
+      DROP TABLE IF EXISTS order_items CASCADE;
+      DROP TABLE IF EXISTS billing_info CASCADE;
+      DROP TABLE IF EXISTS wishlists CASCADE;
+      DROP TABLE IF EXISTS wishlist_items CASCADE;
+      `;
+    await pool.query(dropTablesIfExist);
+    console.log('Finished running dropTablesIfExist query...')
 
     console.log('Creating products table...');
     
@@ -257,6 +259,9 @@ const authenticateUser = async ({ username, password }) => {
 
   const storedPasswordHash = response.rows[0].password_hash;
 
+  console.log('Password entered:', password);
+  console.log('Stored hash:', storedPasswordHash);
+
   // Compare provided password with the stored hash
   const isPasswordValid = await bcrypt.compare(password, storedPasswordHash);
 
@@ -370,23 +375,23 @@ const createCart = async (user_id, is_active) => {
 };
 
 //Check if the user already has an active cart
-const checkActiveCartUnique = async(user_id) => {
+const checkActiveCartUnique = async (user_id) => {
   try {
     const SQL = /*sql*/`
-      SELECT * FROM carts 
-      WHERE user_id = $1 AND is_active = true
-      LIMIT 1;
-      `
+      SELECT * FROM carts WHERE user_id = $1 AND is_active = 't' LIMIT 1;
+    `;
     const response = await pool.query(SQL, [user_id]);
-    if(response.rows.length > 0){
-      return response.rows[0]
+    if (response.rows.length > 0) {
+      console.log('response.rows.length => ', response.rows.length);
+      console.log('response.rows[0] => ', response.rows[0]);
+      return response.rows[0];  // Active cart exists
     } else {
-      return false
+      return false;  // No active cart
     }
   } catch (error) {
-    next(error)
+    throw new Error('Error checking active cart: ' + error.message);
   }
-}
+};
 
 // Get cart
 const getCart = async (userId) => {
@@ -601,12 +606,23 @@ const getAvailableProducts = async() => {
 }
 
 // Get product by product_id
-const getProductById = async({product_id}) => {
-  const SQL = /*sql*/`
-    SELECT * FROM products WHERE id = $1
-  `
-  const response = await pool.query(SQL, [product_id])
-  return response.rows[0]
+const getProductById = async(product_id) => {
+  try {
+    console.log('product_id => ', product_id);
+    const SQL = /*sql*/`
+      SELECT * FROM products WHERE id = $1;
+    `;
+    const response = await pool.query(SQL, [product_id]);
+
+    if (response.rows.length > 0) {
+      return response.rows[0]; // Return the product object
+    } else {
+      return null; // If product is not found, return null
+    }
+  } catch (error) {
+    console.error('Error retrieving product by ID:', error);
+    throw new Error('Error retrieving product: ' + error.message);
+  }
 }
 
 
@@ -732,6 +748,54 @@ const updateCartItemQuantity = async (userId, productId, quantity) => {
   return result.rows[0];
 };
 
+// Get cart items
+const getCartItems = async (cart_id) => {
+  try {
+    const SQL = /*sql*/`
+      SELECT * FROM cart_items WHERE cart_id = $1;
+    `;
+    const response = await pool.query(SQL, [cart_id]);
+    console.log('items in cart => ', response.rows);
+    return response.rows;  // Return the cart items
+  } catch (error) {
+    console.error("Error retrieving cart items:", error);
+    throw new Error("Error retrieving cart items: " + error.message);
+  }
+};
+
+// Update the product quantity
+const updateProductQuantity = async (productId, newQuantity) => {
+  try {
+    // Check if the product exists before updating
+    const checkProductSQL = /*sql*/`
+      SELECT * FROM products WHERE id = $1;
+    `;
+    const checkResponse = await pool.query(checkProductSQL, [productId]);
+    
+    if (checkResponse.rows.length === 0) {
+      throw new Error(`Product with ID ${productId} not found.`);
+    }
+
+    // Update the product quantity
+    const SQL = /*sql*/`
+      UPDATE products 
+      SET stock_quantity = $1 
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const response = await pool.query(SQL, [newQuantity, productId]);
+
+    if (response.rows.length === 0) {
+      throw new Error(`Failed to update stock quantity for product with ID ${productId}.`);
+    }
+
+    return response.rows[0]; // Return the updated product
+  } catch (error) {
+    console.error("Error updating product stock quantity:", error);
+    throw new Error('Error updating product stock quantity: ' + error.message);
+  }
+};
+
 module.exports = {
   query: (text, params) => pool.query(text, params),
   pool,
@@ -760,5 +824,7 @@ module.exports = {
   getCart,
   deleteProductFromCart,
   updateCartItemQuantity,
-  getProductById
+  getProductById,
+  getCartItems,
+  updateProductQuantity
 }
