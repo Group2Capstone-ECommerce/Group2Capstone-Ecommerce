@@ -20,8 +20,8 @@ const {
     deleteProductFromCart,
     updateCartItemQuantity,
     createOrder,
-    createCart,
-    getProductById
+    getProductById,
+    getActiveCartId
 
 } = require("./db");
 
@@ -136,49 +136,70 @@ router.post("/auth/login", async (req, res, next) => {
 
 // POST /api/order
 router.post('/order', verifyToken, async (req, res) => {
+  console.log('/order route hit');
   try {
     const userId = req.user.id; // now coming from verifyToken middleware
     console.log('USER ID:', userId);
 
 
     // 1. Get the user's active cart
-    const cart = await getCart(userId);
-    console.log("CART:", cart);
-    if (!cart || !cart.cart_id) {
-      return res.status(400).json({ error: "No active cart found." });
+    const cartId = await getActiveCartId(userId);
+    console.log("ACTIVE CART ID:", cartId);
+    if (!cartId) {
+      console.log('No active cart found. Creating a new one...');
+      const newCart = await createCart(userId, true);
+      console.log('NEW ACTIVE CART CREATED:', newCart);
+      return res.status(400).json({ error: "No active cart found. A new cart has been created." });
     }
 
     // 2. Get items in the cart
-    const cartItems = await getCartItems(cart.cart_id);
+    const cartItems = await getCart(userId);
     console.log('CART ITEMS:', cartItems);
-    if (cartItems.length === 0) {
+    if (!cartItems || cartItems.length === 0) {
       return res.status(400).json({ error: "Cart is empty." });
     }
 
     // 3. Check product stock and update quantities
     for (const item of cartItems) {
       const product = await getProductById(item.product_id);
-      console.log(`Checking stock for ${product.name}: ${product.quantity} left`);
-      if (product.quantity < item.quantity) {
-        return res.status(400).json({ error: `Not enough stock for ${product.name}.` });
+      console.log(`Checking stock for ${product.product_namename}: ${product.stock_quantity} left`);
+      if (product.stock_quantity < item.quantity) {
+        return res.status(400).json({ error: `Not enough stock for ${product.product_name}.` });
       }
 
-      await updateProductQuantity(item.product_id, product.quantity - item.quantity);
+      await updateProductQuantity(item.product_id, product.stock_quantity - item.quantity);
     }
 
     // 4. Create the order
-    const order = await createOrder({
-      cart_id: cart.cart_id,
-      is_completed: true,
-      created_at: new Date(),
-      updated_at: new Date(),
-    });
+    try {
+      // Calculate total price
+      let totalPrice = 0;
+      for (const item of cartItems) {
+        totalPrice += item.price * item.quantity;
+      }
+    
+      // Create the order with the calculated total price
+      const order = await createOrder({
+        user_id: userId,
+        cart_id: cartId,
+        status: 'completed',
+        total_price: totalPrice,
+        created_at: new Date(),
+        updated_at: new Date(),
+      });
+    
+      console.log('ORDER CREATED:', order);
+    
+    } catch (error) {
+      console.error('Error creating order:', error);
+    }
 
     // 5. Mark the cart as inactive
-    await db.client.query(`UPDATE cart SET is_active = false WHERE cart_id = $1`, [cart.cart_id]);
+    await db.client.query(`UPDATE cart SET is_active = false WHERE id = $1`, [cartId]);
 
     // 6. Create a new active cart for the user
-    //await createCart(userId, true);
+    await createCart(userId, true);
+    console.log('NEW CART CREATED')
 
     // 7. Return confirmation
     res.status(201).json({

@@ -223,6 +223,7 @@ const createUser = async ({ email, username, password_hash, is_admin = false, ma
   const SQL = /*sql*/ `
     INSERT INTO users (id, email, username, password_hash, is_admin, mailing_address, phone)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
+    ON CONFLICT (username) DO NOTHING  -- Ignore insert if username already exists
     RETURNING *;
   `;
   const response = await pool.query(SQL, [
@@ -412,6 +413,19 @@ const getCart = async (userId) => {
     return rows;
   } catch (error) {
     console.error("Error in getCart:", error);
+    throw error;
+  }
+};
+
+const getActiveCartId = async (userId) => {
+  try {
+    const result = await pool.query(
+      `SELECT id FROM carts WHERE user_id = $1 AND is_active = true`,
+      [userId]
+    );
+    return result.rows[0]?.id || null;
+  } catch (error) {
+    console.error("Error in getActiveCartId:", error);
     throw error;
   }
 };
@@ -760,5 +774,6 @@ module.exports = {
   getCart,
   deleteProductFromCart,
   updateCartItemQuantity,
-  getProductById
+  getProductById, 
+  getActiveCartId,
 }

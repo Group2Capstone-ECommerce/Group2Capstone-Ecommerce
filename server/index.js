@@ -12,9 +12,19 @@ app.use(express.json());
 //to use /api as root path
 app.use('/api', router)
 const init = async () => {
+  console.log("init() starting...");
+
   connectDB();
+  console.log("DB connected");
+
   createTables();
+  console.log("Tables created");
+
   seedFakeData();
+  console.log("Fake data seeded");
+
+  console.log('Server about to start');
+
 
   console.log('----------')
   console.log('Helpful CURL commands to test:');
