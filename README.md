@@ -2,7 +2,7 @@
 
 ## Database Schema: Visual Diagram
 
-<img width="1444" alt="Screenshot 2025-04-10 at 3 32 05 PM" src="https://github.com/user-attachments/assets/f55aaf35-6feb-47bb-b9b5-d918deb3147d" />
+<img width="1444" alt="Screenshot 2025-04-10 at 3 32 05 PM" src="https://drawsql.app/teams/diagram-17/diagrams/capstone-e-commerce" />
 
 ## Database Schema: Tables & Reationships
 
@@ -15,6 +15,7 @@ CREATE TABLE products(
     descriptions TEXT,
     price NUMERIC(10, 2) NOT NULL,
     stock_quantity INTEGER DEFAULT 0,
+    is_available BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 )
