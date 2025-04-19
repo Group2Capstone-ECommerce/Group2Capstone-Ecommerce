@@ -144,7 +144,6 @@ router.post('/order', verifyToken, async (req, res) => {
     // 1. Get the user's active cart
     const cart = await checkActiveCartUnique(userId);
     console.log("CART:", cart);
-    console.log("CART.ID:", cart.id);
     if (!cart) {
       return res.status(400).json({ error: "No active cart found." });
     }
@@ -156,11 +155,12 @@ router.post('/order', verifyToken, async (req, res) => {
       return res.status(400).json({ error: "Cart is empty." });
     }
 
-    // 3. Check product stock and update quantities
+    // 3. Check product stock, update quantities, calculate total price
+    let totalPrice = 0;
     for (const item of cartItems) {
-      console.log(`item => `, item);
+      console.log(`ITEM => `, item);
       const product = await getProductById(item.product_id);
-      console.log(`product => `, product);
+      console.log(`PRODUCT => `, product);
       if (!product) {
         return res.status(400).json({ error: `Product with ID ${item.product_id} not found.` });
       }
@@ -169,16 +169,14 @@ router.post('/order', verifyToken, async (req, res) => {
       if (product.stock_quantity < item.quantity) {
         return res.status(400).json({ error: `Not enough stock for ${product.name}.` });
       }
+
+      totalPrice += parseFloat(product.price) * item.quantity;
     
       await updateProductQuantity(item.product_id, product.stock_quantity - item.quantity);
     }
+    console.log(`TOTAL PRICE => `, totalPrice);
 
-    // 3.5 Calculate the total price
-    const totalPrice = cartItems.reduce((total, item) => {
-      return total + item.price * item.quantity;
-    }, 0);
-
-    // 3.75 Check if order already exists for this cart id
+    // 4. Check if order already exists for this cart id
     const existingOrder = await pool.query(
       'SELECT * FROM orders WHERE cart_id = $1',
       [cart.id]
@@ -187,7 +185,7 @@ router.post('/order', verifyToken, async (req, res) => {
       throw new Error(`Order already exists for cart_id: ${cart.id}`);
     }
   
-    // 4. Create the order
+    // 5. Create the order
     const order = await createOrder(
       userId,
       cart.id,
@@ -197,15 +195,17 @@ router.post('/order', verifyToken, async (req, res) => {
       new Date()
     );
 
+    // 6. Create the order items
+    
     console.log(`cart.id => `, cart.id);
-    // 5. Mark the cart as inactive
+    // 7. Mark the cart as inactive
     console.log("Updating cart to inactive for cart_id:", cart.id);
     await pool.query('UPDATE carts SET is_active = false WHERE id = $1', [cart.id]);
 
-    // 6. Create a new active cart for the user
+    // 8. Create a new active cart for the user
     //await createCart(userId, true);
 
-    // 7. Return confirmation
+    // 9. Return confirmation
     res.status(201).json({
       message: "Order placed successfully!",
       orderNumber: order.order_id,
