@@ -115,7 +115,7 @@ router.post("/auth/register", async (req, res, next) => {
   }
 });
   
-// POST/api/auth/login route
+// POST /api/auth/login route
 router.post("/auth/login", async (req, res, next) => {
   try {
     const {username, password} = req.body;
@@ -130,7 +130,7 @@ router.post("/auth/login", async (req, res, next) => {
   }
 });
 
-//GET /api/products
+// GET /api/products
 router.get('/products', async(req, res, next) => {
     try {
         const response = await getAvailableProducts();
@@ -140,7 +140,7 @@ router.get('/products', async(req, res, next) => {
     }
 })
 
-//GET /api/admin/products
+// GET /api/admin/products
 router.get('/admin/products',verifyToken, async(req, res, next) => {
   try {
     const userId = req.user?.id
@@ -168,7 +168,7 @@ router.get('/products/:productId', async(req, res, next) => {
   }
 })
 
-//PUT /api/admin/products/:productId route
+// PUT /api/admin/products/:productId route
 router.put('/admin/products/:productId', verifyToken, async(req, res, next) => {
   console.log(req.user)
   try {
