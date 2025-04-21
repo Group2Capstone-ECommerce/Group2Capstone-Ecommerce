@@ -5,7 +5,8 @@ import { useState, useEffect } from "react";
 export default function ProductList() {
   return (
     <>
-    Products TBD
+      <h1>Products</h1>
+      <p>Products TBD</p>
     </>
   )
 };
