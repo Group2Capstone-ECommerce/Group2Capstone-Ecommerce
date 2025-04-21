@@ -40,3 +40,7 @@
 .read-the-docs {
   color: #888;
 }
+
+.productCard {
+  border: 1px solid black;
+}

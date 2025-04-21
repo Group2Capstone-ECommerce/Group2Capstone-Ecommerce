@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 export default function ProductList() {
   const [products, setProducts] = useState([]);
   const PRODUCTS_API_URL = "http://localhost:3000/api/products";
-
+  const DEFAULT_IMAGE_URL = "https://www.shutterstock.com/image-vector/missing-picture-page-website-design-600nw-1552421075.jpg";
   useEffect(() => {
     const getProducts = async() => {
       try {
@@ -31,14 +31,12 @@ export default function ProductList() {
           <div key={product.id} id={product.id} className="productCard">
               <h3>Product Name: {product.product_name}</h3>
               <p>Product Description: {product.descriptions}</p>
-              {product.imageUrl && (
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  width="150"
-                  height="150"
-                />
-              )}
+              <img
+                src={product.image_url || DEFAULT_IMAGE_URL}
+                alt={product.product_name}
+                width="150"
+                height="150"
+              />
               {product.is_available ? <p id="productAvailableTxt">Available</p> : <p id="productNotAvailableTxt">Not Available</p>}
               <Link to={`/products/${product.id}`}>
               <button className="seeDetailsBtn">See Details</button>
