@@ -47,7 +47,7 @@ async function seedFakeData() {
         ] = await Promise.all([
             createProduct({ product_name: 'T-Shirt',         descriptions: 'Cotton crew neck',         price: 19.99, stock_quantity: 34, image_url: '' }),
             createProduct({ product_name: 'Jeans',           descriptions: 'Slim fit denim',           price: 49.50, stock_quantity: 29, image_url: '' }),
-            createProduct({ product_name: 'Dress',           descriptions: 'Floral summer dress',      price: 59.75, stock_quantity: 15, image_url: '' }),
+            createProduct({ product_name: 'Dress',           descriptions: 'Floral summer dress',      price: 59.75, stock_quantity: 15, image_url: 'https://i.pinimg.com/736x/2b/a8/3d/2ba83d39d5393a7ecf4db8d1da92a472.jpg' }),
             createProduct({ product_name: 'Skirt',           descriptions: 'A-line midi skirt',        price: 39.20, stock_quantity: 27, image_url: '' }),
             createProduct({ product_name: 'Hoodie',          descriptions: 'Fleece pullover',          price: 29.95, stock_quantity: 22, image_url: '' }),
             createProduct({ product_name: 'Sweater',         descriptions: 'Cable knit sweater',       price: 45.10, stock_quantity: 18, image_url: '' }),
