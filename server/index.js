@@ -1,11 +1,19 @@
 const {client, connectDB, createTables, createUser, authenticateUser } = require("./db.js");
 const { seedFakeData } = require("./seed.js");
 
+const cors = require('cors');
+
 const express = require("express");
 const app = express();
 const port = 3000;
 // import the routes from api.js
 const router = require('./api')
+
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
