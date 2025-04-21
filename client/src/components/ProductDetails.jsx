@@ -3,5 +3,9 @@
 import { useState, useEffect } from "react";
 
 export default function ProductDetails() {
-
+  return (
+    <>
+    Details TBD
+    </>
+  )
 };
