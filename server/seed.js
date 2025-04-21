@@ -26,126 +26,27 @@ async function seedFakeData() {
         winter_shoes, winter_shirts, winter_jackets, winter_pants,
         summer_shoes, summer_shorts, summer_shirts, summer_pants
         ] = await Promise.all([
-            createProduct({ 
-                product_name: 'shoes', 
-                descriptions: 'casual shoes', 
-                price: 20.00, 
-                stock_quantity: 12, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'shirts', 
-                descriptions: 'casual shirt', 
-                price: 15.00, 
-                stock_quantity: 32, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'shorts', 
-                descriptions: 'casual shorts', 
-                price: 12.00, 
-                stock_quantity: 56, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'sweaters', 
-                descriptions: 'casual sweater', 
-                price: 25.00, 
-                stock_quantity: 23, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'pants', 
-                descriptions: 'casual pants', 
-                price: 20.00, 
-                stock_quantity: 61, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'Socks', 
-                descriptions: 'casual socks', 
-                price: 10.00, 
-                stock_quantity: 42, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'jackets', 
-                descriptions: 'casual jackets', 
-                price: 35.00, 
-                stock_quantity: 13, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'belts', 
-                descriptions: 'casual belts', 
-                price: 17.00, 
-                stock_quantity: 29, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'hoodies', 
-                descriptions: 'casual hoodies', 
-                price: 30.00, 
-                stock_quantity: 30, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'winter shoes', 
-                descriptions: 'winter shoes', 
-                price: 20.00, 
-                stock_quantity: 19, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'winter shirts', 
-                descriptions: 'winter shirt', 
-                price: 20.00, 
-                stock_quantity: 28, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'winter jackets', 
-                descriptions: 'winter jacket', 
-                price: 20.00, 
-                stock_quantity: 22, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'winter pants', 
-                descriptions: 'winter pants', 
-                price: 20.00, 
-                stock_quantity: 25, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'summer shoes', 
-                descriptions: 'summer shoes', 
-                price: 20.00, 
-                stock_quantity: 12, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'summer shorts', 
-                descriptions: 'summer shorts', 
-                price: 12.00, 
-                stock_quantity: 21, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'summer shirts', 
-                descriptions: 'summer shirts', 
-                price: 15.00, 
-                stock_quantity: 41, 
-                image_url: '' 
-              }),
-              createProduct({ 
-                product_name: 'summer pants', 
-                descriptions: 'summer pants', 
-                price: 20.00, 
-                stock_quantity: 23, 
-                image_url: '' 
-              })
-      ]);
+            createProduct({ product_name: 'Wireless Mouse', descriptions: 'Ergonomic design', price: 27.45, stock_quantity: 23, image_url: '' }),
+            createProduct({ product_name: 'Bluetooth Keyboard', descriptions: 'Compact and quiet', price: 45.10, stock_quantity: 12, image_url: 'https://flashquark.com/wp-content/uploads/2020/03/GK64s-Bluetooth-Mechanical-Keyboard-Kit-RGB-Underglow.jpg' }),
+            createProduct({ product_name: '4K Monitor', descriptions: 'Ultra HD resolution', price: 299.99, stock_quantity: 8, image_url: '' }),
+            createProduct({ product_name: 'USB-C Charger', descriptions: 'Fast charging', price: 19.99, stock_quantity: 34, image_url: '' }),
+            createProduct({ product_name: 'Laptop Stand', descriptions: 'Adjustable height', price: 39.50, stock_quantity: 17, image_url: '' }),
+            createProduct({ product_name: 'Desk Lamp', descriptions: 'LED with dimmer', price: 23.75, stock_quantity: 29, image_url: '' }),
+            createProduct({ product_name: 'Noise-Cancelling Headphones', descriptions: 'Immersive sound', price: 89.99, stock_quantity: 14, image_url: '' }),
+            createProduct({ product_name: 'Portable SSD', descriptions: 'High-speed storage', price: 129.49, stock_quantity: 6, image_url: '' }),
+            createProduct({ product_name: 'Smartphone Case', descriptions: 'Shockproof protection', price: 15.30, stock_quantity: 41, image_url: '' }),
+            createProduct({ product_name: 'Fitness Tracker', descriptions: 'Heart rate monitor', price: 59.95, stock_quantity: 22, image_url: '' }),
+            createProduct({ product_name: 'Coffee Maker', descriptions: 'Programmable brew', price: 49.00, stock_quantity: 19, image_url: '' }),
+            createProduct({ product_name: 'Electric Toothbrush', descriptions: 'Rechargeable timer', price: 39.99, stock_quantity: 27, image_url: '' }),
+            createProduct({ product_name: 'Yoga Mat', descriptions: 'Non-slip surface', price: 25.20, stock_quantity: 31, image_url: '' }),
+            createProduct({ product_name: 'Water Bottle', descriptions: 'Insulated stainless steel', price: 18.75, stock_quantity: 37, image_url: '' }),
+            createProduct({ product_name: 'Running Shoes', descriptions: 'Lightweight cushion', price: 79.99, stock_quantity: 10, image_url: '' }),
+            createProduct({ product_name: 'Backpack', descriptions: 'Water-resistant pack', price: 55.45, stock_quantity: 24, image_url: '' }),
+            createProduct({ product_name: 'Sunglasses', descriptions: 'UV protection', price: 29.95, stock_quantity: 33, image_url: '' }),
+            createProduct({ product_name: 'Watch', descriptions: 'Waterproof analog', price: 120.00, stock_quantity: 5, image_url: '' }),
+            createProduct({ product_name: 'Desk Organizer', descriptions: 'Multi-compartment', price: 22.50, stock_quantity: 28, image_url: '' }),
+            createProduct({ product_name: 'Bluetooth Speaker', descriptions: 'Portable wireless', price: 49.99, stock_quantity: 20, image_url: '' })
+        ]);
 
       // USERS
       console.log("Clearing existing users...");

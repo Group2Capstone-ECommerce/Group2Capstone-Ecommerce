@@ -41,6 +41,12 @@
   color: #888;
 }
 
+.productsContainer {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  justify-content: center;
+}
+
 .productCard {
   border: 1px solid black;
 }
