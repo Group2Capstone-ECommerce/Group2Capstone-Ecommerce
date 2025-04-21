@@ -196,6 +196,15 @@ router.post('/order', verifyToken, async (req, res) => {
     );
 
     // 6. Create the order items
+
+    for (const item of cartItems) {
+      await createOrderItem({
+        order_id: order.id,
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price_at_purchase: parseFloat(item.price),
+      });
+    }
     
     console.log(`cart.id => `, cart.id);
     // 7. Mark the cart as inactive
@@ -203,7 +212,8 @@ router.post('/order', verifyToken, async (req, res) => {
     await pool.query('UPDATE carts SET is_active = false WHERE id = $1', [cart.id]);
 
     // 8. Create a new active cart for the user
-    //await createCart(userId, true);
+    await createCart(userId, true);
+    console.log("New cart created.")
 
     // 9. Return confirmation
     res.status(201).json({
