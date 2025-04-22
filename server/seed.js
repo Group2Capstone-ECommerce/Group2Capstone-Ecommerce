@@ -31,7 +31,7 @@ async function seedFakeData() {
             createProduct({ product_name: 'shorts', descriptions: 'casual shorts', price: 12.00, stock_quantity: 56 }),
             createProduct({ product_name: 'sweaters', descriptions: 'casual sweater', price: 25.00, stock_quantity: 23 }),
             createProduct({ product_name: 'pants', descriptions: 'casual pants', price: 20.00, stock_quantity: 61 }),
-            createProduct({ product_name: 'Socks', descriptions: 'casual socks', price: 10.00, stock_quantity: 42 }),
+            createProduct({ product_name: 'socks', descriptions: 'casual socks', price: 10.00, stock_quantity: 42 }),
             createProduct({ product_name: 'jackets', descriptions: 'casual jackets', price: 35.00, stock_quantity: 13 }),
             createProduct({ product_name: 'belts', descriptions: 'casual belts', price: 17.00, stock_quantity: 29 }),
             createProduct({ product_name: 'hoodies', descriptions: 'casual hoodies', price: 30.00, stock_quantity: 30 }),
@@ -124,16 +124,17 @@ async function seedFakeData() {
 
     // CART ITEMS
     await Promise.all([
-        createCartItem(cartBob.id, shoes.id, 1, new Date(), new Date()),
-        createCartItem(cartBob.id, socks.id, 3, new Date(), new Date()),
-        createCartItem(cartJack.id, shorts.id, 1, new Date(), new Date()),
-        createCartItem(cartJack.id, socks.id, 7, new Date(), new Date()),
-        createCartItem(cartJack.id, shirts.id, 2, new Date(), new Date()),
-        createCartItem(cartJack.id, summer_shoes.id, 1, new Date(), new Date()),
-        createCartItem(cartRick.id, summer_shirts.id, 1, new Date(), new Date()),
-        createCartItem(cartRick.id, shirts.id, 3, new Date(), new Date())
+        createCartItem(cartBob.id, shoes.id, 1, new Date(), new Date(), shoes.price),
+        createCartItem(cartBob.id, socks.id, 3, new Date(), new Date(), socks.price),
+        createCartItem(cartJack.id, shorts.id, 1, new Date(), new Date(), shorts.price),
+        createCartItem(cartJack.id, socks.id, 7, new Date(), new Date(), socks.price),
+        createCartItem(cartJack.id, shirts.id, 2, new Date(), new Date(), shirts.price),
+        createCartItem(cartJack.id, summer_shoes.id, 1, new Date(), new Date(), summer_shoes.price),
+        createCartItem(cartRick.id, summer_shirts.id, 1, new Date(), new Date(), summer_shirts.price),
+        createCartItem(cartRick.id, shirts.id, 3, new Date(), new Date(), shirts.price)
     ]);
 
+    /*
     // ORDERS
     const now = new Date();
     const [order1, order2, order3, order4] = await Promise.all([
@@ -157,15 +158,15 @@ async function seedFakeData() {
         createOrderItem({order_id: order4.id, product_id: hoodies.id, quantity: 1, price_at_purchase: 30}),
 
     ])
-
+   
     // BILLING INFO
     await Promise.all([
         createBillingInfo({user_id: bob.id, order_id: order1.id, full_name: 'Bobert B Bern', email: 'bob@email.com', phone: '219-555-9235', address_line1: 'bobaddress1', address_line2: 'bobaddress2', city: 'New York City', state: 'NY', postal_code: '29173', country: 'US', company_name: 'company', tax_id: 'id'}),
         createBillingInfo({user_id: jack.id, order_id: order2.id, full_name: 'Jack Hilton', email: 'jack@email.com', phone: '926-555-0151', address_line1: 'jackaddress1', address_line2: 'jackaddress2', city: 'Atlanta', state: 'Georgia', postal_code: '92106', country: 'US', company_name: 'company', tax_id: 'id'}),
         createBillingInfo({user_id: rick.id, order_id: order3.id, full_name: 'Rick Wilson', email: 'rick@email.com', phone: '293-555-1932', address_line1: 'rickaddress1', address_line2: 'rickaddress2', city: 'New Orleans', state: 'Luisiana', postal_code: '19086', country: 'US', company_name: 'company', tax_id: 'id'}),
         createBillingInfo({user_id: oliver.id, order_id: order4.id, full_name: 'Oliver White', email: 'oliver@email.com', phone: '891-555-6327', address_line1: 'oliveraddress1', address_line2: 'oliveraddress2', city: 'Detroit', state: 'Michigan', postal_code: '30721', country: 'US', company_name: 'company', tax_id: 'id'}),
-
     ])
+    */
 
     // WISHLISTS
     const[wishlist1, wishlist2, wishlist3, wishlist4, wishlist5] = await Promise.all([
