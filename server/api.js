@@ -23,7 +23,9 @@ const {
     createOrder,
     getProductById,
     getCartItems,
-    updateProductQuantity
+    updateProductQuantity, 
+    createOrderItem
+    
 } = require("./db");
 
 function verifyToken(req, res, next) {
