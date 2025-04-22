@@ -442,7 +442,7 @@ const createCartItem = async (cart_id, product_id, quantity, price_at_addition, 
     throw new Error("Product does not exist.");
   }
 
-  const price_at_addition = productResult.rows[0].price;
+  price_at_addition = productResult.rows[0].price;
 
   const SQL = /*sql*/ `
     INSERT INTO cart_items(
