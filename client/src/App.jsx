@@ -6,12 +6,13 @@ import ProductDetails from './components/ProductDetails'
 
 function App() {
   const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState(null);
 
   return (
     <>
       <Routes>
         <Route path='/' element={<ProductList products={products} setProducts={setProducts} />} />
-        <Route path='/products/:productId' element={<ProductDetails />} />
+        <Route path='/products/:productId' element={<ProductDetails product={product} setProduct={setProduct}/>} />
       </Routes>
     </>
   )
