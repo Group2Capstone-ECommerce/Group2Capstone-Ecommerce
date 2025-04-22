@@ -200,11 +200,12 @@ router.post('/order', verifyToken, async (req, res) => {
     // 6. Create the order items
 
     for (const item of cartItems) {
+      console.log(item);
       await createOrderItem({
         order_id: order.id,
         product_id: item.product_id,
         quantity: item.quantity,
-        price_at_purchase: parseFloat(item.price),
+        price_at_purchase: parseFloat(item.price_at_addition),
       });
     }
     
