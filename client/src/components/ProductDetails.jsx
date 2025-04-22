@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import stockImage from '../assets/stockProductImg.png';
 
 export default function ProductDetails() {
   const [product, setProduct] = useState({});
@@ -36,6 +37,10 @@ export default function ProductDetails() {
           <p><b>Description: </b>{product.descriptions}</p>
           <p><b>Price: </b>${product.price}</p>
           <p><b>Quantity Available: </b>{product.stock_quantity}</p>
+          <img
+                src={product.image_url || stockImage}
+                alt={product.product_name}
+          />
           <br />
           <button onClick={() => navigate('/')}>Go Back</button>
         </div>
