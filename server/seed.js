@@ -31,7 +31,7 @@ async function seedFakeData() {
             createProduct({ product_name: 'shorts', descriptions: 'casual shorts', price: 12.00, stock_quantity: 56 }),
             createProduct({ product_name: 'sweaters', descriptions: 'casual sweater', price: 25.00, stock_quantity: 23 }),
             createProduct({ product_name: 'pants', descriptions: 'casual pants', price: 20.00, stock_quantity: 61 }),
-            createProduct({ product_name: 'Socks', descriptions: 'casual socks', price: 10.00, stock_quantity: 42 }),
+            createProduct({ product_name: 'socks', descriptions: 'casual socks', price: 10.00, stock_quantity: 42 }),
             createProduct({ product_name: 'jackets', descriptions: 'casual jackets', price: 35.00, stock_quantity: 13 }),
             createProduct({ product_name: 'belts', descriptions: 'casual belts', price: 17.00, stock_quantity: 29 }),
             createProduct({ product_name: 'hoodies', descriptions: 'casual hoodies', price: 30.00, stock_quantity: 30 }),
@@ -124,14 +124,14 @@ async function seedFakeData() {
 
     // CART ITEMS
     await Promise.all([
-        createCartItem(cartBob.id, shoes.id, 1, new Date(), new Date()),
-        createCartItem(cartBob.id, socks.id, 3, new Date(), new Date()),
-        createCartItem(cartJack.id, shorts.id, 1, new Date(), new Date()),
-        createCartItem(cartJack.id, socks.id, 7, new Date(), new Date()),
-        createCartItem(cartJack.id, shirts.id, 2, new Date(), new Date()),
-        createCartItem(cartJack.id, summer_shoes.id, 1, new Date(), new Date()),
-        createCartItem(cartRick.id, summer_shirts.id, 1, new Date(), new Date()),
-        createCartItem(cartRick.id, shirts.id, 3, new Date(), new Date())
+        createCartItem(cartBob.id, shoes.id, 1, new Date(), new Date(), shoes.price),
+        createCartItem(cartBob.id, socks.id, 3, new Date(), new Date(), socks.price),
+        createCartItem(cartJack.id, shorts.id, 1, new Date(), new Date(), shorts.price),
+        createCartItem(cartJack.id, socks.id, 7, new Date(), new Date(), socks.price),
+        createCartItem(cartJack.id, shirts.id, 2, new Date(), new Date(), shirts.price),
+        createCartItem(cartJack.id, summer_shoes.id, 1, new Date(), new Date(), summer_shoes.price),
+        createCartItem(cartRick.id, summer_shirts.id, 1, new Date(), new Date(), summer_shirts.price),
+        createCartItem(cartRick.id, shirts.id, 3, new Date(), new Date(), shirts.price)
     ]);
 
     /*

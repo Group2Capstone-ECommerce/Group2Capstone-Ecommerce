@@ -428,7 +428,7 @@ const checkProductExists = async (product_id) => {
 };
 
 // CartItems
-const createCartItem = async (cart_id, product_id, quantity, created_at, updated_at) => {
+const createCartItem = async (cart_id, product_id, quantity, price_at_addition, created_at, updated_at) => {
   // const productExists = await checkProductExists(product_id);
   // if (!productExists) {
   //   throw new Error("Product does not exist.");
