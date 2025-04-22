@@ -31,9 +31,10 @@ const createTables = async () => {
     const enableUuidExtension = `CREATE EXTENSION IF NOT EXISTS "pgcrypto";`;
     await pool.query(enableUuidExtension);
 
-    console.log('Running dropTablesIfExist query...')
+    /*
     // Drop tables if exist
-      const dropTablesIfExist = `
+    console.log('Running dropTablesIfExist query...')
+    const dropTablesIfExist = `
       DROP TABLE IF EXISTS products CASCADE;
       DROP TABLE IF EXISTS users CASCADE;
       DROP TABLE IF EXISTS categories CASCADE;
@@ -45,10 +46,11 @@ const createTables = async () => {
       DROP TABLE IF EXISTS billing_info CASCADE;
       DROP TABLE IF EXISTS wishlists CASCADE;
       DROP TABLE IF EXISTS wishlist_items CASCADE;
-      `;
+    `;
     await pool.query(dropTablesIfExist);
     console.log('Finished running dropTablesIfExist query...')
-
+    */
+   
     console.log('Creating products table...');
     
     //Create products
@@ -59,6 +61,7 @@ const createTables = async () => {
         descriptions TEXT,
         price NUMERIC(10, 2) NOT NULL,
         stock_quantity INTEGER DEFAULT 0,
+        image_url TEXT DEFAULT NULL,
         is_available BOOLEAN NOT NULL DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
@@ -281,17 +284,18 @@ const authenticateUser = async ({ username, password }) => {
 };
 
 // Product
-const createProduct = async({ product_name, descriptions, price, stock_quantity}) => {
+const createProduct = async({ product_name, descriptions, price, stock_quantity, image_url}) => {
   const SQL = /*sql*/ `
       INSERT INTO products(
           id, 
           product_name, 
           descriptions, 
           price,
-          stock_quantity
-      ) VALUES($1, $2, $3, $4, $5) RETURNING *;
+          stock_quantity,
+          image_url
+      ) VALUES($1, $2, $3, $4, $5, $6) RETURNING *;
   `;
-  const response = await pool.query(SQL, [uuid.v4(), product_name, descriptions, price, stock_quantity]);
+  const response = await pool.query(SQL, [uuid.v4(), product_name, descriptions, price, stock_quantity, image_url]);
   return response.rows[0];
 };
 

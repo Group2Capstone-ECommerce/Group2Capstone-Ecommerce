@@ -85,7 +85,7 @@ router.post('/admin/products', verifyToken, async (req, res) => {
       return res.status(403).json({ message: 'Forbidden: Admins only.'});
     }
     
-    const{ product_name, price, descriptions, stock_quantity } = req.body;
+    const{ product_name, price, descriptions, stock_quantity, image_url } = req.body;
   
     if (!product_name || !price) {
       return res.status(400).json({ message: 'Name and price are required.' });
@@ -96,7 +96,8 @@ router.post('/admin/products', verifyToken, async (req, res) => {
       product_name,
       price,
       descriptions,
-      stock_quantity
+      stock_quantity,
+      image_url
     });
   
 
@@ -260,7 +261,7 @@ router.get('/admin/products',verifyToken, async(req, res, next) => {
 router.get('/products/:productId', async(req, res, next) => {
   try {
     const product_id = req.params.productId
-    const response = await getProductById({product_id})
+    const response = await getProductById(product_id)
     res.status(200).send(response)
   } catch (error) {
     next(error)
