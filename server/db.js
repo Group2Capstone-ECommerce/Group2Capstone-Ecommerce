@@ -429,14 +429,7 @@ const checkProductExists = async (product_id) => {
 };
 
 // CartItems
-const createCartItem = async (cart_id, product_id, quantity, price_at_addition, created_at, updated_at) => {
-  // const productExists = await checkProductExists(product_id);
-  // if (!productExists) {
-  //   throw new Error("Product does not exist.");
-  // }
-
-  // Get product info (including price)
-
+const createCartItem = async (cart_id, product_id, quantity, created_at, updated_at) => {
   const productResult = await pool.query(`SELECT price FROM products WHERE id = $1`, [product_id]);
   if (productResult.rows.length === 0) {
     throw new Error("Product does not exist.");
