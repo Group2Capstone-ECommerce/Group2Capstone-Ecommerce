@@ -261,7 +261,7 @@ router.get('/admin/products',verifyToken, async(req, res, next) => {
 router.get('/products/:productId', async(req, res, next) => {
   try {
     const product_id = req.params.productId
-    const response = await getProductById({product_id})
+    const response = await getProductById(product_id)
     res.status(200).send(response)
   } catch (error) {
     next(error)

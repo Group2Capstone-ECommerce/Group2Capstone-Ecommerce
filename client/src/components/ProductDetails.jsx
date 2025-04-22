@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 
-export default function ProductDetails() {
-  const [product, setProduct] = useState({});
+export default function ProductDetails({product, setProduct}) {
   const PRODUCTS_API_URL = "http://localhost:3000/api/products";
 
   const { productId } = useParams();
@@ -22,7 +21,6 @@ export default function ProductDetails() {
         console.error("Error fetching single product.", error);
       }
     };
-
     getProduct();
   }, [productId]);
 
