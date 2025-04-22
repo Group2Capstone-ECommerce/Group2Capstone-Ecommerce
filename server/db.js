@@ -601,14 +601,21 @@ const getProductById = async(product_id) => {
 }
 
 
-const editProduct = async({product_id, product_name, descriptions, price, stock_quantity, is_available}) => {
+const editProduct = async({product_id, product_name, descriptions, price, stock_quantity, image_url, is_available}) => {
   const SQL = /*sql*/`
     UPDATE products 
-    SET  product_name = $2, descriptions = $3, price = $4, stock_quantity = $5, is_available = $6, image_url = $7, updated_at = NOW()
+    SET  
+      product_name = $2, 
+      descriptions = $3, 
+      price = $4, 
+      stock_quantity = $5, 
+      image_url = $6, 
+      is_available = $7, 
+      updated_at = NOW()
     WHERE id = $1
     RETURNING *
   `
-  const product = await getProductById({product_id})
+  const product = await getProductById(product_id)
   values = [
     product_id, 
     product_name ?? product.product_name, 
