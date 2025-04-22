@@ -21,7 +21,6 @@ const {
     deleteProductFromCart,
     updateCartItemQuantity,
     createOrder,
-    getProductById,
     getCartItems,
     updateProductQuantity, 
     createOrderItem

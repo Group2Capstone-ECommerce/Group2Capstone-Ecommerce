@@ -781,7 +781,6 @@ module.exports = {
   getCart,
   deleteProductFromCart,
   updateCartItemQuantity,
-  getProductById,
   getCartItems,
   updateProductQuantity
 }
