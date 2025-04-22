@@ -230,7 +230,6 @@ router.post('/order', verifyToken, async (req, res) => {
   }
 });
 
-//GET /api/products
 // GET /api/products
 router.get('/products', async(req, res, next) => {
     try {
