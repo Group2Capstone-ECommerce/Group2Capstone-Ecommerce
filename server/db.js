@@ -126,6 +126,7 @@ const createTables = async () => {
         cart_id UUID REFERENCES carts(id) ON DELETE CASCADE,
         product_id UUID REFERENCES products(id),
         quantity INTEGER NOT NULL CHECK (quantity > 0),
+        price_at_addition NUMERIC (10, 2),
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
