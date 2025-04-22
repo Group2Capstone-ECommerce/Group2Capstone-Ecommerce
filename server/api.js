@@ -137,7 +137,6 @@ router.post("/auth/login", async (req, res, next) => {
   }
 });
 
-<<<<<<< HEAD
 // POST /api/order
 router.post('/order', verifyToken, async (req, res) => {
   try {
@@ -232,9 +231,7 @@ router.post('/order', verifyToken, async (req, res) => {
 });
 
 //GET /api/products
-=======
 // GET /api/products
->>>>>>> main
 router.get('/products', async(req, res, next) => {
     try {
         const response = await getAvailableProducts();
