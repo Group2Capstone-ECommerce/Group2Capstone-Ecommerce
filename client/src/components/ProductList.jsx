@@ -1,9 +1,26 @@
 // Page to view all products available for purchase
-
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 
-export default function ProductList({ products, fetchProducts }) {
+export default function ProductList({ products, setProducts }) {
+  const PRODUCTS_API_URL = "http://localhost:3000/api/products";
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(PRODUCTS_API_URL);
+        const data = await response.json();
+        console.log("Fetched products:", data);
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [setProducts]);
+
   return (
     <div className="productsContainer">
       {products.length === 0 ? (

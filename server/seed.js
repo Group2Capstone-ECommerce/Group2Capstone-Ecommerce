@@ -157,6 +157,7 @@ async function seedFakeData() {
         createCartItem(cartRick.id, swimwear.id, 3, new Date(), new Date())
     ]);
 
+    /*
     // ORDERS
     const now = new Date();
     const [order1, order2, order3] = await Promise.all([
@@ -228,6 +229,7 @@ async function seedFakeData() {
         createBillingInfo({user_id: jack.id, order_id: order2.id, full_name: 'Jack Hilton', email: 'jack@email.com', phone: '926-555-0151', address_line1: 'jackaddress1', address_line2: 'jackaddress2', city: 'Atlanta', state: 'Georgia', postal_code: '92106', country: 'US', company_name: 'company', tax_id: 'id'}),
         createBillingInfo({user_id: rick.id, order_id: order3.id, full_name: 'Rick Wilson', email: 'rick@email.com', phone: '293-555-1932', address_line1: 'rickaddress1', address_line2: 'rickaddress2', city: 'New Orleans', state: 'Luisiana', postal_code: '19086', country: 'US', company_name: 'company', tax_id: 'id'}),
     ])
+    */
 
     // WISHLISTS
     const[wishlist1, wishlist2, wishlist3, wishlist4, wishlist5] = await Promise.all([
