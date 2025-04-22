@@ -32,6 +32,21 @@ const createTables = async () => {
     await pool.query(enableUuidExtension);
 
     // Drop tables if exist
+    // const dropTablesIfExist = `
+    //   DROP TABLE IF EXISTS products CASCADE;
+    //   DROP TABLE IF EXISTS users CASCADE;
+    //   DROP TABLE IF EXISTS categories CASCADE;
+    //   DROP TABLE IF EXISTS product_categories CASCADE;
+    //   DROP TABLE IF EXISTS carts CASCADE;
+    //   DROP TABLE IF EXISTS cart_items CASCADE;
+    //   DROP TABLE IF EXISTS orders CASCADE;
+    //   DROP TABLE IF EXISTS order_items CASCADE;
+    //   DROP TABLE IF EXISTS billing_info CASCADE;
+    //   DROP TABLE IF EXISTS wishlists CASCADE;
+    //   DROP TABLE IF EXISTS wishlist_items CASCADE;
+    // ;`
+    // await pool.query(dropTablesIfExist);
+    // Drop tables if exist
     const dropTablesIfExist = `
       DROP TABLE IF EXISTS products CASCADE;
       DROP TABLE IF EXISTS users CASCADE;
@@ -56,9 +71,11 @@ const createTables = async () => {
         product_name VARCHAR(100) NOT NULL,
         descriptions TEXT,
         price NUMERIC(10, 2) NOT NULL,
+        stock_quantity INTEGER CHECK (stock_quantity >= 0) DEFAULT 0,
         stock_quantity INTEGER DEFAULT 0,
         image_url TEXT DEFAULT NULL,
         is_available BOOLEAN NOT NULL DEFAULT TRUE,
+        imege_url TEXT DEFAULT NULL,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
@@ -276,7 +293,7 @@ const authenticateUser = async ({ username, password }) => {
 };
 
 // Product
-const createProduct = async({ product_name, descriptions, price, stock_quantity, image_url}) => {
+const createProduct = async({ product_name, descriptions, price, stock_quantity, image_url, is_available}) => {
   const SQL = /*sql*/ `
       INSERT INTO products(
           id, 
@@ -284,10 +301,11 @@ const createProduct = async({ product_name, descriptions, price, stock_quantity,
           descriptions, 
           price,
           stock_quantity,
-          image_url
-      ) VALUES($1, $2, $3, $4, $5, $6) RETURNING *;
+          image_url,
+          is_available
+      ) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *;
   `;
-  const response = await pool.query(SQL, [uuid.v4(), product_name, descriptions, price, stock_quantity, image_url]);
+  const response = await pool.query(SQL, [uuid.v4(), product_name, descriptions, price, stock_quantity, image_url, is_available]);
   return response.rows[0];
 };
 
@@ -575,10 +593,10 @@ const getProductById = async({product_id}) => {
 }
 
 
-const editProduct = async({product_id, product_name, descriptions, price, stock_quantity, is_available}) => {
+const editProduct = async({product_id, product_name, descriptions, price, stock_quantity, image_url, is_available}) => {
   const SQL = /*sql*/`
     UPDATE products 
-    SET  product_name = $2, descriptions = $3, price = $4, stock_quantity = $5, is_available = $6, updated_at = NOW()
+    SET  product_name = $2, descriptions = $3, price = $4, stock_quantity = $5, is_available = $6, image_url = $7, updated_at = NOW()
     WHERE id = $1
     RETURNING *
   `
@@ -589,6 +607,7 @@ const editProduct = async({product_id, product_name, descriptions, price, stock_
     descriptions ?? product.descriptions, 
     price ?? product.price,
     stock_quantity ?? product.stock_quantity,
+    image_url ?? product.image_url,
     is_available ?? product.is_available
   ]
   const response = await pool.query(SQL, values)
