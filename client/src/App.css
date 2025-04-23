@@ -40,3 +40,28 @@
 .read-the-docs {
   color: #888;
 }
+
+.productsContainer {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  justify-content: center;
+}
+
+.productCard {
+  border: 1px solid black;
+  margin: 5px;
+  padding: 5px;
+  width: 300px;
+}
+
+.productCard img {
+  height: 200px;
+  width: 150px;
+  border: 1px solid black;
+}
+
+.singleProductDetailsCard div img {
+  height: 400px;
+  width: 300px;
+  margin: 10px;
+}
