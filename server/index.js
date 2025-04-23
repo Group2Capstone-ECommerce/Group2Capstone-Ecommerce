@@ -1,6 +1,5 @@
 const {client, connectDB, createTables, createUser, authenticateUser } = require("./db.js");
 const { seedFakeData } = require("./seed.js");
-const cors = require('cors')
 
 const cors = require('cors');
 
