@@ -6,8 +6,7 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [successMessage, setSuccessMessage] = useState(null);
-    const [error, setError] = useState(null);
+    const [message, setMessage] = useState(null);
 
 
     async function handleSubmit(event,name,email,username,password) {
@@ -27,14 +26,12 @@ export default function Register() {
                 })
             }).then(response => response.json())
             .then(result => {
-                console.log(result);
-                setSuccessMessage(result)
+                setMessage(result)
             })
-                .catch(console.error)
         } catch (error) {
-            setError(error);
+            
         }
-    }
+    } 
 
     return (
         <div calssname='registerPage'>
@@ -55,9 +52,8 @@ export default function Register() {
                 </div>
                 <button>Submit</button>
             </form>
-            <div className='success/error'>
-                {error && <h3>{error}</h3>}
-                {successMessage && <h3>{successMessage}</h3>}
+            <div className='error'>
+                {message && <h3>{message.error}</h3>}
             </div>
         </div>
     )
