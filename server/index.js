@@ -2,20 +2,28 @@ const {client, connectDB, createTables, createUser, authenticateUser } = require
 const { seedFakeData } = require("./seed.js");
 const cors = require('cors')
 
+const cors = require('cors');
+
 const express = require("express");
 const app = express();
 const port = 3000;
 // import the routes from api.js
 const router = require('./api')
 
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(cors({origin:['http://localhost:5173']}))
 //to use /api as root path
 app.use('/api', router)
 const init = async () => {
-  connectDB();
-  createTables();
-  seedFakeData();
+  await connectDB();
+  await createTables();
+  await seedFakeData();
 
   console.log('----------')
   console.log('Helpful CURL commands to test:');
