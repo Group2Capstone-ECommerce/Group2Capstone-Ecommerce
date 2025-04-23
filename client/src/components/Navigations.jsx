@@ -4,7 +4,7 @@ export default function Navigations() {
   return (
     <>
       <div id="navBar">
-        <div>
+        <div class="navLinks">
           <Link to="/">Products</Link>
           <Link to="/register">Register</Link>
           <Link to="/login">Login</Link>
