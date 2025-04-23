@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import './App.css'
 import ProductList from './components/ProductList'
 import ProductDetails from './components/ProductDetails'
+import Navigations from './components/Navigations'
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -10,6 +11,7 @@ function App() {
 
   return (
     <>
+      <Navigations />
       <Routes>
         <Route path='/' element={<ProductList products={products} setProducts={setProducts} />} />
         <Route path='/products/:productId' element={<ProductDetails product={product} setProduct={setProduct}/>} />

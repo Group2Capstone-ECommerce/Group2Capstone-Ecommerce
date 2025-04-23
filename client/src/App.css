@@ -41,6 +41,10 @@
   color: #888;
 }
 
+#navBar {
+  background-color: pink;
+}
+
 .productsContainer {
   display: grid;
   grid-template-columns: auto auto auto;
