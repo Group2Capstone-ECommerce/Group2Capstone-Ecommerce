@@ -14,7 +14,7 @@ function App() {
       <Routes>
         <Route path='/' element={<ProductList products={products} setProducts={setProducts} />} />
         <Route path='/products/:productId' element={<ProductDetails product={product} setProduct={setProduct}/>} />
-        <Route path= '/auth/login' element={<LoginForm/>}/>
+        <Route path= '/login' element={<LoginForm/>}/>
       </Routes>
     </>
   )

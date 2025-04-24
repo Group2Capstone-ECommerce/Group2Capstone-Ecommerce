@@ -128,7 +128,7 @@ router.post("/auth/login", async (req, res, next) => {
     const {username, password} = req.body;
     
     if (!username || !password) {
-      res.status(400).json({error: "Username and/or password are required."});
+      return res.status(400).json({error: "Username and/or password are required."});
     }
 
     res.send(await authenticateUser(req.body));

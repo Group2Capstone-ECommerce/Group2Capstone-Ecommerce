@@ -11,6 +11,7 @@ export default function LoginForm() {
 
     const navigate = useNavigate();
     const [form, setForm] = useState({ username: "", password: ""});
+    const [successMsg, setSuccessMsg] = useState("");
     const [errors, setErrors] = useState({ username: "", password: ""});
     const [submitting, setSubmitting] = useState(false);
 
@@ -39,8 +40,15 @@ export default function LoginForm() {
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify(form),
             });
-            if (!res.ok) throw new Error("Invalid credentials");
-            navigate("/");
+
+            if (res.ok) {
+              setSuccessMsg('Account login successful! Redirecting...');
+              setTimeout(() => {
+                      navigate('/');
+              }, 3000);
+            } else {
+              throw new Error("Invalid credentials");
+            }
         } catch (err) {
             alert(err.message);
         } finally {
@@ -53,6 +61,8 @@ export default function LoginForm() {
       <Card className="login-card">
         <Card.Body>
           <h1 className="login-title">Login</h1>
+          {successMsg && <div className="success">{successMsg}</div>}
+          <br />
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="username" className="field">
               <Form.Label>Username</Form.Label>
