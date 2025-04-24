@@ -32,23 +32,23 @@ const createTables = async () => {
     await pool.query(enableUuidExtension);
 
 
-    //Drop tables if exist
-    console.log('Running dropTablesIfExist query...')
-    const dropTablesIfExist = `
-      DROP TABLE IF EXISTS products CASCADE;
-      DROP TABLE IF EXISTS users CASCADE;
-      DROP TABLE IF EXISTS categories CASCADE;
-      DROP TABLE IF EXISTS product_categories CASCADE;
-      DROP TABLE IF EXISTS carts CASCADE;
-      DROP TABLE IF EXISTS cart_items CASCADE;
-      DROP TABLE IF EXISTS orders CASCADE;
-      DROP TABLE IF EXISTS order_items CASCADE;
-      DROP TABLE IF EXISTS billing_info CASCADE;
-      DROP TABLE IF EXISTS wishlists CASCADE;
-      DROP TABLE IF EXISTS wishlist_items CASCADE;
-    `;
-    await pool.query(dropTablesIfExist);
-    console.log('Finished running dropTablesIfExist query...')
+    // //Drop tables if exist
+    // console.log('Running dropTablesIfExist query...')
+    // const dropTablesIfExist = `
+    //   DROP TABLE IF EXISTS products CASCADE;
+    //   DROP TABLE IF EXISTS users CASCADE;
+    //   DROP TABLE IF EXISTS categories CASCADE;
+    //   DROP TABLE IF EXISTS product_categories CASCADE;
+    //   DROP TABLE IF EXISTS carts CASCADE;
+    //   DROP TABLE IF EXISTS cart_items CASCADE;
+    //   DROP TABLE IF EXISTS orders CASCADE;
+    //   DROP TABLE IF EXISTS order_items CASCADE;
+    //   DROP TABLE IF EXISTS billing_info CASCADE;
+    //   DROP TABLE IF EXISTS wishlists CASCADE;
+    //   DROP TABLE IF EXISTS wishlist_items CASCADE;
+    // `;
+    // await pool.query(dropTablesIfExist);
+    // console.log('Finished running dropTablesIfExist query...')
 
    
     console.log('Creating products table...');
