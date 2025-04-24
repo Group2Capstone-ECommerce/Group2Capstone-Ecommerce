@@ -1,7 +1,13 @@
+// Login form page
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Card } from "";
+import { Input } from " ";
+import { Button } from "";
 
 export default function LoginForm() {
+  const LOGIN_API_URL = "http://localhost:3000/api/auth/login";
+
     const navigate = useNavigate();
     const [form, setForm] = useState({ username: "", password: ""});
     const [errors, setErrors] = useState({ username: "", password: ""});
@@ -18,8 +24,8 @@ export default function LoginForm() {
             username: form.username.trim() ? "": "Username required",
             password: form.password.trim() ? "": "Password required",
         };
-        setErrors(newErr);
-        return !newErr.username && !newErr.password;
+      setErrors(newErr);
+      return !newErr.username && !newErr.password;
     };
 
     const handleSubmit = async (e) => {
@@ -27,10 +33,10 @@ export default function LoginForm() {
         if (!validate()) return;
         setSubmitting(true);
         try {
-            const res = await fetch("/api/auth/login", {
+            const res = await fetch(LOGIN_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
-                bosy: JSON.stringify(form),
+                body: JSON.stringify(form),
             });
             if (!res.ok) throw new Error("Invalid credentials");
             navigate("/");
@@ -42,7 +48,43 @@ export default function LoginForm() {
     };
 
     return (
-        
-    )
-
+      <section className="loginContainer">
+      <Card className="loginCard">
+            <h1>Login</h1>
+            <form onSubmit={handleSubmit}>
+              <div>
+                <Input
+                  name="username"
+                  placeholder="Username"
+                  value={form.username}
+                  onChange={handleChange}
+                  disabled={submitting}
+                />
+                {errors.username && (
+                  <p>{errors.username}</p>
+                )}
+              </div>
+              <div>
+                <Input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={form.password}
+                  onChange={handleChange}
+                  disabled={submitting}
+                />
+                {errors.password && (
+                  <p>{errors.password}</p>
+                )}
+              </div>
+              <Button
+                type="submit"
+                disabled={submitting}
+              >
+                {submitting ? "Signing in…" : "Sign In"}
+              </Button>
+            </form>
+        </Card> 
+       </section> 
+    );
 }
