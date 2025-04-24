@@ -1,9 +1,10 @@
 // Login form page
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card } from "";
-import { Input } from " ";
-import { Button } from "";
+import { Card } from "react-bootstrap";
+import { Form } from "react-bootstrap";
+import { Button } from "react-bootstrap";
+import "../index.css";
 
 export default function LoginForm() {
   const LOGIN_API_URL = "http://localhost:3000/api/auth/login";
@@ -48,43 +49,44 @@ export default function LoginForm() {
     };
 
     return (
-      <section className="loginContainer">
-      <Card className="loginCard">
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit}>
-              <div>
-                <Input
-                  name="username"
-                  placeholder="Username"
-                  value={form.username}
-                  onChange={handleChange}
-                  disabled={submitting}
-                />
-                {errors.username && (
-                  <p>{errors.username}</p>
-                )}
-              </div>
-              <div>
-                <Input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  value={form.password}
-                  onChange={handleChange}
-                  disabled={submitting}
-                />
-                {errors.password && (
-                  <p>{errors.password}</p>
-                )}
-              </div>
-              <Button
-                type="submit"
+      <section className="login-container">
+      <Card className="login-card">
+        <Card.Body>
+          <h1 className="login-title">Login</h1>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="username" className="field">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                name="username"
+                placeholder="Username"
+                value={form.username}
+                onChange={handleChange}
                 disabled={submitting}
-              >
-                {submitting ? "Signing in…" : "Sign In"}
-              </Button>
-            </form>
-        </Card> 
-       </section> 
-    );
+              />
+              {errors.username && <p className="text-danger">{errors.username}</p>}
+            </Form.Group>
+            <Form.Group controlId="password" className="field">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={form.password}
+                onChange={handleChange}
+                disabled={submitting}
+              />
+              {errors.password && <p className="text-danger">{errors.password}</p>}
+            </Form.Group>
+            <Button 
+            type="submit"
+            variant="primary"
+            className="submit-button"
+            disabled={submitting}>           
+              {submitting ? "Signing in…" : "Sign In"}
+            </Button>
+          </Form>
+        </Card.Body>
+      </Card>
+    </section>
+  );
 }
