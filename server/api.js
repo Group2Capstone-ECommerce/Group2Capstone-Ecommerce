@@ -116,6 +116,17 @@ router.post("/auth/register", async (req, res, next) => {
     if (!email || !username || !password) {
       return res.status(400).json({ error: "Email, username, password are required" });
     }
+
+    // Checks for if username or email already exist in the db
+    const usernameAvailability = await getUserByUsername(username)
+    const emailAvailability = await getUserByEmail(email)
+    if(usernameAvailability){
+      return res.status(400).json({ error: "Username is taken!" });
+    }   
+    if(emailAvailability){
+    return res.status(400).json({ error: "Email is taken!" });
+    }
+
     const newUser = await createUser({ email, username, password_hash: password, is_admin, mailing_address, phone });
     res.status(201).json(newUser);
   } catch (error) {
@@ -384,20 +395,6 @@ router.put('/cart/:productId', verifyToken, async (req, res, next) => {
     console.error('Error updating cart item:', error);
     next(error);
   }
-});
-
-// GET /api/auth/check-username?value=someusername
-router.get('/auth/check-username', async (req, res) => {
-  const { value } = req.query;
-  const user = await getUserByUsername(value);
-  res.json({ available: !user });
-});
-
-// GET /api/auth/check-email?value=email
-router.get('/auth/check-email', async (req, res) => {
-  const { value } = req.query;
-  const email = await getUserByEmail(value);
-  res.json({ available: !email });
 });
 
 module.exports = router

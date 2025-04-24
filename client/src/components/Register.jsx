@@ -17,39 +17,7 @@ export default function Register() {
     const [emailAvailable, setEmailAvailable] = useState(null);
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
     const navigate = useNavigate();
-
-    const checkUsernameAvailability = async (username) => {
-        try {
-          const response = await fetch(`${CHECK_USER_API_URL}?value=${encodeURIComponent(username)}`);
-          const data = await response.json();
-          setUsernameAvailable(data.available);
-          if (!data.available) {
-            setUsernameErrorMessage('Username already taken');
-          } else {
-            setUsernameErrorMessage('');
-          }
-        } catch (error) {
-            setUsernameErrorMessage('Error checking username availability');
-            setUsernameAvailable(null);
-        }
-      };
-
-      const checkEmailAvailability = async (email) => {
-        try {
-          const response = await fetch(`${CHECK_EMAIL_API_URL}?value=${encodeURIComponent(email)}`);
-          const data = await response.json();
-          setEmailAvailable(data.available);
-          if (!data.available) {
-            setEmailErrorMessage('Email already taken');
-          } else {
-            setErrorMessage('');
-          }
-        } catch (error) {
-            setEmailErrorMessage('Error checking email availability');
-            setUsernameAvailable(null);
-        }
-      };
-
+    
     async function handleSubmit(event) {
         event.preventDefault();
         console.log('Name =>', name,'Email => ', email,'Username =>', username,'Password =>', password)
@@ -67,11 +35,12 @@ export default function Register() {
                 })
             })
             const data = await response.json();
+
             console.log('Response', response)
             console.log('Data', data)
+            console.log('Data error', data.error)
             console.log('Status', response.status)
 
-            // TODO: Validation for if user already exists
             if(response.ok){
                 setSuccessMessage('Account created successfully! Redirecting...');
                 setErrorMessage('');
@@ -80,13 +49,13 @@ export default function Register() {
                     navigate('/');
                 }, 3000);
             } else {
-                const data = await response.json();
-                setErrorMessage(data.message || 'Signup failed');
+                const message = data.error?.toString() || 'Signup failed';
+                setErrorMessage(message);
                 setSuccessMessage('');
             }
             
         } catch (error) {
-            setErrorMessage('An error occurred during signup');
+            setErrorMessage(error.message || 'An error occurred during signup');
             setSuccessMessage('');
         }
     } 
@@ -95,8 +64,7 @@ export default function Register() {
         <div className='registerPage'>
             <h1>Register</h1>
             {successMessage && <div className="success">{successMessage}</div>}
-            {usernameAvailable === false && (<div className="error">{usernameErrorMessage}</div>)}
-            {emailAvailable === false && (<div className="error">{emailErrorMessage}</div>)}
+            {errorMessage && <div className="failure">{errorMessage}</div>}
             <br />
             <form onSubmit={handleSubmit}>
                 {/*  input boxes */}
@@ -104,15 +72,15 @@ export default function Register() {
                     Name: <input value={name} onChange={(e) => setName(e.target.value)} required/>
                 </div>
                 <div>
-                    Email: <input value={email} onChange={(e) => setEmail(e.target.value)} onBlur={() => checkEmailAvailability(email)} required/>
+                    Email: <input value={email} onChange={(e) => setEmail(e.target.value)} required/>
                 </div>
                 <div>
-                    Username: <input value={username} onChange={(e) => setUsername(e.target.value)} onBlur={() => checkUsernameAvailability(username)} required/>
+                    Username: <input value={username} onChange={(e) => setUsername(e.target.value)} required/>
                 </div>
                 <div>
                     Password: <input value={password} onChange={(e) => setPassword(e.target.value)} required/>
                 </div>
-                <button disabled={usernameAvailable === false}>Submit</button>
+                <button>Submit</button>
             </form>
         </div>
     )
