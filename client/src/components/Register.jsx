@@ -6,10 +6,11 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState(null);
+    const [message, setMessage] = useState('');
+    const [messageType, setMessageType] = useState('');//'success' or 'error'
 
 
-    async function handleSubmit(event,name,email,username,password) {
+    async function handleSubmit(event) {
         event.preventDefault();
         console.log('Name =>', name,'Email => ', email,'Username =>', username,'Password =>', password)
         try {
@@ -24,36 +25,57 @@ export default function Register() {
                     username,
                     password,
                 })
-            }).then(response => response.json())
-            .then(result => {
-                setMessage(result)
             })
-        } catch (error) {
+            const data = await response.json();
+            console.log('Response', response)
+            console.log('Data', data)
+            console.log('Status', response.status)
+
+            if(response.ok){
+                setMessage(data.message || 'Registration Successful!');
+                setMessageType('success');
+            } else {
+                setMessage(data.message || 'Registration Failed.');
+            }
+            setMessageType('error')
             
+        } catch (error) {
+            console.error('Error during registration:', error);
+            setMessage('An unexpected error occurred');
+            setMessageType('error')
         }
     } 
 
+    const renderMessage = () => {
+        if(message){
+            return(
+                <p className={messageType}>{message}</p>
+            );
+        }
+        return null
+    }
+
     return (
-        <div calssname='registerPage'>
-            <form onSubmit={(e) => handleSubmit(e,name,email,username,password)}>
+        <div className='registerPage'>
+            <form onSubmit={handleSubmit}>
                 {/*  input boxes */}
                 <h1>Register</h1>
                 <div>
-                    Name: <input value={name} onChange={(e) => setName(e.target.value)} />
+                    Name: <input value={name} onChange={(e) => setName(e.target.value)} required/>
                 </div>
                 <div>
-                    Email: <input value={email} onChange={(e) => setEmail(e.target.value)}/>
+                    Email: <input value={email} onChange={(e) => setEmail(e.target.value)} required/>
                 </div>
                 <div>
-                    Username: <input value={username} onChange={(e) => setUsername(e.target.value)}/>
+                    Username: <input value={username} onChange={(e) => setUsername(e.target.value)} required/>
                 </div>
                 <div>
-                    Password: <input value={password} onChange={(e) => setPassword(e.target.value)}/>
+                    Password: <input value={password} onChange={(e) => setPassword(e.target.value)} required/>
                 </div>
                 <button>Submit</button>
             </form>
-            <div className='error'>
-                {message && <h3>{message.error}</h3>}
+            <div className='Message'>
+                {renderMessage()}
             </div>
         </div>
     )
