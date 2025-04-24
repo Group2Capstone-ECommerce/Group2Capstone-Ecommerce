@@ -23,9 +23,13 @@ export default function ProductList({ products, setProducts }) {
 
   return (
     <>
+    {/*This div will need to be moved to nav bar, here just for test convenience*/}
       <div>
         <Link to={'/cart'}>
           <button className="Cart">Cart</button>
+        </Link>
+        <Link to={'/login'}>
+          <button className="Login">Login</button>
         </Link>
       </div>
       <div className="productsContainer">

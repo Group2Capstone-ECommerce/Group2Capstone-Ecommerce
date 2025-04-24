@@ -248,11 +248,12 @@ const createUser = async ({ email, username, password_hash, is_admin = false, ma
 const authenticateUser = async ({ username, password }) => {
   console.log("Authenticating user: ", username);
   const SQL = /*sql*/ `
-    SELECT id, password_hash 
+    SELECT *
     FROM users 
     WHERE username = $1;
   `;
   const response = await pool.query(SQL, [username]);
+  console.log(response.rows[0])
 
   if (!response.rows.length) {
     console.error("Invalid username or password");
@@ -260,8 +261,12 @@ const authenticateUser = async ({ username, password }) => {
     error.status = 401;
     throw error;
   }
+  //to get all the user info
+  const user = response.rows[0]
 
   const storedPasswordHash = response.rows[0].password_hash;
+  //or this to just get is_admin status
+  //const isAdmin = response.rows[0].is_admin;
 
   console.log('Password entered:', password);
   console.log('Stored hash:', storedPasswordHash);
@@ -280,7 +285,17 @@ const authenticateUser = async ({ username, password }) => {
     algorithm: "HS256",
   });
   console.log("Generated Token:", token);
-  return { token };
+  return {
+     id: user.id,
+     username: user.username,
+     email: user.email,
+     is_admin: user.is_admin,
+     mailing_address: user.mailing_address,
+     phone: user.phone,
+     created_at: user.created_at,
+     updated_at: user.updated_at,
+     token: token
+   };
 };
 
 // Product
