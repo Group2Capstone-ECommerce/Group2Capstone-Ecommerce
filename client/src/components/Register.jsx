@@ -31,6 +31,7 @@ export default function Register() {
             console.log('Data', data)
             console.log('Status', response.status)
 
+            // TODO: Validation for if user already exists
             if(response.ok){
                 setMessage(data.message || 'Registration Successful!');
                 setMessageType('success');
