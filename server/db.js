@@ -31,7 +31,6 @@ const createTables = async () => {
     const enableUuidExtension = `CREATE EXTENSION IF NOT EXISTS "pgcrypto";`;
     await pool.query(enableUuidExtension);
 
-    /*
     // Drop tables if exist
     console.log('Running dropTablesIfExist query...')
     const dropTablesIfExist = `
@@ -49,7 +48,6 @@ const createTables = async () => {
     `;
     await pool.query(dropTablesIfExist);
     console.log('Finished running dropTablesIfExist query...')
-    */
    
     console.log('Creating products table...');
     
