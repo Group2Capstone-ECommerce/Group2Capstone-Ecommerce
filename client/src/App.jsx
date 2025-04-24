@@ -6,6 +6,7 @@ import ProductList from './components/ProductList'
 import ProductDetails from './components/ProductDetails'
 import Cart from './components/Cart'
 import Register from './components/Register'
+import LoginForm from './components/LoginForm'
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -18,6 +19,7 @@ function App() {
         <Route path='/products/:productId' element={<ProductDetails product={product} setProduct={setProduct}/>} />
         <Route path='/cart' element={<Cart token={token} />}/>
         <Route path='/register' element={<Register/>}/>
+        <Route path= '/login' element={<LoginForm/>}/>
       </Routes>
     </>
   )
