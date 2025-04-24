@@ -23,8 +23,9 @@ const {
     createOrder,
     getCartItems,
     updateProductQuantity, 
-    createOrderItem
-    
+    createOrderItem,
+    getUserByUsername,
+    getUserByEmail
 } = require("./db");
 
 function verifyToken(req, res, next) {
@@ -115,6 +116,17 @@ router.post("/auth/register", async (req, res, next) => {
     if (!email || !username || !password) {
       return res.status(400).json({ error: "Email, username, password are required" });
     }
+
+    // Checks for if username or email already exist in the db
+    const usernameAvailability = await getUserByUsername(username)
+    const emailAvailability = await getUserByEmail(email)
+    if(usernameAvailability){
+      return res.status(400).json({ error: "Username is taken!" });
+    }   
+    if(emailAvailability){
+    return res.status(400).json({ error: "Email is taken!" });
+    }
+
     const newUser = await createUser({ email, username, password_hash: password, is_admin, mailing_address, phone });
     res.status(201).json(newUser);
   } catch (error) {
@@ -128,7 +140,7 @@ router.post("/auth/login", async (req, res, next) => {
     const {username, password} = req.body;
     
     if (!username || !password) {
-      res.status(400).json({error: "Username and/or password are required."});
+      return res.status(400).json({error: "Username and/or password are required."});
     }
 
     res.send(await authenticateUser(req.body));
@@ -285,6 +297,7 @@ router.put('/admin/products/:productId', verifyToken, async(req, res, next) => {
         descriptions: req.body.descriptions,
         price: req.body.price,
         stock_quantity: req.body.stock_quantity,
+        image_url: req.body.image_url,
         is_available: req.body.is_available
     })
     res.status(200).send(response)
