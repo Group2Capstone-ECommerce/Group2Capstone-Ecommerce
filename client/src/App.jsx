@@ -7,6 +7,9 @@ import ProductDetails from './components/ProductDetails'
 import Navigations from './components/Navigations'
 import LoginForm from './components/LoginForm'
 import Register from './components/Register'
+import AdminDashboard from './components/AdminDashboard'
+import Account from './components/Account'
+import Logout from './components/Logout'
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -20,6 +23,9 @@ function App() {
         <Route path='/products/:productId' element={<ProductDetails product={product} setProduct={setProduct}/>} />
         <Route path= '/login' element={<LoginForm/>}/>
         <Route path='/register' element={<Register/>}/>
+        <Route path='/admin' element={<AdminDashboard/>}/>
+        <Route path='/account' element={<Account/>}/>
+        <Route path='/logout' element={<Logout/>}/>
       </Routes>
     </>
   )

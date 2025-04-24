@@ -17,6 +17,7 @@ export default function LoginForm() {
     const [submitting, setSubmitting] = useState(false);
 
     const {token, setToken} = useAuth();
+    const {isAdmin, setIsAdmin} = useAuth();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -47,6 +48,7 @@ export default function LoginForm() {
             console.log('data => ', data);
             if (res.ok) {
               setToken(data.token);
+              setIsAdmin(data.isAdmin);
               setSuccessMsg('Account login successful! Redirecting...');
               setTimeout(() => {
                       navigate('/');

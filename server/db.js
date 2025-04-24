@@ -32,23 +32,23 @@ const createTables = async () => {
     await pool.query(enableUuidExtension);
 
 
-    // //Drop tables if exist
-    // console.log('Running dropTablesIfExist query...')
-    // const dropTablesIfExist = `
-    //   DROP TABLE IF EXISTS products CASCADE;
-    //   DROP TABLE IF EXISTS users CASCADE;
-    //   DROP TABLE IF EXISTS categories CASCADE;
-    //   DROP TABLE IF EXISTS product_categories CASCADE;
-    //   DROP TABLE IF EXISTS carts CASCADE;
-    //   DROP TABLE IF EXISTS cart_items CASCADE;
-    //   DROP TABLE IF EXISTS orders CASCADE;
-    //   DROP TABLE IF EXISTS order_items CASCADE;
-    //   DROP TABLE IF EXISTS billing_info CASCADE;
-    //   DROP TABLE IF EXISTS wishlists CASCADE;
-    //   DROP TABLE IF EXISTS wishlist_items CASCADE;
-    // `;
-    // await pool.query(dropTablesIfExist);
-    // console.log('Finished running dropTablesIfExist query...')
+    //Drop tables if exist
+    console.log('Running dropTablesIfExist query...')
+    const dropTablesIfExist = `
+      DROP TABLE IF EXISTS products CASCADE;
+      DROP TABLE IF EXISTS users CASCADE;
+      DROP TABLE IF EXISTS categories CASCADE;
+      DROP TABLE IF EXISTS product_categories CASCADE;
+      DROP TABLE IF EXISTS carts CASCADE;
+      DROP TABLE IF EXISTS cart_items CASCADE;
+      DROP TABLE IF EXISTS orders CASCADE;
+      DROP TABLE IF EXISTS order_items CASCADE;
+      DROP TABLE IF EXISTS billing_info CASCADE;
+      DROP TABLE IF EXISTS wishlists CASCADE;
+      DROP TABLE IF EXISTS wishlist_items CASCADE;
+    `;
+    await pool.query(dropTablesIfExist);
+    console.log('Finished running dropTablesIfExist query...')
 
    
     console.log('Creating products table...');
@@ -240,7 +240,13 @@ const createUser = async ({ email, username, password_hash, is_admin = false, ma
     mailing_address,
     phone
   ]);
-  return response.rows[0];
+
+  const user = response.rows[0];
+
+  const token = jwt.sign({ id: user.id}, JWT , {
+    algorithm: "HS256",
+  });
+  return {user, token};
 };
 
 
@@ -248,7 +254,7 @@ const createUser = async ({ email, username, password_hash, is_admin = false, ma
 const authenticateUser = async ({ username, password }) => {
   console.log("Authenticating user: ", username);
   const SQL = /*sql*/ `
-    SELECT id, password_hash 
+    SELECT id, password_hash, is_admin 
     FROM users 
     WHERE username = $1;
   `;
@@ -276,11 +282,16 @@ const authenticateUser = async ({ username, password }) => {
     throw error;
   }
 
+  // Grab is_admin so we can use it later
+  const user = response.rows[0];
+  const isAdmin = user.is_admin;
+
   const token = jwt.sign({ id: response.rows[0].id }, JWT , {
     algorithm: "HS256",
   });
   console.log("Generated Token:", token);
-  return { token };
+
+  return { isAdmin, token };
 };
 
 // Product
