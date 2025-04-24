@@ -4,6 +4,7 @@ import './App.css'
 
 import ProductList from './components/ProductList'
 import ProductDetails from './components/ProductDetails'
+import LoginForm from './components/LoginForm'
 import Register from './components/Register'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path='/' element={<ProductList products={products} setProducts={setProducts} />} />
         <Route path='/products/:productId' element={<ProductDetails product={product} setProduct={setProduct}/>} />
+        <Route path= '/login' element={<LoginForm/>}/>
         <Route path='/register' element={<Register/>}/>
       </Routes>
     </>
