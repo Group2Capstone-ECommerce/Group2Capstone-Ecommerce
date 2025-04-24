@@ -765,6 +765,34 @@ const updateProductQuantity = async (productId, newQuantity) => {
   }
 };
 
+// Get user by username
+async function getUserByUsername(username) {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM users WHERE username = $1',
+      [username]
+    );
+    return result.rows[0] || null;
+  } catch (err) {
+    console.error('Error in getUserByUsername:', err);
+    throw err;
+  }
+}
+
+// Get user by email
+async function getUserByEmail(email) {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+    return result.rows[0] || null;
+  } catch (err) {
+    console.error('Error in getUserByEmail:', err);
+    throw err;
+  }
+}
+
 module.exports = {
   query: (text, params) => pool.query(text, params),
   pool,
@@ -794,5 +822,7 @@ module.exports = {
   deleteProductFromCart,
   updateCartItemQuantity,
   getCartItems,
-  updateProductQuantity
+  updateProductQuantity,
+  getUserByUsername,
+  getUserByEmail,
 }
