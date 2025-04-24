@@ -5,6 +5,7 @@ import { Card } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import "../index.css";
+import { useAuth } from "../components/AuthContext.jsx";
 
 export default function LoginForm() {
   const LOGIN_API_URL = "http://localhost:3000/api/auth/login";
@@ -14,6 +15,8 @@ export default function LoginForm() {
     const [successMsg, setSuccessMsg] = useState("");
     const [errors, setErrors] = useState({ username: "", password: ""});
     const [submitting, setSubmitting] = useState(false);
+
+    const {token, setToken} = useAuth();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,8 +43,10 @@ export default function LoginForm() {
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify(form),
             });
-
+            const data = await res.json();
+            console.log('data => ', data);
             if (res.ok) {
+              setToken(data.token);
               setSuccessMsg('Account login successful! Redirecting...');
               setTimeout(() => {
                       navigate('/');
