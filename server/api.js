@@ -23,8 +23,9 @@ const {
     createOrder,
     getCartItems,
     updateProductQuantity, 
-    createOrderItem
-    
+    createOrderItem,
+    getUserByUsername,
+    getUserByEmail
 } = require("./db");
 
 function verifyToken(req, res, next) {
@@ -382,6 +383,20 @@ router.put('/cart/:productId', verifyToken, async (req, res, next) => {
     console.error('Error updating cart item:', error);
     next(error);
   }
+});
+
+// GET /api/auth/check-username?value=someusername
+router.get('/auth/check-username', async (req, res) => {
+  const { value } = req.query;
+  const user = await getUserByUsername(value);
+  res.json({ available: !user });
+});
+
+// GET /api/auth/check-email?value=email
+router.get('/auth/check-email', async (req, res) => {
+  const { value } = req.query;
+  const email = await getUserByEmail(value);
+  res.json({ available: !email });
 });
 
 module.exports = router
