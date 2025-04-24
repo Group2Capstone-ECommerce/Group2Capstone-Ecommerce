@@ -285,6 +285,7 @@ router.put('/admin/products/:productId', verifyToken, async(req, res, next) => {
         descriptions: req.body.descriptions,
         price: req.body.price,
         stock_quantity: req.body.stock_quantity,
+        image_url: req.body.image_url,
         is_available: req.body.is_available
     })
     res.status(200).send(response)
