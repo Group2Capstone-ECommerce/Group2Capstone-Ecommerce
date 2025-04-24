@@ -31,23 +31,25 @@ const createTables = async () => {
     const enableUuidExtension = `CREATE EXTENSION IF NOT EXISTS "pgcrypto";`;
     await pool.query(enableUuidExtension);
 
-    // Drop tables if exist
-    console.log('Running dropTablesIfExist query...')
-    const dropTablesIfExist = `
-      DROP TABLE IF EXISTS products CASCADE;
-      DROP TABLE IF EXISTS users CASCADE;
-      DROP TABLE IF EXISTS categories CASCADE;
-      DROP TABLE IF EXISTS product_categories CASCADE;
-      DROP TABLE IF EXISTS carts CASCADE;
-      DROP TABLE IF EXISTS cart_items CASCADE;
-      DROP TABLE IF EXISTS orders CASCADE;
-      DROP TABLE IF EXISTS order_items CASCADE;
-      DROP TABLE IF EXISTS billing_info CASCADE;
-      DROP TABLE IF EXISTS wishlists CASCADE;
-      DROP TABLE IF EXISTS wishlist_items CASCADE;
-    `;
-    await pool.query(dropTablesIfExist);
-    console.log('Finished running dropTablesIfExist query...')
+
+    // //Drop tables if exist
+    // console.log('Running dropTablesIfExist query...')
+    // const dropTablesIfExist = `
+    //   DROP TABLE IF EXISTS products CASCADE;
+    //   DROP TABLE IF EXISTS users CASCADE;
+    //   DROP TABLE IF EXISTS categories CASCADE;
+    //   DROP TABLE IF EXISTS product_categories CASCADE;
+    //   DROP TABLE IF EXISTS carts CASCADE;
+    //   DROP TABLE IF EXISTS cart_items CASCADE;
+    //   DROP TABLE IF EXISTS orders CASCADE;
+    //   DROP TABLE IF EXISTS order_items CASCADE;
+    //   DROP TABLE IF EXISTS billing_info CASCADE;
+    //   DROP TABLE IF EXISTS wishlists CASCADE;
+    //   DROP TABLE IF EXISTS wishlist_items CASCADE;
+    // `;
+    // await pool.query(dropTablesIfExist);
+    // console.log('Finished running dropTablesIfExist query...')
+
    
     console.log('Creating products table...');
     
@@ -58,7 +60,7 @@ const createTables = async () => {
         product_name VARCHAR(100) NOT NULL,
         descriptions TEXT,
         price NUMERIC(10, 2) NOT NULL,
-        stock_quantity INTEGER DEFAULT 0,
+        stock_quantity INTEGER CHECK (stock_quantity >= 0) DEFAULT 0,
         image_url TEXT DEFAULT NULL,
         is_available BOOLEAN NOT NULL DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT NOW(),
@@ -599,20 +601,28 @@ const getProductById = async(product_id) => {
 }
 
 
-const editProduct = async({product_id, product_name, descriptions, price, stock_quantity, is_available}) => {
+const editProduct = async({product_id, product_name, descriptions, price, stock_quantity, image_url, is_available}) => {
   const SQL = /*sql*/`
     UPDATE products 
-    SET  product_name = $2, descriptions = $3, price = $4, stock_quantity = $5, is_available = $6, updated_at = NOW()
+    SET  
+      product_name = $2, 
+      descriptions = $3, 
+      price = $4, 
+      stock_quantity = $5, 
+      image_url = $6, 
+      is_available = $7, 
+      updated_at = NOW()
     WHERE id = $1
     RETURNING *
   `
-  const product = await getProductById({product_id})
+  const product = await getProductById(product_id)
   values = [
     product_id, 
     product_name ?? product.product_name, 
     descriptions ?? product.descriptions, 
     price ?? product.price,
     stock_quantity ?? product.stock_quantity,
+    image_url ?? product.image_url,
     is_available ?? product.is_available
   ]
   const response = await pool.query(SQL, values)
