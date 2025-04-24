@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
     const REGISTER_API_URL = 'http://localhost:3000/api/auth/register';  
@@ -6,9 +7,9 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
-    const [messageType, setMessageType] = useState('');//'success' or 'error'
-
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -33,34 +34,32 @@ export default function Register() {
 
             // TODO: Validation for if user already exists
             if(response.ok){
-                setMessage(data.message || 'Registration Successful!');
-                setMessageType('success');
+                setSuccessMessage('Account created successfully! Redirecting...');
+                setErrorMessage('');
+
+                setTimeout(() => {
+                    navigate('/');
+                }, 3000);
             } else {
-                setMessage(data.message || 'Registration Failed.');
+                const data = await response.json();
+                setErrorMessage(data.message || 'Signup failed');
+                setSuccessMessage('');
             }
-            setMessageType('error')
             
         } catch (error) {
-            console.error('Error during registration:', error);
-            setMessage('An unexpected error occurred');
-            setMessageType('error')
+            setErrorMessage('An error occurred during signup');
+            setSuccessMessage('');
         }
     } 
 
-    const renderMessage = () => {
-        if(message){
-            return(
-                <p className={messageType}>{message}</p>
-            );
-        }
-        return null
-    }
-
     return (
         <div className='registerPage'>
+            <h1>Register</h1>
+            {successMessage && <div className="success">{successMessage}</div>}
+            {errorMessage && <div className="error">{errorMessage}</div>}
+            <br />
             <form onSubmit={handleSubmit}>
                 {/*  input boxes */}
-                <h1>Register</h1>
                 <div>
                     Name: <input value={name} onChange={(e) => setName(e.target.value)} required/>
                 </div>
@@ -75,9 +74,6 @@ export default function Register() {
                 </div>
                 <button>Submit</button>
             </form>
-            <div className='Message'>
-                {renderMessage()}
-            </div>
         </div>
     )
 }
