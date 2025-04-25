@@ -803,19 +803,28 @@ async function getUserByEmail(email) {
 }
 
 // Update user email
-const updateUserEmail = async ({ userId, email }) => {
-  if (!email) return null;
-
-  const SQL = `
+const updateUserEmail = async (userId, newEmail) => {
+  const SQL = /*sql*/ `
     UPDATE users
     SET email = $1
     WHERE id = $2
-    RETURNING id, username, email;
+    RETURNING id, email;
   `;
+  try {
+    const result = await pool.query(SQL, [newEmail, userId]);
+    
+    console.log("Update result:", result);
 
-  const values = [email, userId];
-  const result = await pool.query(SQL, values);
-  return result.rows[0];
+    // If no rows were updated, return null
+    if (result.rows.length === 0) {
+      return null;
+    }
+    
+    return result.rows[0]; // Return updated user data
+  } catch (error) {
+    console.error("Error updating email:", error);
+    throw new Error("Error updating email.");
+  }
 };
 
 // Check if email exists

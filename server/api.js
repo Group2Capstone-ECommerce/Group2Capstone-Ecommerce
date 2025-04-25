@@ -411,29 +411,25 @@ router.put("/users/me", verifyToken, async (req, res, next) => {
   const { email } = req.body;
   const userId = req.user.id;
 
-  if (!email) {
-    return res.status(400).json({ error: "Email is required." });
+try {
+  // Check if the email is already in use by another user
+  const emailExists = await checkEmailExists(email);
+  if (emailExists) {
+    return res.status(409).json({ error: "Email is already in use." });
   }
 
-  try {
-    // Check if the email is already in use by another user
-    const existingUser = await checkEmailExists(email);
-    if (existingUser) {
-      return res.status(409).json({ error: "Email is already in use." });
-    }
+  // Proceed to update the user's email
+  const updatedUser = await updateUserEmail(userId, email);
 
-    // Proceed to update the user's email
-    const updatedUser = await updateUserEmail(userId, email);
-
-    if (!updatedUser) {
-      return res.status(500).json({ error: "Error updating email." });
-    }
-
-    return res.status(200).json({ message: "Email updated successfully." });
-  } catch (err) {
-    console.error("Error in PUT /users/email:", err);
-    return res.status(500).json({ error: "Internal server error" });
+  if (!updatedUser) {
+    return res.status(500).json({ error: "Error updating email." });
   }
+
+  return res.status(200).json({ message: "Email updated successfully." });
+} catch (err) {
+  console.error("Error in PUT /users/email:", err);
+  return res.status(500).json({ error: "Internal server error" });
+}
 });
 
 module.exports = router
