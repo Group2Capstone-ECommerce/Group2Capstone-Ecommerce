@@ -10,6 +10,7 @@ import Register from './components/Register'
 import AdminDashboard from './components/AdminDashboard'
 import Account from './components/Account'
 import Logout from './components/Logout'
+import ViewUsersTab from './components/ViewUsersTab'
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -24,6 +25,7 @@ function App() {
         <Route path= '/login' element={<LoginForm/>}/>
         <Route path='/register' element={<Register/>}/>
         <Route path='/admin' element={<AdminDashboard/>}/>
+        <Route path='/admin/users' element={<ViewUsersTab />}/>
         <Route path='/account' element={<Account/>}/>
         <Route path='/logout' element={<Logout/>}/>
       </Routes>

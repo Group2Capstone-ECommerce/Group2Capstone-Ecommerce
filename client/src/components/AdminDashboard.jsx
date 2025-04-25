@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useAuth } from "../components/AuthContext.jsx";
-// import ViewUsersTab from ...
+import ViewUsersTab from "../components/ViewUsersTab.jsx"
 //import AddEditProductsTab from ...
 
 
 export default function AdminDashboard() {
   const { isAdmin, setIsAdmin } = useAuth();
-  const tabs = ["Dashboard", "View Users", "Add/Edit Products"];
+  const tabs = ["View Users", "Add/Edit Products"];
   const [activeTab, setActiveTab] = useState("Dashboard");
 
   return (
@@ -33,8 +33,7 @@ export default function AdminDashboard() {
 
           {/*Tab Content*/}
           <div className="tab-content">
-            {activeTab === "View Users" && /*<ViewUsersTab />*/}
-            {activeTab === "Add/Edit Products" && /*<AddEditProductsTab />*/}
+            {activeTab === "View Users" && <ViewUsersTab />}
           </div>
           </>
         )}
