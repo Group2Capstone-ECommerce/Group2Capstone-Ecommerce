@@ -416,16 +416,17 @@ const checkActiveCartUnique = async (user_id) => {
 // Get cart
 const getCart = async (userId) => {
   try {
-    const query = `
+    const query = /*sql*/`
       SELECT 
         products.id AS product_id,
         products.product_name,
         products.price,
-        cart_items.quantity
+        cart_items.quantity,
+        products.image_url
       FROM carts
       JOIN cart_items ON carts.id = cart_items.cart_id
       JOIN products ON cart_items.product_id = products.id
-      WHERE carts.user_id = $1
+      WHERE carts.user_id = $1 AND carts.is_active = true
     `;
 
     const { rows } = await pool.query(query, [userId]);
@@ -448,7 +449,7 @@ const checkProductExists = async (product_id) => {
 };
 
 // CartItems
-const createCartItem = async (cart_id, product_id, quantity, created_at, updated_at) => {
+const createCartItem = async (cart_id, product_id, quantity) => {
   const productResult = await pool.query(`SELECT price FROM products WHERE id = $1`, [product_id]);
   if (productResult.rows.length === 0) {
     throw new Error("Product does not exist.");
@@ -462,13 +463,11 @@ const createCartItem = async (cart_id, product_id, quantity, created_at, updated
       cart_id, 
       product_id, 
       quantity, 
-      price_at_addition,
-      created_at, 
-      updated_at
-    ) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *;
+      price_at_addition
+    ) VALUES($1, $2, $3, $4, $5) RETURNING *;
   `;
   
-  const response = await pool.query(SQL, [uuid.v4(), cart_id, product_id, quantity, price_at_addition, created_at, updated_at]);
+  const response = await pool.query(SQL, [uuid.v4(), cart_id, product_id, quantity, price_at_addition]);
   return response.rows[0];
 };
 
