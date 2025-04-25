@@ -13,54 +13,42 @@ export default function LoginForm() {
     const navigate = useNavigate();
     const [form, setForm] = useState({ username: "", password: ""});
     const [successMsg, setSuccessMsg] = useState("");
-    const [errors, setErrors] = useState({ username: "", password: ""});
+    const [errorMessage, setErrorMessage] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
     const {token, setToken} = useAuth();
     const {isAdmin, setIsAdmin} = useAuth();
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((p) => ({ ...p, [name]: value}));
-        setErrors((p) => ({ ...p, [name]: ""}));
-    };
-
-    const validate = () => {
-        const newErr = {
-            username: form.username.trim() ? "": "Username required",
-            password: form.password.trim() ? "": "Password required",
-        };
-      setErrors(newErr);
-      return !newErr.username && !newErr.password;
-    };
-
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!validate()) return;
-        setSubmitting(true);
-        try {
-            const res = await fetch(LOGIN_API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json"},
-                body: JSON.stringify(form),
-            });
-            const data = await res.json();
-            console.log('data => ', data);
-            if (res.ok) {
-              setToken(data.token);
-              setIsAdmin(data.isAdmin);
-              setSuccessMsg('Account login successful! Redirecting...');
-              setTimeout(() => {
-                      navigate('/');
-              }, 3000);
-            } else {
-              throw new Error("Invalid credentials");
-            }
-        } catch (err) {
-            alert(err.message);
-        } finally {
-            setSubmitting(false);
+      e.preventDefault();
+      setSubmitting(true);
+      setErrorMessage("");
+    
+      try {
+        const res = await fetch(LOGIN_API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        });
+
+        const data = await res.json();
+        console.log("data =>", data);
+    
+        if (res.ok && data.token) {
+          setToken(data.token);
+          setIsAdmin(data.isAdmin);
+          setSuccessMsg("Account login successful! Redirecting...");
+          setTimeout(() => {
+            navigate("/");
+          }, 3000);
+        } else {
+          setErrorMessage(data.error || "Invalid login credentials");
         }
+      } catch (err) {
+        setErrorMessage(err.message || "Invalid login credentials");
+      } finally {
+        setSubmitting(false);
+      }
     };
 
     return (
@@ -69,6 +57,7 @@ export default function LoginForm() {
         <Card.Body>
           <h1 className="login-title">Login</h1>
           {successMsg && <div className="success">{successMsg}</div>}
+          {errorMessage && <div className="failure">{errorMessage}</div>}
           <br />
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="username" className="field">
@@ -77,10 +66,9 @@ export default function LoginForm() {
                 name="username"
                 placeholder="Username"
                 value={form.username}
-                onChange={handleChange}
                 disabled={submitting}
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
               />
-              {errors.username && <p className="text-danger">{errors.username}</p>}
             </Form.Group>
             <Form.Group controlId="password" className="field">
               <Form.Label>Password</Form.Label>
@@ -89,10 +77,9 @@ export default function LoginForm() {
                 name="password"
                 placeholder="Password"
                 value={form.password}
-                onChange={handleChange}
                 disabled={submitting}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
-              {errors.password && <p className="text-danger">{errors.password}</p>}
             </Form.Group>
             <Button 
             type="submit"
