@@ -240,13 +240,20 @@ const createUser = async ({ email, username, password_hash, is_admin = false, ma
     mailing_address,
     phone
   ]);
-  return response.rows[0];
+
+  const user = response.rows[0];
+
+  const token = jwt.sign({ id: user.id}, JWT , {
+    algorithm: "HS256",
+  });
+  return {user, token};
 };
 
 
 // Authentication
 const authenticateUser = async ({ username, password }) => {
-  console.log("Authenticating user: ", username);
+  console.log("Authenticating user:", username);
+
   const SQL = /*sql*/ `
     SELECT *
     FROM users 
@@ -257,9 +264,7 @@ const authenticateUser = async ({ username, password }) => {
 
   if (!response.rows.length) {
     console.error("Invalid username or password");
-    const error = Error("Invalid username or password");
-    error.status = 401;
-    throw error;
+    return null;
   }
   //to get all the user info
   const user = response.rows[0]
@@ -274,16 +279,19 @@ const authenticateUser = async ({ username, password }) => {
   // Compare provided password with the stored hash
   const isPasswordValid = await bcrypt.compare(password, storedPasswordHash);
 
-  if (!response.rows.length || !isPasswordValid) {
+  if (!isPasswordValid) {
     console.error("Invalid username or password");
-    const error = Error("Invalid username or password");
-    error.status = 401;
-    throw error;
+    return null;
   }
 
-  const token = jwt.sign({ id: response.rows[0].id }, JWT , {
+  // Grab is_admin so we can use it later
+  const user = response.rows[0];
+  const isAdmin = user.is_admin;
+
+  const token = jwt.sign({ id: user.id }, JWT, {
     algorithm: "HS256",
   });
+
   console.log("Generated Token:", token);
   return {
      id: user.id,

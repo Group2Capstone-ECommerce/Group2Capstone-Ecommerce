@@ -143,9 +143,16 @@ router.post("/auth/login", async (req, res, next) => {
       return res.status(400).json({error: "Username and/or password are required."});
     }
 
-    res.send(await authenticateUser(req.body));
+    const user = await authenticateUser({ username, password });
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid username or password." });
+    }
+
+    res.json(user);
   } catch (ex) {
-    next(ex);
+      console.error("Login error:", ex);
+      res.status(500).json({ error: "Internal server error" });
   }
 });
 

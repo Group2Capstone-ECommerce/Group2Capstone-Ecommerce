@@ -41,10 +41,36 @@
   color: #888;
 }
 
+#navBar {
+  width: 100%;
+  height: 100px;
+  border: 1px solid black;
+  background-color: pink;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  z-index: 1000;
+  margin-bottom: 1000px;
+}
+
+.navLinks {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+}
+
+.navLinks a {
+  font-size: 40px;
+}
+
 .productsContainer {
   display: grid;
   grid-template-columns: auto auto auto;
   justify-content: center;
+  margin: 75px;
 }
 
 .productCard {
