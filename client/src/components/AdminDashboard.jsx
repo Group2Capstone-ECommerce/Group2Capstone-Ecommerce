@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../components/AuthContext.jsx";
+// import ViewUsersTab from ...
+//import AddEditProductsTab from ...
+
 
 export default function AdminDashboard() {
   const { isAdmin, setIsAdmin } = useAuth();
@@ -30,9 +33,8 @@ export default function AdminDashboard() {
 
           {/*Tab Content*/}
           <div className="tab-content">
-            {activeTab === "Dashboard" && <p>Welcome Admin!</p>}
-            {activeTab === "View Users" && <p>All Users:</p>}
-            {activeTab === "Add/Edit Products" && <p>Add/Edit Products:</p>}
+            {activeTab === "View Users" && /*<ViewUsersTab />*/}
+            {activeTab === "Add/Edit Products" && /*<AddEditProductsTab />*/}
           </div>
           </>
         )}
