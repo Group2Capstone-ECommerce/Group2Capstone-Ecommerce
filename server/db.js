@@ -802,6 +802,40 @@ async function getUserByEmail(email) {
   }
 }
 
+// Update user email
+const updateUserEmail = async ({ userId, email }) => {
+  if (!email) return null;
+
+  const SQL = `
+    UPDATE users
+    SET email = $1
+    WHERE id = $2
+    RETURNING id, username, email;
+  `;
+
+  const values = [email, userId];
+  const result = await pool.query(SQL, values);
+  return result.rows[0];
+};
+
+// Check if email exists
+const checkEmailExists = async (email) => {
+  const SQL = /*sql*/ `
+    SELECT 1
+    FROM users
+    WHERE email = $1;
+  `;
+
+  try {
+    const result = await pool.query(SQL, [email]);
+    // If result.rows is not empty, the email already exists
+    return result.rows.length > 0;
+  } catch (error) {
+    console.error("Error checking if email exists:", error);
+    throw new Error("Database error occurred while checking email.");
+  }
+};
+
 module.exports = {
   query: (text, params) => pool.query(text, params),
   pool,
@@ -834,4 +868,6 @@ module.exports = {
   updateProductQuantity,
   getUserByUsername,
   getUserByEmail,
+  updateUserEmail,
+  checkEmailExists
 }
