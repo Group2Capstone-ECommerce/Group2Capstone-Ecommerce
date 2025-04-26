@@ -812,8 +812,6 @@ const updateUserEmail = async (userId, newEmail) => {
   `;
   try {
     const result = await pool.query(SQL, [newEmail, userId]);
-    
-    console.log("Update result:", result);
 
     // If no rows were updated, return null
     if (result.rows.length === 0) {
