@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../components/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Account() {
   const [user, setUser] = useState(null);
@@ -11,7 +12,15 @@ export default function Account() {
   const USER_API_URL = "http://localhost:3000/api/users/me";
   const UPDATE_EMAIL_API_URL = "http://localhost:3000/api/users/me";
 
+  const navigate = useNavigate();
+  
   useEffect(() => {
+    if (!token) {
+      // Redirect to login page if user is not logged in
+      navigate("/login");
+      return;
+    }
+
     const fetchUser = async () => {
       try {
         const res = await fetch(USER_API_URL, {
