@@ -6,7 +6,7 @@ import ProductList from './components/ProductList'
 import ProductDetails from './components/ProductDetails'
 import LoginForm from './components/LoginForm'
 import Navigations from './components/Navigations'
-
+import Cart from './components/Cart'
 import Register from './components/Register'
 import AdminDashboard from './components/AdminDashboard'
 import Account from './components/Account'

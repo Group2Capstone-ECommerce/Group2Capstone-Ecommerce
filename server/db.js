@@ -284,10 +284,6 @@ const authenticateUser = async ({ username, password }) => {
     return null;
   }
 
-  // Grab is_admin so we can use it later
-  const user = response.rows[0];
-  const isAdmin = user.is_admin;
-
   const token = jwt.sign({ id: user.id }, JWT, {
     algorithm: "HS256",
   });
