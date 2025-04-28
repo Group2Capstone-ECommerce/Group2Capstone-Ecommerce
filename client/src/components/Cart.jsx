@@ -1,57 +1,23 @@
 //Build shopping cart page
 
-// Page /cart
-// Displays each product from user's cart
-// Include name, quantity of each item
-// Display cart total
-// Include button to proceed to checkout
-// Fetches GET /api/cart
 
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 import { useAuth } from "../components/AuthContext.jsx";
+import './CSS/cart.css'
 
 export default function Cart() {
     const navigate = useNavigate()
-    const [cartItems, setCartItems] = useState(null)
+    const [cartItems, setCartItems] = useState([])
     const [selectedItems, setSelectedItems] = useState([]);
+    const [selectAll, setSelectAll] = useState(false);
+    //const [CreatedOrder, setCreatedOrder] = useState('')
+    const [refreshCart, setRefreshCart] = useState(false);
     const Cart_API_URL = 'http://localhost:3000/api/cart';
+    const Order_API_URL = 'http://localhost:3000/api/order';
     const { token } = useAuth();
-    console.log('token is =>', token)
-
-    //select or cancle select single cart item
-    const toggleSelect = (productId) => {
-        setSelectedItems((prevItem) => 
-            prevItem.includes(productId) ? 
-            prevItem.filter(prevItemId => prevItemId !== productId) : 
-            [...prevItem, id])
-    }
-
-    //calculate total price
-    const calculateTotal = () => {
-        const selectedProducts = cartItems.filter(item => selectedItems.includes(item.id));
-        return selectedProducts.reduce((total, item) => total + item.price, 0);
-    };
-
-    //select all cart items
-    const selectAll = () => {
-        const allIds = cartItems.map(item => item.id);
-        setSelectedItems(allIds);
-    };
-
-    //cancle select all
-    const clearAll = () => {setSelectedItems([]);};
-
-    //handle checkout; 
-    const handleCheckout = async(e) => {
-        e.preventDefault()
-        const selectedProducts = cartItems.filter(item => selectedItems.includes(item.id));
-        console.log("selected items' price is => ", selectedProducts);
-        console.log("total price is => ", calculateTotal());
-        //fetch with creating order api
-        const createOrder = await fetch()
-    };
+    //console.log('token is =>', token)
 
     //fetch cart items API to get user's cart info
     useEffect(() => {
@@ -64,13 +30,91 @@ export default function Cart() {
                 })
                 const data = await response.json();
                 console.log('Cart items data is =>', data)
-                setCartItems(data)
+                setCartItems(data || [])
             } catch (error) {
-                console.error('Error getting cart items...')
+                console.error('Error getting cart items...', error)
             }
         };
         fetchCart()
-    }, [])
+    }, [refreshCart])
+
+    //Change the quantity of a product in my cart.
+    const handleEditQuantity = async(e) => {
+        e.preventDefault()
+        const response = await fetch(`${Cart_API_URL}/`)
+    }
+    //Remove a product from my cart.
+    const handleDelete = async(itemId) => {
+        console.log('Trying to delete', itemId);
+        try {
+            const response = await fetch(`${Cart_API_URL}/${itemId}`,{
+                method: 'DELETE',
+                headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            if(response.ok) {
+                console.log('response is =>', response)
+                setRefreshCart(prev => !prev)
+            } else {
+                console.error('Delete failed:', response.statusText);
+            }
+        } catch (error) {
+            console.log('Error deleting item', error)
+        }
+    }
+
+    //select or cancle select single cart item
+    const toggleSelect = (productId) => {
+        setSelectedItems((prevItem) => 
+            prevItem.includes(productId) ? 
+            prevItem.filter(prevItemId => prevItemId !== productId) : 
+            [...prevItem, productId])
+    }
+
+    //calculate total price
+    const calculateTotal = () => {
+        return cartItems
+          .filter((item) => selectedItems.includes(item.product_id))
+          .reduce((total, item) => total + item.price * item.quantity, 0)
+          .toFixed(2);
+      };
+
+    //handle select/unselect  all cart items
+    const handleSelectAll = () => {
+        if (selectAll) {
+          setSelectedItems([]);
+        } else {
+          setSelectedItems(cartItems?.map((item) => item.product_id));
+        }
+        setSelectAll(!selectAll);
+      };
+    
+
+    //handle checkout; checking out with a simple confirmation page.
+    const handleCheckout = async(e) => {
+        e.preventDefault()
+        const selectedProducts = cartItems.filter(item => selectedItems.includes(item.id));
+        console.log("selected items => ", selectedProducts);
+        console.log("total price is => ", calculateTotal());
+        //fetch with creating order api
+        const createOrder = await fetch(Order_API_URL,{
+            method: 'POST',
+            headers:{
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(selectedProducts),
+        })
+        const order = await createOrder.json()
+        console.log('order is =>', order)
+        if(order.ok){
+            //setCreatedOrder(order)
+            setRefreshCart(prev => !prev)
+            //return order.message
+        }
+    };
+    //console.log('createdOrder =>', CreatedOrder)
+
     return (
         <>
             {!token && (
@@ -85,40 +129,45 @@ export default function Cart() {
                 </div>
             )}
             <div className="cartItemsContainer">
-                <h2>🛒 My Cart</h2>
-                {!cartItems ? (
-                    <p>Empty cart...Let's pick up something you like!</p>
+                <h3>🛒Products in My Cart: {cartItems.length}</h3>
+                {!cartItems.length ? (
+                    <p>Empty cart...Let's shop something you like!</p>
                     ) : (
-                    cartItems.map((cartItem) => 
-                        <div key={cartItem.product_id} id={cartItem.product_id} className="cartCard">
-                            <ul type='checkbox'>
-                                <li>
-                                <input
-                                    type="checkbox"
-                                    checked={selectedItems.includes(cartItem.id)}
-                                    onChange={() => toggleSelect(cartItem.id)}
-                                />
-                                    <img
-                                        src={cartItem.image_url || stockImage}
-                                        alt={cartItem.product_name}
-                                    />
-                                    <br/>
-                                    {cartItem.product_name}
-                                    <br/>
-                                    {cartItem.quantity}
-                                    <br/>
-                                    {cartItem.price}
-                                </li>
-                            </ul>
+                    cartItems?.map((item) => 
+                        <div key={item.product_id} className="cartCard">
+                            <input
+                                type="checkbox"
+                                checked={selectedItems.includes(item.product_id)}
+                                onChange={() => toggleSelect(item.product_id)}
+                            />
+                            <img
+                                src={item.image_url || stockImage}
+                                alt={item.product_name}
+                            />
+                                <Link to={`/products/${item.product_id}`}>
+                                    <h4>{item.product_name}</h4>
+                                </Link>
+                                
+                                <p>Quantity: {item.quantity}</p>
+                                <p>Price: ${item.price}</p>
+                                <button className="delete" onClick={() => handleDelete(item.product_id)}>Delete</button>
                         </div>
                     )
                 )}
             </div>
-            <div>
-                <button>SelectAll</button>
-                <p>Total Price: $</p>
-                <button>Checkout</button>
-            </div>
+            {cartItems.length > 0 && (
+                <div className="cartActions">
+                    <button onClick={handleSelectAll} disabled={cartItems.length === 0}>
+                        {selectAll ? "Unselect All" : "Select All"}
+                    </button>
+
+                    <p>Total Price: ${calculateTotal()}</p>
+
+                    <button onClick={handleCheckout} disabled={selectedItems.length === 0}>
+                        Checkout
+                    </button>
+                </div>
+      )}
         </>
     )
 

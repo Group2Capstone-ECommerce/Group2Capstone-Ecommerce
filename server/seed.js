@@ -138,11 +138,11 @@ async function seedFakeData() {
         createProductCategory({product_id: swimwear.id,category_id: allProducts.id}),
     ])
 
-    // CARTS
+    // Carts
     const [cartBob, cartJack, cartRick] = await Promise.all([
-        createCart(bob.id, true),
-        createCart(jack.id, true),
-        createCart(rick.id, true)
+      createCart(bob.user.id, true),
+      createCart(jack.user.id, true),
+      createCart(rick.user.id, true),
     ]);
 
     // CART ITEMS

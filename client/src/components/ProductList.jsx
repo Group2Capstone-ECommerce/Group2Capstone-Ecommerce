@@ -19,7 +19,7 @@ export default function ProductList({ products, setProducts }) {
     };
 
     fetchProducts();
-  }, [setProducts]);
+  }, []);
 
   return (
     <>
@@ -27,7 +27,7 @@ export default function ProductList({ products, setProducts }) {
         {products.length === 0 ? (
           <p>Loading products...</p>
         ) : (
-          products.map((product) => (
+          products?.map((product) => (
             <div key={product.id} id={product.id} className="productCard">
               <h3>Product Name: {product.product_name}</h3>
               <img
