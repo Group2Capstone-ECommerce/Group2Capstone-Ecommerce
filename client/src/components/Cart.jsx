@@ -39,10 +39,81 @@ export default function Cart() {
     }, [refreshCart])
 
     //Change the quantity of a product in my cart.
-    const handleEditQuantity = async(e) => {
-        e.preventDefault()
-        const response = await fetch(`${Cart_API_URL}/`)
+    const handleEditQuantity = async(itemId, newQuantity) => {
+        try {
+            
+            const response = await fetch(`${Cart_API_URL}/${itemId}`,{
+                method: 'PUT',
+                headers:{
+                    'Content-Type': 'application/json',  
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ quantity: newQuantity })
+            })
+            if(response.ok) {
+                const data = await response.json()
+                console.log('New quantity =>', data)
+                setRefreshCart(prev => !prev)
+            }  else {
+                console.error('Failed to edit quantity', response.status);
+            }
+        } catch (error) {
+            console.error(error)
+        }
     }
+
+    //Add quantity ++
+    const quantityAdd = async(itemId, itemQuantity) => {
+        try {
+            const response = await fetch(`${Cart_API_URL}/${itemId}`,{
+                method: 'PUT',
+                headers:{
+                    'Content-Type': 'application/json',  
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ quantity: itemQuantity + 1})
+            })
+            if(response.ok) {
+                const data = await response.json()
+                console.log('New quantity =>', data)
+                setRefreshCart(prev => !prev)
+            }  else {
+                console.error('Failed to edit quantity', response.status);
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    //Minus quantity --
+    const quantityMinus = async(itemId, itemQuantity) => {
+        try {
+            if (itemQuantity <= 1) {
+              console.warn('Quantity cannot be less than 1');
+              return;
+            }
+        
+            const response = await fetch(`${Cart_API_URL}/${itemId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+              },
+              body: JSON.stringify({ quantity: itemQuantity - 1 })
+            });
+        
+            if (response.ok) {
+              const data = await response.json();
+              console.log('New quantity =>', data);
+              setRefreshCart(prev => !prev);
+            } else {
+              console.error('Failed to minus quantity', response.status);
+            }
+        } catch (error) {
+            console.error('Error minus quantity', error);
+        }
+    }
+
     //Remove a product from my cart.
     const handleDelete = async(itemId) => {
         console.log('Trying to delete', itemId);
@@ -117,6 +188,7 @@ export default function Cart() {
 
     return (
         <>
+
             {!token && (
                 <div>
                     <p>Login/Register to explore more!</p>
@@ -128,33 +200,44 @@ export default function Cart() {
                     </Link>
                 </div>
             )}
-            <div className="cartItemsContainer">
-                <h3>🛒Products in My Cart: {cartItems.length}</h3>
-                {!cartItems.length ? (
-                    <p>Empty cart...Let's shop something you like!</p>
-                    ) : (
-                    cartItems?.map((item) => 
-                        <div key={item.product_id} className="cartCard">
-                            <input
-                                type="checkbox"
-                                checked={selectedItems.includes(item.product_id)}
-                                onChange={() => toggleSelect(item.product_id)}
-                            />
-                            <img
-                                src={item.image_url || stockImage}
-                                alt={item.product_name}
-                            />
-                                <Link to={`/products/${item.product_id}`}>
-                                    <h4>{item.product_name}</h4>
-                                </Link>
-                                
-                                <p>Quantity: {item.quantity}</p>
-                                <p>Price: ${item.price}</p>
-                                <button className="delete" onClick={() => handleDelete(item.product_id)}>Delete</button>
-                        </div>
-                    )
-                )}
-            </div>
+            {token && (
+                <div className="cartItemsContainer">
+                    <h3>🛒Products in My Cart: {cartItems.length}</h3>
+                    {!cartItems.length ? (
+                        <p>Empty cart...Let's shop something you like!</p>
+                        ) : (
+                        cartItems?.map((item) => 
+                            <div key={item.product_id} className="cartCard">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedItems.includes(item.product_id)}
+                                    onChange={() => toggleSelect(item.product_id)}
+                                />
+                                <img
+                                    src={item.image_url || stockImage}
+                                    alt={item.product_name}
+                                />
+                                    <Link to={`/products/${item.product_id}`}>
+                                        <h4>{item.product_name}</h4>
+                                    </Link>
+                                    <div className="quantity-control">
+                                        {/* {<label>Quantity: </label>} */}
+                                        <button className='quantityEditButton' onClick={()=> quantityAdd(item.product_id, item.quantity)}> + </button>
+                                        <input
+                                            type="number"
+                                            className="quantityInput"
+                                            value={item.quantity}
+                                            onChange={(e) => handleEditQuantity(item.product_id, parseInt(e.target.value))}
+                                        />
+                                        <button className='quantityEditButton' onClick={()=> quantityMinus(item.product_id, item.quantity)}> - </button>
+                                    </div>
+                                    <p>Price: ${item.price}</p>
+                                    <button className="delete" onClick={() => handleDelete(item.product_id)}>Delete</button>
+                            </div>
+                        )
+                    )}
+                </div>
+            )}
             {cartItems.length > 0 && (
                 <div className="cartActions">
                     <button onClick={handleSelectAll} disabled={cartItems.length === 0}>
@@ -167,7 +250,7 @@ export default function Cart() {
                         Checkout
                     </button>
                 </div>
-      )}
+            )}
         </>
     )
 

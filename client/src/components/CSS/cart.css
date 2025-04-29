@@ -2,7 +2,6 @@
 
 .cartItemsContainer {
     width: 100%;
-
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -93,6 +92,39 @@
 .loginButton:hover, .registerButton:hover {
     background-color: #1976D2;
 }
+
+.quantity-control {
+    display: flex;
+    margin: 0;
+    align-items: center;
+    gap: 10px; /* 元素之间间距 */
+    flex-wrap: wrap; /* 小屏时自动换行 */
+  }
+  
+.quantityEditButton {
+    padding: 5px 10px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 4px;
+}
+  
+.quantityInput {
+    width: 35px;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+  
+.quantity-control p {
+    margin-left: 20px;
+    font-weight: bold;
+}
+  
+  
   
 div {
     text-align: center;
