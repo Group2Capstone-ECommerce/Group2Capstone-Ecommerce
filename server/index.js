@@ -11,6 +11,9 @@ const router = require('./api')
 
 const corsOptions = {
   origin: 'http://localhost:5173',
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: ['Content-Type', 'Authorization'], // Make sure Authorization is allowed
+  credentials: true,
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
