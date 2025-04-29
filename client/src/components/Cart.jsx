@@ -222,17 +222,29 @@ export default function Cart() {
                                     </Link>
                                     <div className="quantity-control">
                                         {/* {<label>Quantity: </label>} */}
-                                        <button className='quantityEditButton' onClick={()=> quantityAdd(item.product_id, item.quantity)}> + </button>
+                                        <button 
+                                            className='quantityEditButton' 
+                                            onClick={()=> quantityAdd(item.product_id, item.quantity)}>
+                                            + 
+                                        </button>
                                         <input
                                             type="number"
                                             className="quantityInput"
                                             value={item.quantity}
                                             onChange={(e) => handleEditQuantity(item.product_id, parseInt(e.target.value))}
                                         />
-                                        <button className='quantityEditButton' onClick={()=> quantityMinus(item.product_id, item.quantity)}> - </button>
+                                        <button 
+                                            className='quantityEditButton' 
+                                            onClick={()=> quantityMinus(item.product_id, item.quantity)}> 
+                                            - 
+                                        </button>
                                     </div>
                                     <p>Price: ${item.price}</p>
-                                    <button className="delete" onClick={() => handleDelete(item.product_id)}>Delete</button>
+                                    <button 
+                                        className="delete" 
+                                        onClick={() => handleDelete(item.product_id)}> 
+                                        Delete 
+                                    </button>
                             </div>
                         )
                     )}

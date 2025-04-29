@@ -417,6 +417,24 @@ const checkActiveCartUnique = async (user_id) => {
   }
 };
 
+//Get a user's active cart info- id
+const getCartId = async(userId) => {
+  try {
+    const SQL = /*sql*/`
+      SELECT id FROM carts WHERE is_active = true AND user_id = $1
+    `
+    const response = await pool.query(SQL, [userId])
+    const id = response.rows[0]
+    if(!id){
+      throw new Error('User does not have an active cart!')
+    }
+    return id
+  } catch (error) {
+    console.error("Error in getCartId:", error);
+    throw error;
+  }
+}
+
 // Get cart
 const getCart = async (userId) => {
   try {
@@ -460,6 +478,15 @@ const createCartItem = async (cart_id, product_id, quantity) => {
   }
 
   price_at_addition = productResult.rows[0].price;
+
+  const UniqueItem = await pool.query(
+    /*sql*/
+    `SELECT * FROM cart_items WHERE product_id = $1 `,
+    [product_id]
+  )
+  if (UniqueItem.rows.length !== 0) {
+    throw new Error("Item already exists in your cart!.");
+  }
 
   const SQL = /*sql*/ `
     INSERT INTO cart_items(
@@ -837,6 +864,7 @@ module.exports = {
   deleteProduct,
   checkActiveCartUnique,
   getCart,
+  getCartId,
   deleteProductFromCart,
   updateCartItemQuantity,
   getCartItems,

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
+import AddToCart from "./AddtoCart";
 
 export default function ProductDetails({product, setProduct}) {
   const PRODUCTS_API_URL = "http://localhost:3000/api/products";
@@ -40,6 +41,7 @@ export default function ProductDetails({product, setProduct}) {
                 alt={product.product_name}
           />
           <br />
+          <AddToCart product = {product}/>
           <button onClick={() => navigate('/')}>Go Back</button>
         </div>
       </div>

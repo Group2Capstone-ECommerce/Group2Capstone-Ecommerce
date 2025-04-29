@@ -18,9 +18,11 @@ const {
     createCart,
     checkActiveCartUnique,
     getCart,
+    getCartId,
     deleteProductFromCart,
     updateCartItemQuantity,
     createOrder,
+    createCartItem,
     getCartItems,
     updateProductQuantity, 
     createOrderItem,
@@ -348,6 +350,41 @@ router.post('/carts',verifyToken,  async(req, res, next) => {
     }
   } catch (error) {
     next(error)
+  }
+})
+
+//POST /api/cart/items
+router.post('/cart/items', verifyToken, async(req, res, next) => {
+  try {
+    const user = req.user;
+
+    console.log('user is =>', await getUserById(user.id))
+    console.log('adding to user =>', user)
+
+    const cart = await getCartId(user.id)
+    console.log('Adding to cart =>', cart)
+
+    if(!cart) {
+      const newCart = await createCart(user.id, true)
+    }
+
+    console.log('Adding to cart =>', cart)
+
+    const cartId = cart?.id
+
+    const items = await getCartItems(cartId)
+
+    console.log('items in cart =>', items)
+
+    const {productId, quantity} = req.body
+    
+    const newCartItem = await createCartItem(cartId, productId, quantity)
+    console.log('new cart items =>', newCartItem)
+    console.log('new cart =>', await getCart(user.id))
+    res.status(200).send(newCartItem)
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+    res.status(400).json({ error: error.message })
   }
 })
 
