@@ -152,6 +152,7 @@ export default function EditProductsTab() {
                         <form onSubmit={(e) => handleEditSubmit(e, product.id)}>
                             <input 
                              type="text"
+                             placeholder={product.product_name}
                              value={editForm.name}
                              onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                              required
@@ -162,8 +163,16 @@ export default function EditProductsTab() {
                              onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
                              required
                             />
+                            <input
+                             type="text"
+                             placeholder={product.descriptions}
+                             value={editForm.description}
+                             onChange={(e) => setEditForm({ ...editForm, description: e.target.value})}
+                             required
+                            />
                             <input 
                              type="text"
+                             placeholder="New Image URL"
                              value={editForm.image_url || ""}
                              onChange={(e) => setEditForm({ ...editForm, image_url: e.target.value })}
                             />
