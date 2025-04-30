@@ -172,9 +172,9 @@ export default function EditProductsTab() {
                         </form>
                        ) : (
                          <>
-                            <p><strong>{product.name}</strong></p>
+                            <p><strong>{product.product_name}</strong></p>
                             <p><strong>Price: ${product.price}</strong></p>
-                            <p>{product.description}</p>
+                            <p>{product.descriptions}</p>
                             <img src={product.image_url} alt={product.name} width={100} />
                             <br />
                             <button onClick={() => handleEditToggle(product)}>Edit</button>    
