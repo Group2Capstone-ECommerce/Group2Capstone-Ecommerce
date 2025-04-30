@@ -70,7 +70,7 @@ async function seedFakeData() {
     // USERS
     console.log("Clearing existing users...");
     await pool.query('DELETE FROM users');
-    const [{user: bob}, {user: ellie}, {user: jack}, {user: donna}, {user: rick}, {user: lisa}, {user: denise}, {user: oliver}, {user: samuel}, {user: wendy}] = await Promise.all([
+    const [bob, ellie, jack, donna, rick, lisa, denise, oliver, samuel, wendy] = await Promise.all([
       createUser({username: 'Bob', email: 'bob@email.com', password_hash: 'bob_pw', is_admin: false, mailing_address: 'bobmailingaddress', phone: '219-555-9235'}),
       createUser({username: 'Ellie', email: 'Ellie@email.com', password_hash: 'ellie_pw', is_admin: true, mailing_address: 'elliemailingaddress', phone: '832-555-6172'}),
       createUser({username: 'Jack', email: 'Jack@email.com', password_hash: 'jack_pw', is_admin: false, mailing_address: 'jackmailingaddress', phone: '926-555-0151'}),
@@ -157,13 +157,13 @@ async function seedFakeData() {
         createCartItem(cartRick.id, swimwear.id, 3, new Date(), new Date())
     ]);
 
-    // /*
+     /*
     // ORDERS
     const now = new Date();
     const [order1, order2, order3] = await Promise.all([
-        createOrder(bob.user.id, cartBob.id, 'Created', 60.10, now, now),
-        createOrder(jack.user.id, cartJack.id, 'Created', 207.44, now, now),
-        createOrder(rick.user.id, cartRick.id, 'Created', 58.99, now, now),
+        createOrder(bob.id, cartBob.id, 'Created', 60.10, now, now),
+        createOrder(jack.id, cartJack.id, 'Created', 207.44, now, now),
+        createOrder(rick.id, cartRick.id, 'Created', 58.99, now, now),
     ]);
 
     // ORDER ITEMS
@@ -229,7 +229,7 @@ async function seedFakeData() {
         createBillingInfo({user_id: jack.id, order_id: order2.id, full_name: 'Jack Hilton', email: 'jack@email.com', phone: '926-555-0151', address_line1: 'jackaddress1', address_line2: 'jackaddress2', city: 'Atlanta', state: 'Georgia', postal_code: '92106', country: 'US', company_name: 'company', tax_id: 'id'}),
         createBillingInfo({user_id: rick.id, order_id: order3.id, full_name: 'Rick Wilson', email: 'rick@email.com', phone: '293-555-1932', address_line1: 'rickaddress1', address_line2: 'rickaddress2', city: 'New Orleans', state: 'Luisiana', postal_code: '19086', country: 'US', company_name: 'company', tax_id: 'id'}),
     ])
-    // */
+    */
 
     // WISHLISTS
     const[wishlist1, wishlist2, wishlist3, wishlist4, wishlist5] = await Promise.all([
