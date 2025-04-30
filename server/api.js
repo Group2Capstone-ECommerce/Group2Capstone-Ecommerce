@@ -1,4 +1,4 @@
-
+const cors = require('cors');
 const pg = require('pg');
 const jwt = require('jsonwebtoken');
 const express = require('express')

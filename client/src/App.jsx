@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 
 import ProductList from './components/ProductList'
@@ -10,6 +10,7 @@ import Register from './components/Register'
 import AdminDashboard from './components/AdminDashboard'
 import Account from './components/Account'
 import Logout from './components/Logout'
+import EditProductsTab from './components/EditProductsTab'
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -23,7 +24,11 @@ function App() {
         <Route path='/products/:productId' element={<ProductDetails product={product} setProduct={setProduct}/>} />
         <Route path= '/login' element={<LoginForm/>}/>
         <Route path='/register' element={<Register/>}/>
-        <Route path='/admin' element={<AdminDashboard/>}/>
+
+        {/* NEST admin-related routes inside /admin */}        
+        <Route path='/admin/*' element={<AdminDashboard/>}/>
+
+        <Route path='/admin/products' element={<EditProductsTab />} />
         <Route path='/account' element={<Account/>}/>
         <Route path='/logout' element={<Logout/>}/>
       </Routes>
