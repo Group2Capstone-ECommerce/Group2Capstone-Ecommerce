@@ -25,7 +25,8 @@ const {
     updateProductQuantity, 
     createOrderItem,
     getUserByUsername,
-    getUserByEmail
+    getUserByEmail,
+    getOrdersByUserId,
 } = require("./db");
 
 function verifyToken(req, res, next) {
@@ -408,12 +409,9 @@ router.put('/cart/:productId', verifyToken, async (req, res, next) => {
 router.get('/orders/me', verifyToken, async (req, res) => {
   try {
     const userId = req.user.id;
+    console.log('Usser Id =>', userId)
 
-    // Fetch all orders belonging to the logged in user
-    const { rows: orders } = await pool.query(
-      `SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC`,
-      [userId]
-    );
+    const { rows: orders } = await getOrdersByUserId(userId);
 
     console.log('orders =>', orders)
     if (orders.length === 0) {
