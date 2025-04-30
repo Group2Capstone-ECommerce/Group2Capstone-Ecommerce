@@ -5,9 +5,21 @@ export default function EditProductsTab() {
     const { isAdmin } = useAuth();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [form, setForm] = useState({ name: "", price: "", description: "", image_url: ""});
+    const [form, setForm] = useState({ 
+        product_name: "", 
+        price: "", 
+        descriptions: "", 
+        image_url: ""
+    });
+
     const [editId, setEditId] = useState(null);
-    const [editForm, setEditForm] = useState({});
+    const [editForm, setEditForm] = useState({
+        product_name: "", 
+        price: "", 
+        descriptions: "", 
+        image_url: ""
+    });
+        
     const ADMIN_PRODUCTS_URL = "http://localhost:3000/api/admin/products";
 
     useEffect(() => {
@@ -36,6 +48,9 @@ export default function EditProductsTab() {
       }, [isAdmin]);
     
     const handleDelete = async (productId) => {
+        const confirmed = window.confirm("Are you sure you want to delete this product?");
+        if (!confirmed) return; //Cancel deletion
+
         const token = localStorage.getItem("token");
         try {
             const res = await fetch(`${ADMIN_PRODUCTS_URL}/${productId}`, {
@@ -66,9 +81,12 @@ export default function EditProductsTab() {
             });
 
             if (res.ok) {
-                const newProduct = await res.json();
-                setProducts([...products, newProduct]);
+                const data = await res.json(); 
+                setProducts([...products, data.product]);
                 setForm({ name:"", price:"", description:"", image_url:""});
+            } else {
+                const errorData = await res.json();
+                console.error("Failed to create new product:", errorData);
             }
         } catch (err) {
             console.error("Failed to create new product:", err);
@@ -77,7 +95,12 @@ export default function EditProductsTab() {
 
     const handleEditToggle = (product) => {
         setEditId(product.id);
-        setEditForm({ ...product });
+        setEditForm({
+            product_name: product.product_name || "",
+            price: product.price || "",
+            descriptions: product.descriptions || "",
+            image_url: product.image_url || "",
+         });
     };
 
     const handleEditSubmit = async (e,productId) => {
@@ -118,8 +141,8 @@ export default function EditProductsTab() {
                 <input 
                  type="text"
                  placeholder="Product Name" 
-                 value={form.name} 
-                 onChange={(e) => setForm({ ...form, name: e.target.value })} 
+                 value={form.product_name || ""} 
+                 onChange={(e) => setForm({ ...form, product_name: e.target.value })} 
                  required 
                 />
                 <input 
@@ -132,8 +155,8 @@ export default function EditProductsTab() {
                 <input 
                  type="text" 
                  placeholder="Description" 
-                 value={form.description} 
-                 onChange={(e) => setForm({ ...form, description: e.target.value })} 
+                 value={form.descriptions || ""} 
+                 onChange={(e) => setForm({ ...form, descriptions: e.target.value })} 
                  required 
                 />
                 <input 
@@ -153,8 +176,8 @@ export default function EditProductsTab() {
                             <input 
                              type="text"
                              placeholder={product.product_name}
-                             value={editForm.name}
-                             onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                             value={editForm.product_name}
+                             onChange={(e) => setEditForm({ ...editForm, product_name: e.target.value })}
                              required
                             />
                             <input
@@ -166,8 +189,8 @@ export default function EditProductsTab() {
                             <input
                              type="text"
                              placeholder={product.descriptions}
-                             value={editForm.description}
-                             onChange={(e) => setEditForm({ ...editForm, description: e.target.value})}
+                             value={editForm.descriptions}
+                             onChange={(e) => setEditForm({ ...editForm, descriptions: e.target.value})}
                              required
                             />
                             <input 
@@ -184,7 +207,12 @@ export default function EditProductsTab() {
                             <p><strong>{product.product_name}</strong></p>
                             <p><strong>Price: ${product.price}</strong></p>
                             <p>{product.descriptions}</p>
-                            <img src={product.image_url} alt={product.name} width={100} />
+                            <img 
+                             src={product.image_url || "default-image-url.png"} 
+                             alt={product.product_name || "Product Image"} 
+                             width={100} 
+                             onError={(e) => e.target.src = "default-image-url.png"}
+                            />
                             <br />
                             <button onClick={() => handleEditToggle(product)}>Edit</button>    
                             <button onClick={() => handleDelete(product.id)}>Delete</button>
