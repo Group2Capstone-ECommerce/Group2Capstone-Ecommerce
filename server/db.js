@@ -815,6 +815,47 @@ async function getOrdersByUserId(userId) {
   } 
 }
 
+// Update user email
+const updateUserEmail = async (userId, newEmail) => {
+  const SQL = /*sql*/ `
+    UPDATE users
+    SET email = $1
+    WHERE id = $2
+    RETURNING id, email;
+  `;
+  try {
+    const result = await pool.query(SQL, [newEmail, userId]);
+
+    // If no rows were updated, return null
+    if (result.rows.length === 0) {
+      return null;
+    }
+    
+    return result.rows[0]; // Return updated user data
+  } catch (error) {
+    console.error("Error updating email:", error);
+    throw new Error("Error updating email.");
+  }
+};
+
+// Check if email exists
+const checkEmailExists = async (email) => {
+  const SQL = /*sql*/ `
+    SELECT 1
+    FROM users
+    WHERE email = $1;
+  `;
+
+  try {
+    const result = await pool.query(SQL, [email]);
+    // If result.rows is not empty, the email already exists
+    return result.rows.length > 0;
+  } catch (error) {
+    console.error("Error checking if email exists:", error);
+    throw new Error("Database error occurred while checking email.");
+  }
+};
+
 module.exports = {
   query: (text, params) => pool.query(text, params),
   pool,
@@ -848,4 +889,6 @@ module.exports = {
   getUserByUsername,
   getUserByEmail,
   getOrdersByUserId,
+  updateUserEmail,
+  checkEmailExists
 }

@@ -27,6 +27,8 @@ const {
     getUserByUsername,
     getUserByEmail,
     getOrdersByUserId,
+    checkEmailExists,
+    updateUserEmail
 } = require("./db");
 
 function verifyToken(req, res, next) {
@@ -424,5 +426,62 @@ router.get('/orders/me', verifyToken, async (req, res) => {
     res.status(500).json({ message: 'Error retrieving your orders.'})
   }
 })
+
+// GET /api/users/me
+router.get("/users/me", verifyToken, async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const response = await getUserById(userId);
+    console.log(`response =>`, response);
+
+    if (!response) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    res.status(200).json(response);
+  } catch (err) {
+    console.error("Error in GET /users/me:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+})
+
+// PUT /api/users/me
+router.put("/users/me", verifyToken, async (req, res, next) => {
+  const { email } = req.body;
+  const userId = req.user.id;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required." });
+  }
+
+  try {
+    // Get the current user
+    const currentUser = await getUserById(userId);
+
+    // If it is the email, don't need to check for existing
+    if (email === currentUser.email) {
+      return res.status(200).json({ message: "Email is the same. No update needed." });
+    }
+
+    // Check if the email is already in use by another user
+    const emailExists = await checkEmailExists(email);
+    if (emailExists) {
+      return res.status(409).json({ error: "Email is already in use." });
+    }
+
+    // Proceed to update the user's email
+    const updatedUser = await updateUserEmail(userId, email);
+
+    if (!updatedUser) {
+      return res.status(500).json({ error: "Error updating email." });
+    }
+
+    return res.status(200).json({ message: "Email updated successfully." });
+  } catch (err) {
+    console.error("Error in PUT /users/me:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 module.exports = router

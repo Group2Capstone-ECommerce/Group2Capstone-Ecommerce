@@ -40,7 +40,7 @@ export default function LoginForm() {
           setSuccessMsg("Account login successful! Redirecting...");
           setTimeout(() => {
             navigate("/");
-          }, 3000);
+          }, 500);
         } else {
           setErrorMessage(data.error || "Invalid login credentials");
         }
