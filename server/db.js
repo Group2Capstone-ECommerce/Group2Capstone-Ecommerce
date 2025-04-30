@@ -425,9 +425,6 @@ const getCartId = async(userId) => {
     `
     const response = await pool.query(SQL, [userId])
     const id = response.rows[0]
-    if(!id){
-      throw new Error('User does not have an active cart!')
-    }
     return id
   } catch (error) {
     console.error("Error in getCartId:", error);
@@ -464,11 +461,11 @@ const getCart = async (userId) => {
   }
 };
 
-// Check if product exists before inserting
-const checkProductExists = async (product_id) => {
-  const result = await pool.query('SELECT id FROM products WHERE id = $1', [product_id]);
-  return result.rows.length > 0;
-};
+// // Check if product exists before inserting
+// const checkProductExists = async (product_id) => {
+//   const result = await pool.query('SELECT id FROM products WHERE id = $1', [product_id]);
+//   return result.rows.length > 0;
+// };
 
 // CartItems
 const createCartItem = async (cart_id, product_id, quantity) => {
@@ -481,8 +478,8 @@ const createCartItem = async (cart_id, product_id, quantity) => {
 
   const UniqueItem = await pool.query(
     /*sql*/
-    `SELECT * FROM cart_items WHERE product_id = $1 `,
-    [product_id]
+    `SELECT * FROM cart_items WHERE cart_id = $1 AND product_id = $2`,
+    [cart_id, product_id]
   )
   if (UniqueItem.rows.length !== 0) {
     throw new Error("Item already exists in your cart!.");

@@ -361,15 +361,14 @@ router.post('/cart/items', verifyToken, async(req, res, next) => {
     console.log('user is =>', await getUserById(user.id))
     console.log('adding to user =>', user)
 
-    const cart = await getCartId(user.id)
-    console.log('Adding to cart =>', cart)
+    let cart = await getCartId(user.id)
 
-    if(!cart) {
-      const newCart = await createCart(user.id, true)
+    //create a cart if the logged-in user does not have an active cart
+    if(!cart){
+      cart = await createCart(user.id, true)
     }
 
     console.log('Adding to cart =>', cart)
-
     const cartId = cart?.id
 
     const items = await getCartItems(cartId)
@@ -381,7 +380,10 @@ router.post('/cart/items', verifyToken, async(req, res, next) => {
     const newCartItem = await createCartItem(cartId, productId, quantity)
     console.log('new cart items =>', newCartItem)
     console.log('new cart =>', await getCart(user.id))
-    res.status(200).send(newCartItem)
+    res.status(200).send({
+      message: "Item added into your cart!",
+      item: newCartItem,
+    })
   } catch (error) {
     console.error("Error adding to cart:", error);
     res.status(400).json({ error: error.message })

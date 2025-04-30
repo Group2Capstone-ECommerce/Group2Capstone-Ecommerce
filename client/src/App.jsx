@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import './App.css'
+import { ToastContainer } from "react-toastify"
 
 import ProductList from './components/ProductList'
 import ProductDetails from './components/ProductDetails'
@@ -19,6 +20,15 @@ function App() {
   return (
     <>
       <Navigations />
+      {/* {react_toastify library will handle popup notification messages} */}
+      <ToastContainer 
+        position="top-center"
+        autoClose={false}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={true}
+        pauseOnHover
+      />
       <Routes>
         <Route path='/' element={<ProductList products={products} setProducts={setProducts} />} />
         <Route path='/products/:productId' element={<ProductDetails product={product} setProduct={setProduct}/>} />
