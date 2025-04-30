@@ -405,16 +405,17 @@ router.put('/cart/:productId', verifyToken, async (req, res, next) => {
 });
 
 // GET /api/orders/me
-router.get('/order/me', verifyToken, async (req, res) => {
+router.get('/orders/me', verifyToken, async (req, res) => {
   try {
     const userId = req.user.id;
 
     // Fetch all orders belonging to the logged in user
     const { rows: orders } = await pool.query(
       `SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC`,
-      [UserId]
+      [userId]
     );
 
+    console.log('orders =>', orders)
     if (orders.length === 0) {
       return res.status(200).json({ message: "No past Orders"});
     }
