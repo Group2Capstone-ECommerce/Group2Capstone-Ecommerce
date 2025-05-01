@@ -208,9 +208,10 @@ export default function EditProductsTab() {
                             <p><strong>Price: ${product.price}</strong></p>
                             <p>{product.descriptions}</p>
                             <img 
-                             src={product.image_url} 
+                             src={product.image_url /*|| "default-image-url.png"*/ } //fallback image url
                              alt={product.product_name || "Product Image"} 
                              width={100} 
+                            //  onError={(e) => e.target.src = "default-image-url.png"} <--- on event of error, insert default image url
                             />
                             <br />
                             <button onClick={() => handleEditToggle(product)}>Edit</button>    
