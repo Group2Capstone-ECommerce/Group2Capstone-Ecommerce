@@ -12,8 +12,15 @@ export default function OrderConfirm ({createdOrder}) {
     const navigate = useNavigate();
 
     const { token } = useAuth();
+    if (!token) {
+        toast.warn('You must be logged in to view your order.')
+    }
 
     const orderId = createdOrder?.order.id
+    if (!orderId) {
+        toast.warn('Order ID is missing.')
+    }
+
     console.log("order id =>", orderId)
 
     const [orderItems, setOrderItems] = useState([])
@@ -42,7 +49,7 @@ export default function OrderConfirm ({createdOrder}) {
         fetchOrderItems();
     }, [orderId, orderCheckedout])
 
-    const handleCheckout = async(e) => {
+    const handleConfirm = async(e) => {
         e.preventDefault()
         const placeOrder = await fetch(`${ORDER_API_URL}/${orderId}`, {
             method:'PUT',
@@ -80,7 +87,7 @@ export default function OrderConfirm ({createdOrder}) {
                 ) : (
                     orderItems?.map((item) => {
                         console.log(item);
-                        return(
+                        return (
                             <div key={item.id} id={item.id} className="orderCard">
                             <img
                                 src={item.image_url || stockImage}
@@ -98,7 +105,7 @@ export default function OrderConfirm ({createdOrder}) {
                     <p>Total price: </p>
                     <p>Payment method: handle payment here</p>
                     <button onClick={() => navigate('/cart')}>Go back</button>
-                    <button onClick={handleCheckout}>Checkout</button>
+                    <button onClick={handleConfirm}>Confirm</button>
                 </div>
             </div>
             )}

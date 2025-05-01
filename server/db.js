@@ -577,11 +577,11 @@ const getOrderItems = async(order_id) => {
   return response.rows
 }
 
-//Close the order - change order's status to closed after checkout
-const closeOrder = async(order_id) => {
+//Confirm the order - change order's status to Confirmed after checkout
+const confirmOrder = async(order_id) => {
   const SQL = /*sql*/ `
     UPDATE orders 
-    SET status = "Closed" 
+    SET status = 'Confirmed'
     WHERE id = $1 
     RETURNING *
   `
@@ -593,7 +593,7 @@ const closeOrder = async(order_id) => {
 const cancleOrder = async(order_id) => {
   const SQL = /*sql*/ `
     UPDATE orders 
-    SET status = "Cancled" 
+    SET status = 'Cancled'
     WHERE id = $1 
     RETURNING *
   `
@@ -932,7 +932,7 @@ module.exports = {
   createCart,
   createCartItem,
   createOrder,
-  closeOrder,
+  confirmOrder,
   cancleOrder,
   createOrderItem,
   getOrderByUserId,

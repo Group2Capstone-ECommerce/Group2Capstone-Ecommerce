@@ -23,7 +23,7 @@ const {
     deleteProductFromCart,
     updateCartItemQuantity,
     createOrder,
-    closeOrder,
+    confirmOrder,
     cancleOrder,
     createCartItem,
     getCartItems,
@@ -285,16 +285,16 @@ router.get('/order/items/:order_id', verifyToken, async(req, res, next) => {
 router.put('/order/:order_id', async(req, res, next) => {
   try {
     const orderId = req.params.order_id
-    const placeOrder = await closeOrder(orderId)
-    if(!response){
-      return res.status(400).json({message: 'Error closing the order!'})
+    const placeOrder = await confirmOrder(orderId)
+    if(!placeOrder){
+      return res.status(400).json({message: 'Error confirming the order!'})
     }
     res.status(200).json({
-      message: 'Order placed succussfully',
+      message: 'Order confirmed and placed succussfully!',
       order: placeOrder
     })
   } catch (error) {
-    
+    next(error)
   }
 })
 
