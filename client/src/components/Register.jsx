@@ -81,7 +81,7 @@ export default function Register() {
                     Username: <input value={username} onChange={(e) => setUsername(e.target.value)} required/>
                 </div>
                 <div>
-                    Password: <input value={password} onChange={(e) => setPassword(e.target.value)} required/>
+                    Password: <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
                 </div>
                 <button>Submit</button>
             </form>
