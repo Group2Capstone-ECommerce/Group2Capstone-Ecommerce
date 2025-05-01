@@ -11,6 +11,7 @@ import AdminDashboard from './components/AdminDashboard'
 import Account from './components/Account'
 import Logout from './components/Logout'
 import EditProductsTab from './components/EditProductsTab'
+import ViewUsersTab from './components/ViewUsersTab'
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -29,6 +30,8 @@ function App() {
         <Route path='/admin/*' element={<AdminDashboard/>}/>
 
         <Route path='/admin/products' element={<EditProductsTab />} />
+        <Route path='/admin/users' element={<ViewUsersTab />}/> 
+
         <Route path='/account' element={<Account/>}/>
         <Route path='/logout' element={<Logout/>}/>
       </Routes>
