@@ -114,7 +114,8 @@ router.post('/admin/products', verifyToken, async (req, res) => {
 // POST /api/auth/register route
 router.post("/auth/register", async (req, res, next) => {
   try {
-    const { email, username, password, is_admin, mailing_address, phone } = req.body;
+    const email = req.body.email.toLowerCase();
+    const { username, password, is_admin, mailing_address, phone } = req.body;
     if (!email || !username || !password) {
       return res.status(400).json({ error: "Email, username, password are required" });
     }
@@ -427,7 +428,7 @@ router.get("/users/me", verifyToken, async (req, res) => {
 
 // PUT /api/users/me
 router.put("/users/me", verifyToken, async (req, res, next) => {
-  const { email } = req.body;
+  const email = req.body.email.toLowerCase();
   const userId = req.user.id;
 
   if (!email) {
