@@ -17,7 +17,7 @@ export default function Cart() {
     const navigate = useNavigate()
     const [refreshCart, setRefreshCart] = useState(false);
     const Cart_API_URL = 'http://localhost:3000/api/cart';
-    const Order_API_URL = 'http://localhost:3000/api/order';
+    const Create_Order_API_URL = 'http://localhost:3000/api/order/create';
     const { token } = useAuth();
     //console.log('token is =>', token)
 
@@ -178,13 +178,16 @@ export default function Cart() {
             return;
         }
         //fetch with creating order api
-        const createOrder = await fetch(Order_API_URL,{
+        const createOrder = await fetch(Create_Order_API_URL,{
             method: 'POST',
             headers:{
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify(selectedProducts),
+            body: JSON.stringify({
+                totalPrice: calculateTotal(),
+                selectedProducts
+            }),
         })
         const order = await createOrder.json()
         console.log('order is =>', order)

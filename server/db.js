@@ -402,7 +402,7 @@ const createCart = async (user_id, is_active) => {
 const checkActiveCartUnique = async (user_id) => {
   try {
     const SQL = /*sql*/`
-      SELECT * FROM carts WHERE user_id = $1 AND is_active = 't' LIMIT 1;
+      SELECT * FROM carts WHERE user_id = $1 AND is_active = true LIMIT 1;
     `;
     const response = await pool.query(SQL, [user_id]);
     if (response.rows.length > 0) {
@@ -460,6 +460,18 @@ const getCart = async (userId) => {
     throw error;
   }
 };
+
+//Inactive the cart
+const closeCart = async(cart_id, user_id) => {
+  const SQL = /*sql */ `
+    UPDATE carts 
+    SET is_active = FALSE 
+    WHERE id = $1 AND user_id = $2
+    RETURNING *
+  `
+  const response = await pool.query(SQL, [cart_id, user_id])
+  return response.rows[0]
+}
 
 // // Check if product exists before inserting
 // const checkProductExists = async (product_id) => {
@@ -774,6 +786,20 @@ const getCartItems = async (cart_id) => {
   }
 };
 
+//Delete order items
+const deleteOrderItems = async(order_id, product_id) => {
+  try {
+    const SQL = /*sql*/ `
+      DELETE FROM order_items 
+      WHERE order_id = $1 AND product_id = 2
+    `
+    return await pool.query(SQL, [order_id, product_id])
+  } catch (error) {
+    console.error("Error deleting order items:", error);
+    throw new Error("Error deleting order item: " + error.message);
+  }
+}
+
 // Update the product quantity
 const updateProductQuantity = async (productId, newQuantity) => {
   try {
@@ -849,6 +875,7 @@ module.exports = {
   createCartItem,
   createOrder,
   createOrderItem,
+  deleteOrderItems,
   createBillingInfo,
   createWishlist,
   createWishlistItem,
@@ -862,6 +889,7 @@ module.exports = {
   checkActiveCartUnique,
   getCart,
   getCartId,
+  closeCart,
   deleteProductFromCart,
   updateCartItemQuantity,
   getCartItems,
