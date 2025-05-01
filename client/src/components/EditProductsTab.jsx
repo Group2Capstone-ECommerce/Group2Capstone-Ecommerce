@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../components/AuthContext.jsx";
+import stockProductImg from '../assets/stockProductImg.png';
 
 export default function EditProductsTab() {
     const { isAdmin } = useAuth();
@@ -77,7 +78,10 @@ export default function EditProductsTab() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                  },
-                 body: JSON.stringify(form,)
+                 body: JSON.stringify({
+                    ...form, 
+                    image_url: form.image_url || null,
+                 }),
             });
 
             if (res.ok) {
@@ -208,10 +212,10 @@ export default function EditProductsTab() {
                             <p><strong>Price: ${product.price}</strong></p>
                             <p>{product.descriptions}</p>
                             <img 
-                             src={product.image_url /*|| "default-image-url.png"*/ } //fallback image url
+                             src={product.image_url || stockProductImg} //fallback image url
                              alt={product.product_name || "Product Image"} 
                              width={100} 
-                            //  onError={(e) => e.target.src = "default-image-url.png"} <--- on event of error, insert default image url
+                             onError={(e) => e.target.src = stockProductImg} 
                             />
                             <br />
                             <button onClick={() => handleEditToggle(product)}>Edit</button>    
