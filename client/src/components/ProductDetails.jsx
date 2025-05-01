@@ -29,19 +29,23 @@ export default function ProductDetails({product, setProduct}) {
     {!product ? (
       <p>Loading product details...</p>
     ) : (
+      <div className="pageWrapper">
       <div className="singleProductDetailsCard">
-        <div>
-          <h2>Product Name: {product.product_name}</h2>
-          <p><b>Description: </b>{product.descriptions}</p>
-          <p><b>Price: </b>${product.price}</p>
-          <p><b>Quantity Available: </b>{product.stock_quantity}</p>
+          <h2 className="productTitle">Product Name: {product.product_name}</h2>
+        <div className="productContent">
           <img
                 src={product.image_url || stockImage}
                 alt={product.product_name}
           />
+        <div className="productInfo">
+          <p><b>Description: </b>{product.descriptions}</p>
+          <p><b>Price: </b>${product.price}</p>
+          <p><b>Quantity Available: </b>{product.stock_quantity}</p>
           <br />
           <button onClick={() => navigate('/')}>Go Back</button>
         </div>
+        </div>
+      </div>
       </div>
     )}
     </>

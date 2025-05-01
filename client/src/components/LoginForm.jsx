@@ -52,6 +52,7 @@ export default function LoginForm() {
     };
 
     return (
+      <div className="pageWrapper">
       <section className="login-container">
       <Card className="login-card">
         <Card.Body>
@@ -92,5 +93,6 @@ export default function LoginForm() {
         </Card.Body>
       </Card>
     </section>
+    </div>
   );
 }

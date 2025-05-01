@@ -61,6 +61,7 @@ export default function Register() {
     } 
 
     return (
+        <div className="pageWrapper">
         <div className='registerPage'>
             <h1>Register</h1>
             {successMessage && <div className="success">{successMessage}</div>}
@@ -82,6 +83,7 @@ export default function Register() {
                 </div>
                 <button>Submit</button>
             </form>
+        </div>
         </div>
     )
 }
