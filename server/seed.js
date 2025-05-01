@@ -140,9 +140,9 @@ async function seedFakeData() {
 
     // Carts
     const [cartBob, cartJack, cartRick] = await Promise.all([
-      createCart(bob.user.id, true),
-      createCart(jack.user.id, true),
-      createCart(rick.user.id, true),
+        createCart(bob.user.id, true),
+        createCart(jack.user.id, true),
+        createCart(rick.user.id, true)
     ]);
 
     // CART ITEMS
@@ -157,7 +157,7 @@ async function seedFakeData() {
         createCartItem(cartRick.id, swimwear.id, 3, new Date(), new Date())
     ]);
 
-    /*
+     /*
     // ORDERS
     const now = new Date();
     const [order1, order2, order3] = await Promise.all([
