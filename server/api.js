@@ -23,11 +23,15 @@ const {
     deleteProductFromCart,
     updateCartItemQuantity,
     createOrder,
-    deleteOrderItems,
+    closeOrder,
+    cancleOrder,
     createCartItem,
     getCartItems,
     updateProductQuantity, 
+    getOrderByUserId,
+    getOrderById,
     createOrderItem,
+    getOrderItems,
     getUserByUsername,
     getUserByEmail
 } = require("./db");
@@ -248,11 +252,63 @@ router.post('/order/create', verifyToken, async(req, res, next) => {
   }
 })
 
+// GET /api/order/items/:order_id
+// To get order items info to render on confirmation page
+router.get('/order/items/:order_id', verifyToken, async(req, res, next) => {
+  try {
+    const userId = req.user.id
+    // const cart = await checkActiveCartUnique(userId)
+    // const cartId = cart.id
+    const orderId = req.params.order_id
+    if(!orderId){
+      return res.status(400).json({ error: "Missing order_id in query." });
+    }
+
+    const order = await getOrderById(orderId)
+    console.log('Current order =>', order)
+    if(order?.status !== 'Created'){
+      return res.status(404).json({error: 'No active order!'})
+    }
+
+    const orderItems = await getOrderItems(orderId)
+    if(!orderItems || orderItems.length === 0) {
+      return res.status(404).json({ error: "No order items found!" });
+    }
+    res.status(200).json(orderItems)
+  } catch (error) {
+    next(error)
+  }
+})
+
+// PUT /api/order/:order_id
+// To checkout the order and change the order's status => closed
+router.put('/order/:order_id', async(req, res, next) => {
+  try {
+    const orderId = req.params.order_id
+    const placeOrder = await closeOrder(orderId)
+    if(!response){
+      return res.status(400).json({message: 'Error closing the order!'})
+    }
+    res.status(200).json({
+      message: 'Order placed succussfully',
+      order: placeOrder
+    })
+  } catch (error) {
+    
+  }
+})
+
+//To cancle the order and change the order's status => cancled
+
+
 
 // GET /api/products
 router.get('/products', async(req, res, next) => {
     try {
         const response = await getAvailableProducts();
+        if(response.length === 0) {
+          return res.status(400).json({message: 'Order not exists!'})
+        }
         res.status(200).send(response)
     } catch (error) {
         next(error)

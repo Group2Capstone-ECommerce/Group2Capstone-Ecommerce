@@ -1,0 +1,108 @@
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import stockImage from '../assets/stockProductImg.png';
+import { useAuth } from "../components/AuthContext.jsx";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+export default function OrderConfirm ({createdOrder}) {
+    const ORDER_ITEMS_API_URL = "http://localhost:3000/api/order/items";
+    const ORDER_API_URL = "http://localhost:3000/api/order";
+
+    const navigate = useNavigate();
+
+    const { token } = useAuth();
+
+    const orderId = createdOrder?.order.id
+    console.log("order id =>", orderId)
+
+    const [orderItems, setOrderItems] = useState([])
+    const [orderCheckedout, setOrderCheckedout] = useState(false)
+
+    useEffect(()=> {
+        const fetchOrderItems = async() => {
+            try {
+                const response = await fetch(`${ORDER_ITEMS_API_URL}/${orderId}`, {
+                    method:'GET',
+                    headers:{
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                const data = await response.json()
+                if(!response.ok) {
+                    toast.error(data.message)
+                }
+                console.log('fetch order item data =>', data)
+                setOrderItems(data)
+            } catch (error) {
+                console.error('Error fetching order items:', error)
+            }
+        }
+        console.log('Order items =>', orderItems)
+        fetchOrderItems();
+    }, [orderId, orderCheckedout])
+
+    const handleCheckout = async(e) => {
+        e.preventDefault()
+        const placeOrder = await fetch(`${ORDER_API_URL}/${orderId}`, {
+            method:'PUT',
+            headers:{
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        })
+        const result = await placeOrder.json()
+        if(!placeOrder.ok){
+            console.error(result.message)
+        }
+        toast.success(result.message)
+        setOrderCheckedout(true)
+    }
+
+    return(
+        <>
+            {orderCheckedout ? (
+                <div className="successContainer">
+                    <h2>You have palcad order succussfully!</h2>
+                    <button onClick={() => navigate('/')}>Go back</button>
+                </div>
+            ) : (
+            <div className="orderContainer" style={{margin: "100px"}}>
+                <div className="shippingInfo">
+                    <h3>Shipping Info:</h3>
+                    <p>Name: </p>
+                    <p>Address: </p>
+                    <p>Phone: </p>
+                    <p>Email: </p>
+                </div>
+                {orderItems.length === 0 ? (
+                    <p>Loading order...</p>
+                ) : (
+                    orderItems?.map((item) => {
+                        console.log(item);
+                        return(
+                            <div key={item.id} id={item.id} className="orderCard">
+                            <img
+                                src={item.image_url || stockImage}
+                                alt={item.product_name}
+                            />
+                            <p><b>{item.product_name}</b></p>
+                            <p><b>Qty: {item.quantity}</b></p>
+                            <p><b>{item.price_at_purchase}</b></p>
+                        </div>
+                        )
+                    })
+                )}
+                <div className="orderActions">
+                    <p>Checking out items: </p>
+                    <p>Total price: </p>
+                    <p>Payment method: handle payment here</p>
+                    <button onClick={() => navigate('/cart')}>Go back</button>
+                    <button onClick={handleCheckout}>Checkout</button>
+                </div>
+            </div>
+            )}
+            
+        </>
+    )
+}

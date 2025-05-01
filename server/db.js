@@ -473,13 +473,8 @@ const closeCart = async(cart_id, user_id) => {
   return response.rows[0]
 }
 
-// // Check if product exists before inserting
-// const checkProductExists = async (product_id) => {
-//   const result = await pool.query('SELECT id FROM products WHERE id = $1', [product_id]);
-//   return result.rows.length > 0;
-// };
 
-// CartItems
+// create Car tItems
 const createCartItem = async (cart_id, product_id, quantity) => {
   const productResult = await pool.query(`SELECT price FROM products WHERE id = $1`, [product_id]);
   if (productResult.rows.length === 0) {
@@ -528,7 +523,7 @@ const createOrder = async (user_id, cart_id, status, total_price, created_at, up
   return response.rows[0];
 };
 
-// OrderItems
+// Create order items
 const createOrderItem = async ({ order_id, product_id, quantity, price_at_purchase }) => {
   const SQL = `
     INSERT INTO order_items(
@@ -542,6 +537,69 @@ const createOrderItem = async ({ order_id, product_id, quantity, price_at_purcha
   const response = await pool.query(SQL, [uuid.v4(), order_id, product_id, quantity, price_at_purchase]);
   return response.rows[0];
 };
+
+//Get order by user id - use to render order history for user
+const getOrderByUserId = async(user_id) => {
+  const SQL = /*sql*/ `
+    SELECT * 
+    FROM orders 
+    WHERE user_id = $1 
+  `
+  const response = await pool.query(SQL, [user_id])
+  return response.rows[0]
+}
+
+//GET order by order id
+const getOrderById = async(order_id) => {
+  const SQL = /*sql*/ `
+    SELECT * FROM orders WHERE id = $1 
+  `
+  const response = await pool.query(SQL, [order_id])
+  return response.rows[0]
+}
+
+//Get order items
+const getOrderItems = async(order_id) => {
+  const SQL = /*sql*/ `
+    SELECT 
+      order_items.id,
+      order_items.order_id,
+      order_items.product_id,
+      order_items.quantity,
+      order_items.price_at_purchase,
+      products.product_name,
+      products.image_url
+    FROM order_items
+    JOIN products ON order_items.product_id = products.id
+    WHERE order_items.order_id = $1
+  `
+  const response = await pool.query(SQL, [order_id])
+  return response.rows
+}
+
+//Close the order - change order's status to closed after checkout
+const closeOrder = async(order_id) => {
+  const SQL = /*sql*/ `
+    UPDATE orders 
+    SET status = "Closed" 
+    WHERE id = $1 
+    RETURNING *
+  `
+  const response = await pool.query(SQL, [order_id])
+  return response.rows[0]
+}
+
+//Cancle the order - change order's status to Cancled
+const cancleOrder = async(order_id) => {
+  const SQL = /*sql*/ `
+    UPDATE orders 
+    SET status = "Cancled" 
+    WHERE id = $1 
+    RETURNING *
+  `
+  const response = await pool.query(SQL, [order_id])
+  return response.rows[0]
+}
 
 // Billing Info
 const createBillingInfo = async ({
@@ -874,7 +932,12 @@ module.exports = {
   createCart,
   createCartItem,
   createOrder,
+  closeOrder,
+  cancleOrder,
   createOrderItem,
+  getOrderByUserId,
+  getOrderById,
+  getOrderItems,
   deleteOrderItems,
   createBillingInfo,
   createWishlist,

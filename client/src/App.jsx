@@ -12,10 +12,12 @@ import Register from './components/Register'
 import AdminDashboard from './components/AdminDashboard'
 import Account from './components/Account'
 import Logout from './components/Logout'
+import OrderConfirm from './components/OrderConfirm'
 
 function App() {
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState(null);
+  const [createdOrder, setCreatedOrder] = useState(null)
   const [token, setToken] = useState('');
   return (
     <>
@@ -32,7 +34,8 @@ function App() {
       <Routes>
         <Route path='/' element={<ProductList products={products} setProducts={setProducts} />} />
         <Route path='/products/:productId' element={<ProductDetails product={product} setProduct={setProduct}/>} />
-        <Route path='/cart' element={<Cart token={token} />}/>
+        <Route path='/cart' element={<Cart token={token} setCreatedOrder={setCreatedOrder}/>}/>
+        <Route path='/order/confirmation' element={<OrderConfirm createdOrder={createdOrder} />}/>
         <Route path= '/login' element={<LoginForm/>}/>
         <Route path='/register' element={<Register/>}/>
         <Route path='/admin' element={<AdminDashboard/>}/>

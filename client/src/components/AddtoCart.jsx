@@ -34,13 +34,13 @@ export default function AddToCart({product}) {
 
             if (!response.ok) {
                 toast.error(result.error || "Failed to add to cart.");
-            }
-        
+            } else {
                 toast.success("✅ Added to cart!");
-            } catch (error) {
-                console.error("Add to cart error:", error);
-                toast.error(`❌ ${error.message}`);
             }
+        } catch (error) {
+            console.error("Add to cart error:", error);
+            toast.error(`❌ ${error.message}`);
+        }
     }
 
     return (

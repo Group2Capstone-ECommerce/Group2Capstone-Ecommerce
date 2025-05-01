@@ -9,11 +9,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import './CSS/cart.css'
 
-export default function Cart() {
+export default function Cart({setCreatedOrder}) {
     const [cartItems, setCartItems] = useState([])
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
-    //const [CreatedOrder, setCreatedOrder] = useState('')
     const navigate = useNavigate()
     const [refreshCart, setRefreshCart] = useState(false);
     const Cart_API_URL = 'http://localhost:3000/api/cart';
@@ -194,12 +193,14 @@ export default function Cart() {
         if(!createOrder.ok){
             throw new Error(order.error || 'Order creation failed.');
         }
+        setCreatedOrder(order)
+        //toast.success('Redirecting to confirm order!')
         //setCreatedOrder(order)
         setRefreshCart(prev => !prev)
         //return order.message
 
         //navigate to order confirm page
-        //navigate('/order')
+        navigate('/order/confirmation')
     };
     //console.log('createdOrder =>', CreatedOrder)
 
@@ -275,7 +276,9 @@ export default function Cart() {
 
                     <p>Total Price: ${calculateTotal()}</p>
 
-                    <button onClick={handleCheckout} disabled={selectedItems.length === 0}>
+                    <button 
+                        onClick={handleCheckout} 
+                        disabled={selectedItems.length === 0}>
                         Checkout
                     </button>
                 </div>
