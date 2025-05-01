@@ -49,6 +49,7 @@ export default function OrderConfirm ({createdOrder}) {
         fetchOrderItems();
     }, [orderId, orderCheckedout])
 
+
     const handleConfirm = async(e) => {
         e.preventDefault()
         const placeOrder = await fetch(`${ORDER_API_URL}/${orderId}`, {
