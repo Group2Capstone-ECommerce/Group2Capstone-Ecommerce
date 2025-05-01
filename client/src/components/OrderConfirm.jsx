@@ -96,7 +96,7 @@ export default function OrderConfirm ({createdOrder}) {
                             />
                             <p><b>{item.product_name}</b></p>
                             <p><b>Qty: {item.quantity}</b></p>
-                            <p><b>{item.price_at_purchase}</b></p>
+                            <p><b>${item.price_at_purchase}</b></p>
                         </div>
                         )
                     })
