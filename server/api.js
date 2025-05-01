@@ -171,6 +171,7 @@ router.post('/order', verifyToken, async (req, res) => {
       return res.status(400).json({ error: "No active cart found." });
     }
 
+    //Handle select items to check out at frontend
     // 2. Get items in the cart
     const cartItems = await getCartItems(cart.id);
     console.log('CART ITEMS:', cartItems);

@@ -20,13 +20,13 @@ function App() {
   return (
     <>
       <Navigations />
-      {/* {react_toastify library will handle popup notification messages} */}
+      {/* {react_toastify library will handle pop-up notification messages} */}
       <ToastContainer 
         position="top-center"
-        autoClose={false}
+        autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
-        closeOnClick={true}
+        closeOnClick={false}
         pauseOnHover
       />
       <Routes>

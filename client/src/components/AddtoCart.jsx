@@ -1,15 +1,13 @@
 import { useAuth } from "../components/AuthContext.jsx";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
 export default function AddToCart({product}) {
-    console.log("product is =>", product)
+    //console.log("product is =>", product)
     const { token } = useAuth();
-    console.log('token is =>', token)
-    const navigate = useNavigate();
-    const Cart_API_URL = 'http://localhost:3000/api/cart';
+    //console.log('token is =>', token)
+
     const CARTITEM_API_URL = "http://localhost:3000/api/cart/items";
     const handleAddToCart = async() => {
         if (!token) {
@@ -33,15 +31,15 @@ export default function AddToCart({product}) {
             })
 
             const result = await response.json()
-            
+
             if (!response.ok) {
-                throw new Error(result.error || "Failed to add to cart.");
-              }
+                toast.error(result.error || "Failed to add to cart.");
+            }
         
-              toast.success("✅ Added to cart!");
+                toast.success("✅ Added to cart!");
             } catch (error) {
-              console.error("Add to cart error:", error);
-              toast.error(`❌ ${error.message}`);
+                console.error("Add to cart error:", error);
+                toast.error(`❌ ${error.message}`);
             }
     }
 

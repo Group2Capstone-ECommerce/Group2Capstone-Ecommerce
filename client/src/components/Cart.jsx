@@ -5,14 +5,16 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 import { useAuth } from "../components/AuthContext.jsx";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import './CSS/cart.css'
 
 export default function Cart() {
-    const navigate = useNavigate()
     const [cartItems, setCartItems] = useState([])
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
     //const [CreatedOrder, setCreatedOrder] = useState('')
+    const navigate = useNavigate()
     const [refreshCart, setRefreshCart] = useState(false);
     const Cart_API_URL = 'http://localhost:3000/api/cart';
     const Order_API_URL = 'http://localhost:3000/api/order';
@@ -55,6 +57,7 @@ export default function Cart() {
                 console.log('New quantity =>', data)
                 setRefreshCart(prev => !prev)
             }  else {
+                toast.error('Failed to edit quantity', response.status)
                 console.error('Failed to edit quantity', response.status);
             }
         } catch (error) {
@@ -89,7 +92,7 @@ export default function Cart() {
     const quantityMinus = async(itemId, itemQuantity) => {
         try {
             if (itemQuantity <= 1) {
-              console.warn('Quantity cannot be less than 1');
+              toast.warn('Quantity cannot be less than 1');
               return;
             }
         
@@ -107,7 +110,7 @@ export default function Cart() {
               console.log('New quantity =>', data);
               setRefreshCart(prev => !prev);
             } else {
-              console.error('Failed to minus quantity', response.status);
+                console.error('Failed to minus quantity', response.status);
             }
         } catch (error) {
             console.error('Error minus quantity', error);
@@ -126,6 +129,7 @@ export default function Cart() {
             });
             if(response.ok) {
                 console.log('response is =>', response)
+                toast.success('Item deleted!')
                 setRefreshCart(prev => !prev)
             } else {
                 console.error('Delete failed:', response.statusText);
@@ -165,24 +169,34 @@ export default function Cart() {
     //handle checkout; checking out with a simple confirmation page.
     const handleCheckout = async(e) => {
         e.preventDefault()
-        const selectedProducts = cartItems.filter(item => selectedItems.includes(item.id));
+        const selectedProducts = cartItems.filter(item => selectedItems.includes(item.product_id));
         console.log("selected items => ", selectedProducts);
         console.log("total price is => ", calculateTotal());
+        if(selectedProducts.length === 0 ) {
+            console.log('⚠️ No items selected');
+            toast.warn('Please select the items to check out!')
+            return;
+        }
         //fetch with creating order api
         const createOrder = await fetch(Order_API_URL,{
             method: 'POST',
             headers:{
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`
             },
             body: JSON.stringify(selectedProducts),
         })
         const order = await createOrder.json()
         console.log('order is =>', order)
-        if(order.ok){
-            //setCreatedOrder(order)
-            setRefreshCart(prev => !prev)
-            //return order.message
+        if(!createOrder.ok){
+            throw new Error(order.error || 'Order creation failed.');
         }
+        //setCreatedOrder(order)
+        setRefreshCart(prev => !prev)
+        //return order.message
+
+        //navigate to order confirm page
+        //navigate('/order')
     };
     //console.log('createdOrder =>', CreatedOrder)
 
