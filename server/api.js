@@ -26,6 +26,7 @@ const {
     createOrderItem,
     getUserByUsername,
     getUserByEmail,
+    getOrdersByUserId,
     checkEmailExists,
     updateUserEmail
 } = require("./db");
@@ -415,6 +416,26 @@ router.put('/cart/:productId', verifyToken, async (req, res, next) => {
     next(error);
   }
 });
+
+// GET /api/orders/me
+router.get('/orders/me', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log('Usser Id =>', userId)
+
+    const { rows: orders } = await getOrdersByUserId(userId);
+
+    console.log('orders =>', orders)
+    if (orders.length === 0) {
+      return res.status(200).json({ message: "No past Orders"});
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error('Error fetching user orders:', error)
+    res.status(500).json({ message: 'Error retrieving your orders.'})
+  }
+})
 
 // GET /api/users/me
 router.get("/users/me", verifyToken, async (req, res) => {
