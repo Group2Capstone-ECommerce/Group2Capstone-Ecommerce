@@ -1,4 +1,4 @@
-
+const cors = require('cors');
 const pg = require('pg');
 const jwt = require('jsonwebtoken');
 const express = require('express')
@@ -33,13 +33,18 @@ const {
     createOrderItem,
     getOrderItems,
     getUserByUsername,
-    getUserByEmail
+    getUserByEmail,
+    getOrdersByUserId,
+    checkEmailExists,
+    updateUserEmail
 } = require("./db");
 
 function verifyToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
-  
+
+    console.log("Received token:", token); // Log the token
+
     if (!token) return res.status(401).json({ message: 'No token provided.' });
   
     jwt.verify(token, process.env.JWT || 'shhh', (err, user) => {
@@ -57,23 +62,31 @@ function verifyToken(req, res, next) {
 // GET /api/admin/users
 router.get('/admin/users', verifyToken, async (req, res, next) => {
   try {
-    // Grab the token from the headers
-    const token = req.headers.authorization;
     // Grab the userId so we can check the user's table to see if the user is an admin or not
     const userId = req.user.id;
-    console.log(`user id => `, userId);
+
+    // Retrieve user information from the database
     const user = await getUserById(userId);
-    console.log(`user => `, user.is_admin);
     
-    if (user.is_admin !== true) {
-      return res.sendStatus(403).json({ message: 'Forbidden: Admins only.'});
+    // Check if user exists and is an admin
+    if (!user) {
+      console.log("User not found.");
+      return res.status(404).json({ message: 'User not found.' });
     }
 
-    const users = await getAllUsers(token);
-    res.status(200).send(users)
-} catch (error) {
-    next(error)
-}
+    console.log(`user =>`, user);
+
+    if (!user?.is_admin) {
+      return res.status(403).json({ message: 'Forbidden: Admins only.' });
+    }
+
+    // Fetch all users if the logged-in user is an admin
+    const users = await getAllUsers();
+    res.status(200).json(users); // Send users list as a response
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    next(error); // Pass error to the next middleware
+  }
 });
 
 // POST/api/admin/products
@@ -494,6 +507,83 @@ router.put('/cart/:productId', verifyToken, async (req, res, next) => {
   } catch (error) {
     console.error('Error updating cart item:', error);
     next(error);
+  }
+});
+
+// GET /api/orders/me
+router.get('/orders/me', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log('Usser Id =>', userId)
+
+    const { rows: orders } = await getOrdersByUserId(userId);
+
+    console.log('orders =>', orders)
+    if (orders.length === 0) {
+      return res.status(200).json({ message: "No past Orders"});
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error('Error fetching user orders:', error)
+    res.status(500).json({ message: 'Error retrieving your orders.'})
+  }
+})
+
+// GET /api/users/me
+router.get("/users/me", verifyToken, async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const response = await getUserById(userId);
+    console.log(`response =>`, response);
+
+    if (!response) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    res.status(200).json(response);
+  } catch (err) {
+    console.error("Error in GET /users/me:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+})
+
+// PUT /api/users/me
+router.put("/users/me", verifyToken, async (req, res, next) => {
+  const { email } = req.body;
+  const userId = req.user.id;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required." });
+  }
+
+  try {
+    // Get the current user
+    const currentUser = await getUserById(userId);
+
+    // If it is the email, don't need to check for existing
+    if (email === currentUser.email) {
+      return res.status(200).json({ message: "Email is the same. No update needed." });
+    }
+
+    // Check if the email is already in use by another user
+    const emailExists = await checkEmailExists(email);
+    if (emailExists) {
+      return res.status(409).json({ error: "Email is already in use." });
+    }
+
+    // Proceed to update the user's email
+    const updatedUser = await updateUserEmail(userId, email);
+
+    if (!updatedUser) {
+      return res.status(500).json({ error: "Error updating email." });
+    }
+
+    return res.status(200).json({ message: "Email updated successfully." });
+  } catch (err) {
+    console.error("Error in PUT /users/me:", err);
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
