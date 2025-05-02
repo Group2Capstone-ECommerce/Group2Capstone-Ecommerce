@@ -1,5 +1,6 @@
 import {useState} from 'react'
 import { useNavigate } from "react-router-dom";
+import { useAuth } from './AuthContext';
 
 export default function Register() {
     const REGISTER_API_URL = 'http://localhost:3000/api/auth/register';  
@@ -12,6 +13,7 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const {token, setToken} = useAuth();
     const [usernameAvailable, setUsernameAvailable] = useState(null);
     const [usernameErrorMessage, setUsernameErrorMessage] = useState('');
     const [emailAvailable, setEmailAvailable] = useState(null);
@@ -41,13 +43,14 @@ export default function Register() {
             console.log('Data error', data.error)
             console.log('Status', response.status)
 
-            if(response.ok){
+            if(response.ok && data.token){
+                setToken(data.token);
                 setSuccessMessage('Account created successfully! Redirecting...');
                 setErrorMessage('');
 
                 setTimeout(() => {
                     navigate('/');
-                }, 3000);
+                }, 1500);
             } else {
                 const message = data.error?.toString() || 'Signup failed';
                 setErrorMessage(message);
@@ -79,7 +82,7 @@ export default function Register() {
                     Username: <input value={username} onChange={(e) => setUsername(e.target.value)} required/>
                 </div>
                 <div className='formGroup'>
-                    Password: <input value={password} onChange={(e) => setPassword(e.target.value)} required/>
+                    Password: <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
                 </div>
                 <button>Submit</button>
             </form>

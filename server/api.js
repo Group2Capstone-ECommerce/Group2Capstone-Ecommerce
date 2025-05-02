@@ -1,4 +1,4 @@
-
+const cors = require('cors');
 const pg = require('pg');
 const jwt = require('jsonwebtoken');
 const express = require('express')
@@ -26,6 +26,7 @@ const {
     createOrderItem,
     getUserByUsername,
     getUserByEmail,
+    getOrdersByUserId,
     checkEmailExists,
     updateUserEmail
 } = require("./db");
@@ -33,7 +34,9 @@ const {
 function verifyToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
-  
+
+    console.log("Received token:", token); // Log the token
+
     if (!token) return res.status(401).json({ message: 'No token provided.' });
   
     jwt.verify(token, process.env.JWT || 'shhh', (err, user) => {
@@ -51,23 +54,31 @@ function verifyToken(req, res, next) {
 // GET /api/admin/users
 router.get('/admin/users', verifyToken, async (req, res, next) => {
   try {
-    // Grab the token from the headers
-    const token = req.headers.authorization;
     // Grab the userId so we can check the user's table to see if the user is an admin or not
     const userId = req.user.id;
-    console.log(`user id => `, userId);
+
+    // Retrieve user information from the database
     const user = await getUserById(userId);
-    console.log(`user => `, user.is_admin);
     
-    if (user.is_admin !== true) {
-      return res.sendStatus(403).json({ message: 'Forbidden: Admins only.'});
+    // Check if user exists and is an admin
+    if (!user) {
+      console.log("User not found.");
+      return res.status(404).json({ message: 'User not found.' });
     }
 
-    const users = await getAllUsers(token);
-    res.status(200).send(users)
-} catch (error) {
-    next(error)
-}
+    console.log(`user =>`, user);
+
+    if (!user?.is_admin) {
+      return res.status(403).json({ message: 'Forbidden: Admins only.' });
+    }
+
+    // Fetch all users if the logged-in user is an admin
+    const users = await getAllUsers();
+    res.status(200).json(users); // Send users list as a response
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    next(error); // Pass error to the next middleware
+  }
 });
 
 // POST/api/admin/products
@@ -405,6 +416,26 @@ router.put('/cart/:productId', verifyToken, async (req, res, next) => {
     next(error);
   }
 });
+
+// GET /api/orders/me
+router.get('/orders/me', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log('Usser Id =>', userId)
+
+    const { rows: orders } = await getOrdersByUserId(userId);
+
+    console.log('orders =>', orders)
+    if (orders.length === 0) {
+      return res.status(200).json({ message: "No past Orders"});
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error('Error fetching user orders:', error)
+    res.status(500).json({ message: 'Error retrieving your orders.'})
+  }
+})
 
 // GET /api/users/me
 router.get("/users/me", verifyToken, async (req, res) => {

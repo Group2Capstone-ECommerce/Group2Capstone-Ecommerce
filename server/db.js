@@ -802,6 +802,19 @@ async function getUserByEmail(email) {
   }
 }
 
+// Get orders by user_id
+async function getOrdersByUserId(userId) {
+  try {
+    const query = `SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC`;
+    const values = [userId];
+    const result = await pool.query(query, values);
+    return result;
+  }catch (error) {
+    console.error('Error in getOrdersByUserId:', error);
+    throw error;
+  } 
+}
+
 // Update user email
 const updateUserEmail = async (userId, newEmail) => {
   const SQL = /*sql*/ `
@@ -875,6 +888,7 @@ module.exports = {
   updateProductQuantity,
   getUserByUsername,
   getUserByEmail,
+  getOrdersByUserId,
   updateUserEmail,
   checkEmailExists
 }
