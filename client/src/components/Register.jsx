@@ -69,16 +69,16 @@ export default function Register() {
             <br />
             <form onSubmit={handleSubmit}>
                 {/*  input boxes */}
-                <div>
+                <div className='formGroup'>
                     Name: <input value={name} onChange={(e) => setName(e.target.value)} required/>
                 </div>
-                <div>
+                <div className='formGroup'>
                     Email: <input value={email} onChange={(e) => setEmail(e.target.value)} required/>
                 </div>
-                <div>
+                <div className='formGroup'>
                     Username: <input value={username} onChange={(e) => setUsername(e.target.value)} required/>
                 </div>
-                <div>
+                <div className='formGroup'>
                     Password: <input value={password} onChange={(e) => setPassword(e.target.value)} required/>
                 </div>
                 <button>Submit</button>
