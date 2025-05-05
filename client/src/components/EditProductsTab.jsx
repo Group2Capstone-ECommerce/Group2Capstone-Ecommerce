@@ -10,7 +10,8 @@ export default function EditProductsTab() {
         product_name: "", 
         price: "", 
         descriptions: "", 
-        image_url: ""
+        image_url: "", 
+        stock_quantity: ""
     });
 
     const [editId, setEditId] = useState(null);
@@ -18,7 +19,8 @@ export default function EditProductsTab() {
         product_name: "", 
         price: "", 
         descriptions: "", 
-        image_url: ""
+        image_url: "", 
+        stock_quantity: ""
     });
         
     const ADMIN_PRODUCTS_URL = "http://localhost:3000/api/admin/products";
@@ -80,14 +82,15 @@ export default function EditProductsTab() {
                  },
                  body: JSON.stringify({
                     ...form, 
-                    image_url: form.image_url || null,
+                    stock_quantity: parseInt(form.stock_quantity, 10) || 0,
+                    image_url: form.image_url || null
                  }),
             });
 
             if (res.ok) {
                 const data = await res.json(); 
                 setProducts([...products, data.product]);
-                setForm({ name:"", price:"", description:"", image_url:""});
+                setForm({ product_name:"", price:"", descriptions:"", image_url:""});
             } else {
                 const errorData = await res.json();
                 console.error("Failed to create new product:", errorData);
@@ -104,6 +107,7 @@ export default function EditProductsTab() {
             price: product.price || "",
             descriptions: product.descriptions || "",
             image_url: product.image_url || "",
+            stock_quantity: product.stock_quantity || 0,
          });
     };
 
@@ -118,7 +122,10 @@ export default function EditProductsTab() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(editForm),
+                body: JSON.stringify({ 
+                    ...editForm,
+                stock_quantity: parseInt(editForm.stock_quantity, 10) || 0
+                }),
             });
 
             if (res.ok) {
@@ -169,6 +176,12 @@ export default function EditProductsTab() {
                  value={form.image_url} 
                  onChange={(e) => setForm({ ...form, image_url: e.target.value })}
                 />
+                <input 
+                 type="number"
+                 placeholder="Stock Quantity"
+                 value={form.stock_quantity}
+                 onChange={(e) => setForm({ ...form, stock_quantity: e.target.value })}
+                />
                 <button type="submit">Create Product</button>
             </form>
 
@@ -203,6 +216,12 @@ export default function EditProductsTab() {
                              value={editForm.image_url || ""}
                              onChange={(e) => setEditForm({ ...editForm, image_url: e.target.value })}
                             />
+                            <input
+                             type="number"
+                             placeholder="Stock Quantity"
+                             value={editForm.stock_quantity}
+                             onChange={(e) => setEditForm({ ...editForm, stock_quantity: e.target.value })}
+                            />
                             <button type="submit">Save</button>
                             <button type="button" onClick={() => setEditId(null)}>Cancel</button>
                         </form>
@@ -217,6 +236,7 @@ export default function EditProductsTab() {
                              width={100} 
                              onError={(e) => e.target.src = stockProductImg} 
                             />
+                            <p><strong>Stock: {product.stock_quantity}</strong></p>
                             <br />
                             <button onClick={() => handleEditToggle(product)}>Edit</button>    
                             <button onClick={() => handleDelete(product.id)}>Delete</button>
