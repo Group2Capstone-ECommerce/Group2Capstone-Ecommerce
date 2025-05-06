@@ -16,7 +16,7 @@ export default function LoginForm() {
     const [errorMessage, setErrorMessage] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
-    const {setToken, setIsAdmin} = useAuth();
+    const {setToken, setIsAdmin, setUser} = useAuth();
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -36,6 +36,7 @@ export default function LoginForm() {
         if (res.ok && data.token) {
           setToken(data.token);
           setIsAdmin(data.isAdmin);
+          setUser(data.user);
           localStorage.setItem("token", data.token);
           setSuccessMsg("Account login successful! Redirecting...");
           setTimeout(() => {

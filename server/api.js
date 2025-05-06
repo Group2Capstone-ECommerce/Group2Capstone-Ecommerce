@@ -424,8 +424,11 @@ router.delete('/admin/products/:productId', verifyToken, async(req, res, next) =
       return res.status(403).json({message: 'No access! Admin only!'})
     }
     const product_id = req.params.productId
-    await deleteProduct({product_id})
-    res.status(204).send()
+    const result = await deleteProduct({ product_id });
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Product not found or already deleted" });
+    }
+    res.status(204).send();
   } catch (error) {
       next(error)
   }
