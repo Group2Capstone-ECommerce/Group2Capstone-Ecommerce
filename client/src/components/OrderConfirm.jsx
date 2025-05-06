@@ -8,8 +8,11 @@ import "react-toastify/dist/ReactToastify.css";
 export default function OrderConfirm ({createdOrder}) {
     const ORDER_ITEMS_API_URL = "http://localhost:3000/api/order/items";
     const ORDER_API_URL = "http://localhost:3000/api/order";
+    const Billing_Info_API_URL = "http://localhost:3000/api//users/billin_info/me";
 
     const navigate = useNavigate();
+    
+    const [billingInfo, setBillingInfo] = useState(null)
 
     const { token } = useAuth();
     if (!token) {
@@ -41,14 +44,49 @@ export default function OrderConfirm ({createdOrder}) {
                 }
                 console.log('fetch order item data =>', data)
                 setOrderItems(data)
+
+                
             } catch (error) {
                 console.error('Error fetching order items:', error)
             }
         }
         console.log('Order items =>', orderItems)
         fetchOrderItems();
+        fetchBillInfo();
     }, [orderId, orderCheckedout])
 
+    //calculate total itmes quantity
+    const calculateQty = () => {
+        if (!orderItems || orderItems.length === 0) {
+            return 0
+        }
+        const totalQty = orderItems?.reduce((acc, item) => {
+            return acc + item.quantity
+        }, 0)
+        console.log("Total quantity is:", totalQty);
+        return totalQty;
+    }
+
+    //calculate order total price 
+    const calculateTotalPrice = () => {
+        if (!orderItems || orderItems.length === 0) {
+            return 0
+        }
+        const totalPrice = orderItems?.reduce((acc, item) => {
+            return acc + (item.price_at_purchase * item.quantity)
+        },0)
+        return totalPrice
+    }
+
+    //fetch user's billing info
+    const fetchBillInfo = async() => {
+        const response = await fetch (Billing_Info_API_URL)
+        const result = await response.json()
+        if(!response.ok) {
+            setBillingInfo(result.message)
+        }
+        setBillingInfo(result)
+    }
 
     const handleConfirm = async(e) => {
         e.preventDefault()
@@ -76,13 +114,21 @@ export default function OrderConfirm ({createdOrder}) {
                 </div>
             ) : (
             <div className="orderContainer" style={{margin: "100px"}}>
-                <div className="shippingInfo">
+                {!billingInfo || !billingInfo.info ? 
+                (
+                    <div className="shippingInfo">
+                        <h3>No Shipping Info</h3>
+                        <button>Update Shipping Info</button>
+                    </div>
+                ) : (
+                    <div className="shippingInfo">
                     <h3>Shipping Info:</h3>
-                    <p>Name: </p>
-                    <p>Address: </p>
-                    <p>Phone: </p>
-                    <p>Email: </p>
+                    <p>Name: {billingInfo?.info.full_name}</p>
+                    <p>Address:  {billingInfo?.info.address_line1 || billingInfo?.address_line2}</p>
+                    <p>Phone:  {billingInfo?.info.phone}</p>
+                    <p>Email:  {billingInfo?.info.email}</p>
                 </div>
+                )}
                 {orderItems.length === 0 ? (
                     <p>Loading order...</p>
                 ) : (
@@ -102,8 +148,8 @@ export default function OrderConfirm ({createdOrder}) {
                     })
                 )}
                 <div className="orderActions">
-                    <p>Checking out items: </p>
-                    <p>Total price: </p>
+                    <p>Checking out items: {calculateQty()} </p>
+                    <p>Total price: {calculateTotalPrice()}</p>
                     <p>Payment method: handle payment here</p>
                     <button onClick={() => navigate('/cart')}>Go back</button>
                     <button onClick={handleConfirm}>Confirm</button>

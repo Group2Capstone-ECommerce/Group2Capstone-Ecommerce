@@ -465,7 +465,7 @@ const getCart = async (userId) => {
 const closeCart = async(cart_id, user_id) => {
   const SQL = /*sql */ `
     UPDATE carts 
-    SET is_active = FALSE 
+    SET is_active = FALSE, updated_at = NOW()
     WHERE id = $1 AND user_id = $2
     RETURNING *
   `
@@ -581,7 +581,7 @@ const getOrderItems = async(order_id) => {
 const confirmOrder = async(order_id) => {
   const SQL = /*sql*/ `
     UPDATE orders 
-    SET status = 'Confirmed'
+    SET status = 'Confirmed', updated_at = NOW()
     WHERE id = $1 
     RETURNING *
   `
@@ -593,7 +593,7 @@ const confirmOrder = async(order_id) => {
 const cancleOrder = async(order_id) => {
   const SQL = /*sql*/ `
     UPDATE orders 
-    SET status = 'Cancled'
+    SET status = 'Cancled', updated_at = NOW()
     WHERE id = $1 
     RETURNING *
   `
@@ -625,6 +625,16 @@ const createBillingInfo = async ({
   ]);
   return response.rows[0];
 };
+
+//get billing info by user id
+const getBillInfoByUserId = async(user_id) => {
+  const SQL = /*sql*/ `
+    SELECT * FROM billing_info WHERE user_id = $1
+  `
+  const response = await pool.query(SQL, [user_id])
+  return response.rows
+}
+
 
 // Wishlists
 const createWishlist = async ({ user_id, name, is_shared = false }) => {
@@ -874,7 +884,7 @@ const updateProductQuantity = async (productId, newQuantity) => {
     // Update the product quantity
     const SQL = /*sql*/`
       UPDATE products 
-      SET stock_quantity = $1 
+      SET stock_quantity = $1, updated_at = NOW()
       WHERE id = $2
       RETURNING *;
     `;
@@ -936,7 +946,7 @@ async function getOrdersByUserId(userId) {
 const updateUserEmail = async (userId, newEmail) => {
   const SQL = /*sql*/ `
     UPDATE users
-    SET email = $1
+    SET email = $1, updated_at = NOW()
     WHERE id = $2
     RETURNING id, email;
   `;
@@ -1015,5 +1025,6 @@ module.exports = {
   getUserByEmail,
   getOrdersByUserId,
   updateUserEmail,
-  checkEmailExists
+  checkEmailExists,
+  getBillInfoByUserId
 }

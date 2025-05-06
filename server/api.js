@@ -36,7 +36,8 @@ const {
     getUserByEmail,
     getOrdersByUserId,
     checkEmailExists,
-    updateUserEmail
+    updateUserEmail,
+    getBillInfoByUserId
 } = require("./db");
 
 function verifyToken(req, res, next) {
@@ -265,6 +266,23 @@ router.post('/order/create', verifyToken, async(req, res, next) => {
   }
 })
 
+// GET /api/order/:order_id
+//to get order info by order id
+router.get('/order', verifyToken, async(req, res, next) => {
+  try {
+    const userId = req.user.id
+    const orderId = req.params.order_id
+    if(!orderId){
+      return res.status(400).json({ error: "Missing order_id in query." });
+    }
+    const order = await getOrderById(orderId)
+    console.log('Current order =>', order)
+    res.status(200).send(order)
+  } catch (error) {
+    next(error)
+  }
+})
+
 // GET /api/order/items/:order_id
 // To get order items info to render on confirmation page
 router.get('/order/items/:order_id', verifyToken, async(req, res, next) => {
@@ -294,7 +312,7 @@ router.get('/order/items/:order_id', verifyToken, async(req, res, next) => {
 })
 
 // PUT /api/order/:order_id
-// To checkout the order and change the order's status => closed
+// To checkout the order and change the order's status => confirmed
 router.put('/order/:order_id', async(req, res, next) => {
   try {
     const orderId = req.params.order_id
@@ -312,7 +330,21 @@ router.put('/order/:order_id', async(req, res, next) => {
 })
 
 //To cancle the order and change the order's status => cancled
-
+router.put('/order/:order_id', async(req, res, next) => {
+  try {
+    const orderId = req.params.order_id
+    const cancleOrder = await cancleOrder(orderId)
+    if(!cancleOrder){
+      return res.status(400).json({message: 'Error cancling the order!'})
+    }
+    res.status(200).json({
+      message: 'Order cancled!',
+      order: cancleOrder
+    })
+  } catch (error) {
+    next(error)
+  }
+})
 
 
 // GET /api/products
@@ -547,6 +579,22 @@ router.get("/users/me", verifyToken, async (req, res) => {
     console.error("Error in GET /users/me:", err);
     res.status(500).json({ error: "Internal server error" });
   }
+})
+
+//GET /api/users/billin_info/me
+router.get('/users/billin_info/me', verifyToken, async(req, res, next) => {
+  const userId = req.user.id
+  if(!userId) {
+    return res.status(400).json({message: 'No user id!'})
+  }
+  const billing_info = await getBillInfoByUserId(userId)
+  if(!billing_info) {
+    return res.status(400).json({message: "No billing info found!"})
+  }
+  res.status(200).json({
+    message:"Info fetched successfully!",
+    info: billing_info
+  })
 })
 
 // PUT /api/users/me
