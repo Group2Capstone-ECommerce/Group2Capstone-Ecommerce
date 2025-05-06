@@ -90,7 +90,7 @@ export default function EditProductsTab() {
             if (res.ok) {
                 const data = await res.json(); 
                 setProducts([...products, data.product]);
-                setForm({ product_name:"", price:"", descriptions:"", image_url:""});
+                setForm({ product_name:"", price:"", descriptions:"", image_url:"", stock_quantity:""});
             } else {
                 const errorData = await res.json();
                 console.error("Failed to create new product:", errorData);
@@ -181,6 +181,7 @@ export default function EditProductsTab() {
                  placeholder="Stock Quantity"
                  value={form.stock_quantity}
                  onChange={(e) => setForm({ ...form, stock_quantity: e.target.value })}
+                 required
                 />
                 <button type="submit">Create Product</button>
             </form>
