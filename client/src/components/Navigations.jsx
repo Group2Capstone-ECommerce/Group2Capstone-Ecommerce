@@ -52,7 +52,12 @@ export default function Navigations() {
           <Link to="/account">My Account</Link>
           </>
         ) }
-        {token && isAdmin && <Link to="/admin">Admin Dashboard</Link>}
+        {token && isAdmin && (
+          <>
+          <Link to="/admin">Admin Dashboard</Link>
+          <Link to="/account">My Account</Link>
+          </>
+          )}
 
         {token && <Link to="/logout">Log Out</Link>}
         </div>
