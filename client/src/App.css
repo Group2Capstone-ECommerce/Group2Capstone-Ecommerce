@@ -145,7 +145,7 @@ body {
   gap: 4px;
 }
 
-#productAvailableTxt, #productNotAvailableTxt {
+#productAvailableTxt, #productNotAvailableTxt, #productLowStockTxt {
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 14px;
@@ -165,6 +165,11 @@ body {
 #productNotAvailableTxt {
   background-color: #E53935;
   color: #B71C1C;
+}
+
+#productLowStockTxt {
+  background-color: #FFEB3B;
+  color: #795548;
 }
 
 .seeDetailsBtn {

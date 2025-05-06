@@ -35,9 +35,11 @@ export default function ProductList({ products, setProducts }) {
               alt={product.product_name}
               />
             <div className='productActions'>
-            {product.is_available ? (
+            {product.stock_quantity > 5 ? (
               <p id="productAvailableTxt">Available</p>
-            ) : (
+            ) : product.stock_quantity < 5 ? (
+              <p id="productLowStockTxt">Low Stock!</p>
+            ) : product.stock_quantity === 0 (
               <p id="productNotAvailableTxt">Not Available</p>
             )}
             <Link to={`/products/${product.id}`}>
