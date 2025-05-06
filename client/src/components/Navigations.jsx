@@ -17,7 +17,12 @@ export default function Navigations() {
           </>
         )}
 
-        {token && !isAdmin && <Link to="/account">My Account</Link>}
+        {token && !isAdmin && (
+          <>
+          <Link to="/cart">Cart</Link>
+          <Link to="/account">My Account</Link>
+          </>
+        ) }
         {token && isAdmin && <Link to="/admin">Admin Dashboard</Link>}
 
         {token && <Link to="/logout">Log Out</Link>}

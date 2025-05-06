@@ -113,7 +113,7 @@ const createTables = async () => {
     const createCartsTable = /*sql*/`
       CREATE TABLE IF NOT EXISTS carts (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         is_active BOOLEAN DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
@@ -255,18 +255,23 @@ const authenticateUser = async ({ username, password }) => {
   console.log("Authenticating user:", username);
 
   const SQL = /*sql*/ `
-    SELECT id, password_hash, is_admin 
+    SELECT *
     FROM users 
     WHERE username = $1;
   `;
   const response = await pool.query(SQL, [username]);
+  console.log(response.rows[0])
 
   if (!response.rows.length) {
     console.error("Invalid username or password");
     return null;
   }
+  //to get all the user info
+  const user = response.rows[0]
 
   const storedPasswordHash = response.rows[0].password_hash;
+  //or this to just get is_admin status
+  //const isAdmin = response.rows[0].is_admin;
 
   console.log('Password entered:', password);
   console.log('Stored hash:', storedPasswordHash);
@@ -279,17 +284,22 @@ const authenticateUser = async ({ username, password }) => {
     return null;
   }
 
-  // Grab is_admin so we can use it later
-  const user = response.rows[0];
-  const isAdmin = user.is_admin;
-
   const token = jwt.sign({ id: user.id }, JWT, {
     algorithm: "HS256",
   });
 
   console.log("Generated Token:", token);
-
-  return { isAdmin, token };
+  return {
+     id: user.id,
+     username: user.username,
+     email: user.email,
+     is_admin: user.is_admin,
+     mailing_address: user.mailing_address,
+     phone: user.phone,
+     created_at: user.created_at,
+     updated_at: user.updated_at,
+     token: token
+   };
 };
 
 // Product
@@ -392,7 +402,7 @@ const createCart = async (user_id, is_active) => {
 const checkActiveCartUnique = async (user_id) => {
   try {
     const SQL = /*sql*/`
-      SELECT * FROM carts WHERE user_id = $1 AND is_active = 't' LIMIT 1;
+      SELECT * FROM carts WHERE user_id = $1 AND is_active = true LIMIT 1;
     `;
     const response = await pool.query(SQL, [user_id]);
     if (response.rows.length > 0) {
@@ -407,19 +417,35 @@ const checkActiveCartUnique = async (user_id) => {
   }
 };
 
+//Get a user's active cart info- id
+const getCartId = async(userId) => {
+  try {
+    const SQL = /*sql*/`
+      SELECT id FROM carts WHERE is_active = true AND user_id = $1
+    `
+    const response = await pool.query(SQL, [userId])
+    const id = response.rows[0]
+    return id
+  } catch (error) {
+    console.error("Error in getCartId:", error);
+    throw error;
+  }
+}
+
 // Get cart
 const getCart = async (userId) => {
   try {
-    const query = `
+    const query = /*sql*/`
       SELECT 
         products.id AS product_id,
         products.product_name,
         products.price,
-        cart_items.quantity
+        cart_items.quantity,
+        products.image_url
       FROM carts
       JOIN cart_items ON carts.id = cart_items.cart_id
       JOIN products ON cart_items.product_id = products.id
-      WHERE carts.user_id = $1
+      WHERE carts.user_id = $1 AND carts.is_active = true
     `;
 
     const { rows } = await pool.query(query, [userId]);
@@ -435,14 +461,21 @@ const getCart = async (userId) => {
   }
 };
 
-// Check if product exists before inserting
-const checkProductExists = async (product_id) => {
-  const result = await pool.query('SELECT id FROM products WHERE id = $1', [product_id]);
-  return result.rows.length > 0;
-};
+//Inactive the cart
+const closeCart = async(cart_id, user_id) => {
+  const SQL = /*sql */ `
+    UPDATE carts 
+    SET is_active = FALSE, updated_at = NOW()
+    WHERE id = $1 AND user_id = $2
+    RETURNING *
+  `
+  const response = await pool.query(SQL, [cart_id, user_id])
+  return response.rows[0]
+}
 
-// CartItems
-const createCartItem = async (cart_id, product_id, quantity, created_at, updated_at) => {
+
+// create Car tItems
+const createCartItem = async (cart_id, product_id, quantity) => {
   const productResult = await pool.query(`SELECT price FROM products WHERE id = $1`, [product_id]);
   if (productResult.rows.length === 0) {
     throw new Error("Product does not exist.");
@@ -450,19 +483,26 @@ const createCartItem = async (cart_id, product_id, quantity, created_at, updated
 
   price_at_addition = productResult.rows[0].price;
 
+  const UniqueItem = await pool.query(
+    /*sql*/
+    `SELECT * FROM cart_items WHERE cart_id = $1 AND product_id = $2`,
+    [cart_id, product_id]
+  )
+  if (UniqueItem.rows.length !== 0) {
+    throw new Error("Item already exists in your cart!.");
+  }
+
   const SQL = /*sql*/ `
     INSERT INTO cart_items(
       id, 
       cart_id, 
       product_id, 
       quantity, 
-      price_at_addition,
-      created_at, 
-      updated_at
-    ) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *;
+      price_at_addition
+    ) VALUES($1, $2, $3, $4, $5) RETURNING *;
   `;
   
-  const response = await pool.query(SQL, [uuid.v4(), cart_id, product_id, quantity, price_at_addition, created_at, updated_at]);
+  const response = await pool.query(SQL, [uuid.v4(), cart_id, product_id, quantity, price_at_addition]);
   return response.rows[0];
 };
 
@@ -483,7 +523,7 @@ const createOrder = async (user_id, cart_id, status, total_price, created_at, up
   return response.rows[0];
 };
 
-// OrderItems
+// Create order items
 const createOrderItem = async ({ order_id, product_id, quantity, price_at_purchase }) => {
   const SQL = `
     INSERT INTO order_items(
@@ -497,6 +537,69 @@ const createOrderItem = async ({ order_id, product_id, quantity, price_at_purcha
   const response = await pool.query(SQL, [uuid.v4(), order_id, product_id, quantity, price_at_purchase]);
   return response.rows[0];
 };
+
+//Get order by user id - use to render order history for user
+const getOrderByUserId = async(user_id) => {
+  const SQL = /*sql*/ `
+    SELECT * 
+    FROM orders 
+    WHERE user_id = $1 
+  `
+  const response = await pool.query(SQL, [user_id])
+  return response.rows[0]
+}
+
+//GET order by order id
+const getOrderById = async(order_id) => {
+  const SQL = /*sql*/ `
+    SELECT * FROM orders WHERE id = $1 
+  `
+  const response = await pool.query(SQL, [order_id])
+  return response.rows[0]
+}
+
+//Get order items
+const getOrderItems = async(order_id) => {
+  const SQL = /*sql*/ `
+    SELECT 
+      order_items.id,
+      order_items.order_id,
+      order_items.product_id,
+      order_items.quantity,
+      order_items.price_at_purchase,
+      products.product_name,
+      products.image_url
+    FROM order_items
+    JOIN products ON order_items.product_id = products.id
+    WHERE order_items.order_id = $1
+  `
+  const response = await pool.query(SQL, [order_id])
+  return response.rows
+}
+
+//Confirm the order - change order's status to Confirmed after checkout
+const confirmOrder = async(order_id) => {
+  const SQL = /*sql*/ `
+    UPDATE orders 
+    SET status = 'Confirmed', updated_at = NOW()
+    WHERE id = $1 
+    RETURNING *
+  `
+  const response = await pool.query(SQL, [order_id])
+  return response.rows[0]
+}
+
+//Cancel the order - change order's status to Canceled
+const cancelOrder = async(order_id) => {
+  const SQL = /*sql*/ `
+    UPDATE orders 
+    SET status = 'Canceled', updated_at = NOW()
+    WHERE id = $1 
+    RETURNING *
+  `
+  const response = await pool.query(SQL, [order_id])
+  return response.rows[0]
+}
 
 // Billing Info
 const createBillingInfo = async ({
@@ -522,6 +625,16 @@ const createBillingInfo = async ({
   ]);
   return response.rows[0];
 };
+
+//get billing info by user id
+const getBillInfoByUserId = async(user_id) => {
+  const SQL = /*sql*/ `
+    SELECT * FROM billing_info WHERE user_id = $1
+  `
+  const response = await pool.query(SQL, [user_id])
+  return response.rows
+}
+
 
 // Wishlists
 const createWishlist = async ({ user_id, name, is_shared = false }) => {
@@ -745,6 +858,20 @@ const getCartItems = async (cart_id) => {
   }
 };
 
+//Delete order items
+const deleteOrderItems = async(order_id, product_id) => {
+  try {
+    const SQL = /*sql*/ `
+      DELETE FROM order_items 
+      WHERE order_id = $1 AND product_id = 2
+    `
+    return await pool.query(SQL, [order_id, product_id])
+  } catch (error) {
+    console.error("Error deleting order items:", error);
+    throw new Error("Error deleting order item: " + error.message);
+  }
+}
+
 // Update the product quantity
 const updateProductQuantity = async (productId, newQuantity) => {
   try {
@@ -761,7 +888,7 @@ const updateProductQuantity = async (productId, newQuantity) => {
     // Update the product quantity
     const SQL = /*sql*/`
       UPDATE products 
-      SET stock_quantity = $1 
+      SET stock_quantity = $1, updated_at = NOW()
       WHERE id = $2
       RETURNING *;
     `;
@@ -823,7 +950,7 @@ async function getOrdersByUserId(userId) {
 const updateUserEmail = async (userId, newEmail) => {
   const SQL = /*sql*/ `
     UPDATE users
-    SET email = $1
+    SET email = $1, updated_at = NOW()
     WHERE id = $2
     RETURNING id, email;
   `;
@@ -873,7 +1000,13 @@ module.exports = {
   createCart,
   createCartItem,
   createOrder,
+  confirmOrder,
+  cancelOrder,
   createOrderItem,
+  getOrderByUserId,
+  getOrderById,
+  getOrderItems,
+  deleteOrderItems,
   createBillingInfo,
   createWishlist,
   createWishlistItem,
@@ -886,6 +1019,8 @@ module.exports = {
   deleteProduct,
   checkActiveCartUnique,
   getCart,
+  getCartId,
+  closeCart,
   deleteProductFromCart,
   updateCartItemQuantity,
   getCartItems,
@@ -894,5 +1029,6 @@ module.exports = {
   getUserByEmail,
   getOrdersByUserId,
   updateUserEmail,
-  checkEmailExists
+  checkEmailExists,
+  getBillInfoByUserId
 }
