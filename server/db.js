@@ -32,23 +32,23 @@ const createTables = async () => {
     await pool.query(enableUuidExtension);
 
 
-    // //Drop tables if exist
-    // console.log('Running dropTablesIfExist query...')
-    // const dropTablesIfExist = `
-    //   DROP TABLE IF EXISTS products CASCADE;
-    //   DROP TABLE IF EXISTS users CASCADE;
-    //   DROP TABLE IF EXISTS categories CASCADE;
-    //   DROP TABLE IF EXISTS product_categories CASCADE;
-    //   DROP TABLE IF EXISTS carts CASCADE;
-    //   DROP TABLE IF EXISTS cart_items CASCADE;
-    //   DROP TABLE IF EXISTS orders CASCADE;
-    //   DROP TABLE IF EXISTS order_items CASCADE;
-    //   DROP TABLE IF EXISTS billing_info CASCADE;
-    //   DROP TABLE IF EXISTS wishlists CASCADE;
-    //   DROP TABLE IF EXISTS wishlist_items CASCADE;
-    // `;
-    // await pool.query(dropTablesIfExist);
-    // console.log('Finished running dropTablesIfExist query...')
+    //Drop tables if exist
+    console.log('Running dropTablesIfExist query...')
+    const dropTablesIfExist = `
+      DROP TABLE IF EXISTS products CASCADE;
+      DROP TABLE IF EXISTS users CASCADE;
+      DROP TABLE IF EXISTS categories CASCADE;
+      DROP TABLE IF EXISTS product_categories CASCADE;
+      DROP TABLE IF EXISTS carts CASCADE;
+      DROP TABLE IF EXISTS cart_items CASCADE;
+      DROP TABLE IF EXISTS orders CASCADE;
+      DROP TABLE IF EXISTS order_items CASCADE;
+      DROP TABLE IF EXISTS billing_info CASCADE;
+      DROP TABLE IF EXISTS wishlists CASCADE;
+      DROP TABLE IF EXISTS wishlist_items CASCADE;
+    `;
+    await pool.query(dropTablesIfExist);
+    console.log('Finished running dropTablesIfExist query...')
 
    
     console.log('Creating products table...');
@@ -127,7 +127,7 @@ const createTables = async () => {
       CREATE TABLE IF NOT EXISTS cart_items (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         cart_id UUID REFERENCES carts(id) ON DELETE CASCADE,
-        product_id UUID REFERENCES products(id),
+        product_id UUID REFERENCES products(id) ON DELETE CASCADE,
         quantity INTEGER NOT NULL CHECK (quantity > 0),
         price_at_addition NUMERIC (10, 2),
         created_at TIMESTAMP DEFAULT NOW(),
@@ -206,7 +206,7 @@ const createTables = async () => {
     const createWishlistItemsTable =/*sql*/ `
       CREATE TABLE IF NOT EXISTS wishlist_items (
         wishlist_id UUID REFERENCES wishlists(id) ON DELETE CASCADE,
-        product_id UUID REFERENCES products(id),
+        product_id UUID REFERENCES products(id) ON DELETE CASCADE,
         CONSTRAINT unique_wishlist_product UNIQUE (wishlist_id, product_id)
       );
     `;
@@ -751,13 +751,17 @@ const editProduct = async({product_id, product_name, descriptions, price, stock_
   return response.rows[0]
 };
 
-const deleteProduct = async({product_id}) => {
-  const SQL = /*sql*/`
+const deleteProduct = async ({ product_id }) => {
+  const deleteProductSQL = `
     DELETE FROM products WHERE id = $1
-  `
-  return await pool.query(SQL, [product_id])
-
-}
+  `;
+  try {
+    const result = await pool.query(deleteProductSQL, [product_id]);
+    return result;
+  } catch (err) {
+    throw err;
+  }
+};
 
 // Delete product from user's cart
 const deleteProductFromCart = async(userId, productId) => {
