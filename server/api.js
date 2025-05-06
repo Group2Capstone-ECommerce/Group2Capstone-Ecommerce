@@ -24,7 +24,7 @@ const {
     updateCartItemQuantity,
     createOrder,
     confirmOrder,
-    cancleOrder,
+    cancelOrder,
     createCartItem,
     getCartItems,
     updateProductQuantity, 
@@ -329,17 +329,17 @@ router.put('/order/:order_id', async(req, res, next) => {
   }
 })
 
-//To cancle the order and change the order's status => cancled
+//To canceled the order and change the order's status => canceled
 router.put('/order/:order_id', async(req, res, next) => {
   try {
     const orderId = req.params.order_id
-    const cancleOrder = await cancleOrder(orderId)
-    if(!cancleOrder){
+    const cancelOrder = await cancelOrder(orderId)
+    if(!cancelOrder){
       return res.status(400).json({message: 'Error cancling the order!'})
     }
     res.status(200).json({
-      message: 'Order cancled!',
-      order: cancleOrder
+      message: 'Order canceled!',
+      order: cancelOrder
     })
   } catch (error) {
     next(error)

@@ -589,11 +589,11 @@ const confirmOrder = async(order_id) => {
   return response.rows[0]
 }
 
-//Cancle the order - change order's status to Cancled
-const cancleOrder = async(order_id) => {
+//Cancel the order - change order's status to Canceled
+const cancelOrder = async(order_id) => {
   const SQL = /*sql*/ `
     UPDATE orders 
-    SET status = 'Cancled', updated_at = NOW()
+    SET status = 'Canceled', updated_at = NOW()
     WHERE id = $1 
     RETURNING *
   `
@@ -997,7 +997,7 @@ module.exports = {
   createCartItem,
   createOrder,
   confirmOrder,
-  cancleOrder,
+  cancelOrder,
   createOrderItem,
   getOrderByUserId,
   getOrderById,
