@@ -680,7 +680,7 @@ const getUserById = async(userId) => {
     WHERE id = $1
   `
   const response = await pool.query(SQL, [userId])
-  return response.rows[0]
+  return response.rows[0];
 }
 
 
