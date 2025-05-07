@@ -3,8 +3,7 @@ import { Routes, Route, NavLink, Navigate } from "react-router-dom";
 import { useAuth } from "../components/AuthContext.jsx";
 import EditProductsTab from "./EditProductsTab.jsx";
 import ViewUsersTab from "../components/ViewUsersTab.jsx"
-//import AddEditProductsTab from ...
-
+import './CSS/adminDashboard.css'
 
 export default function AdminDashboard() {
   const { isAdmin } = useAuth();
@@ -17,17 +16,18 @@ export default function AdminDashboard() {
     <h1 className="admin-title">Admin Dashboard</h1>
 
       {/*Tab Buttons*/}
-      <div className="tab-buttons">
-    <NavLink to="users" className={({ isActive }) => isActive ? "tab-button active" : "tab-button"}>View Users</NavLink> 
-    <NavLink to="products" className="tab-button">Add/Edit Products</NavLink>
-  </div>
+    <ul className="tab-buttons">
+      <li><NavLink to="users" className={({ isActive }) => isActive ? "tab-button active" : "tab-button"}>View Users</NavLink> </li>
+      <li><NavLink to="products" className={({ isActive }) => isActive ? "tab-button active" : "tab-button"}>Add/Edit Products</NavLink></li>  
+      {/* <li><p>Select a tab above</p></li> */}
+    </ul>
 
   {/* Nested Routes */}
   <div className="tab-content">
     <Routes>
       <Route path="users" element={<ViewUsersTab />} />
       <Route path="products" element={<EditProductsTab />} />
-      <Route path="*" element={<p>Select a tab above.</p>} />
+      <Route path="*" element={<p>Select a tab above</p>} />
     </Routes>
   </div>
 </div>
