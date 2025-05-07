@@ -314,7 +314,7 @@ router.get('/order/items/:order_id', verifyToken, async(req, res, next) => {
 
 // PUT /api/order/:order_id
 // To checkout the order and change the order's status => confirmed
-router.put('/order/:order_id', async(req, res, next) => {
+router.put('/order/confirm/:order_id', async(req, res, next) => {
   try {
     const orderId = req.params.order_id
     const placeOrder = await confirmOrder(orderId)
@@ -331,16 +331,16 @@ router.put('/order/:order_id', async(req, res, next) => {
 })
 
 //To canceled the order and change the order's status => canceled
-router.put('/order/:order_id', async(req, res, next) => {
+router.put('/order/cancel/:order_id', async(req, res, next) => {
   try {
     const orderId = req.params.order_id
-    const cancelOrder = await cancelOrder(orderId)
-    if(!cancelOrder){
-      return res.status(400).json({message: 'Error cancling the order!'})
+    const canceledOrder = await cancelOrder(orderId)
+    if(!canceledOrder){
+      return res.status(400).json({message: 'Error canceling the order!'})
     }
     res.status(200).json({
       message: 'Order canceled!',
-      order: cancelOrder
+      order: canceledOrder
     })
   } catch (error) {
     next(error)

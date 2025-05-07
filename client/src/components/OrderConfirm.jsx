@@ -28,6 +28,8 @@ export default function OrderConfirm ({createdOrder}) {
 
     const [orderItems, setOrderItems] = useState([])
     const [orderCheckedout, setOrderCheckedout] = useState(false)
+    const [orderCanceled, setOrderCanceled] = useState(false)
+    const [success, setSuccess] = useState('')
 
     useEffect(()=> {
         const fetchOrderItems = async() => {
@@ -53,7 +55,7 @@ export default function OrderConfirm ({createdOrder}) {
         console.log('Order items =>', orderItems)
         fetchOrderItems();
         fetchBillInfo();
-    }, [orderId, orderCheckedout])
+    }, [orderId, orderCheckedout, orderCanceled])
 
     //calculate total itmes quantity
     const calculateQty = () => {
@@ -88,9 +90,28 @@ export default function OrderConfirm ({createdOrder}) {
         setBillingInfo(result)
     }
 
+    //handle cancel order
+    const handleCancel = async(e) => {
+        e.preventDefault()
+        const cancelOrder = await fetch(`${ORDER_API_URL}/cancel/${orderId}`, {
+            method:'PUT',
+            headers:{
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        })
+        const result = await cancelOrder.json()
+        if(!cancelOrder.ok) {
+            console.error(result.message)
+        }
+        setOrderCanceled(true)
+        setSuccess(result.message)
+    }
+
+    //handle confirming order
     const handleConfirm = async(e) => {
         e.preventDefault()
-        const placeOrder = await fetch(`${ORDER_API_URL}/${orderId}`, {
+        const placeOrder = await fetch(`${ORDER_API_URL}/confirm/${orderId}`, {
             method:'PUT',
             headers:{
                 'Content-Type': 'application/json',
@@ -101,15 +122,15 @@ export default function OrderConfirm ({createdOrder}) {
         if(!placeOrder.ok){
             console.error(result.message)
         }
-        toast.success(result.message)
+        setSuccess(result.message)
         setOrderCheckedout(true)
     }
 
     return(
         <>
-            {orderCheckedout ? (
+            {orderCheckedout || orderCanceled ? (
                 <div className="successContainer">
-                    <h2>You have palcad order succussfully!</h2>
+                    <h2>{success}</h2>
                     <button onClick={() => navigate('/')}>Go back</button>
                 </div>
             ) : (
@@ -151,7 +172,8 @@ export default function OrderConfirm ({createdOrder}) {
                     <p>Checking out items: {calculateQty()} </p>
                     <p>Total price: {calculateTotalPrice()}</p>
                     <p>Payment method: handle payment here</p>
-                    <button onClick={() => navigate('/cart')}>Go back</button>
+                    <button onClick={handleCancel}> Cancel Order</button>
+                    {/* {<button onClick={() => navigate('/cart')}>Go back</button>} */}
                     <button onClick={handleConfirm}>Confirm</button>
                 </div>
             </div>
