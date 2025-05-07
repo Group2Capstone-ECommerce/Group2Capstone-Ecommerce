@@ -2,7 +2,8 @@
 
 ## Database Schema: Visual Diagram
 
-<img width="1444" alt="Screenshot 2025-04-10 at 3 32 05 PM" src="https://drawsql.app/teams/diagram-17/diagrams/capstone-e-commerce" />
+<img width="1444" alt="database_diagram" src="assets/drawSQL-image-export-2025-04-18.png" />
+
 
 ## Database Schema: Tables & Reationships
 
