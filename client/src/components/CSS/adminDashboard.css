@@ -16,12 +16,12 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     color: #333;
-    background-color: #f9f9f9;
+    background-color: #dde3ff;
     transition: background-color 0.2s;
 }
 
 .tab-button:hover {
-    background-color: #eaeaea;
+    background-color: #c1ccff;
 }
 
 .tab-button.active {
@@ -34,12 +34,13 @@
     padding: 2rem; 
     background-color: #f8f8f8; 
     border-radius: 8px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.332);
 }
 
 .admin-title {
     font-size: 3rem;
     font-weight: bold;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     margin-bottom: 2rem; 
     text-align: center; 
     color: #333; 
@@ -58,6 +59,8 @@
     margin-bottom: 2rem; 
     text-align: center; 
     color: #333; 
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
 }
 
 .users-list {
@@ -76,6 +79,8 @@
     box-sizing: border-box;            
     text-align: left;
     transition: border-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.332);
+
 
 }
 
@@ -92,6 +97,8 @@
     margin-bottom: 2rem; 
     text-align: center; 
     color: #333; 
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
 }
 
 .create-form {

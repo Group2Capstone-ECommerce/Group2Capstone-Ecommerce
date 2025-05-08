@@ -13,7 +13,7 @@ export default function AdminDashboard() {
   }
   return (
     <div className="admin-container">
-    <h1 className="admin-title">Admin Dashboard</h1>
+    <h1 className="admin-title">Welcome Admin!</h1>
 
       {/*Tab Buttons*/}
     <ul className="tab-buttons">
@@ -27,7 +27,7 @@ export default function AdminDashboard() {
     <Routes>
       <Route path="users" element={<ViewUsersTab />} />
       <Route path="products" element={<EditProductsTab />} />
-      <Route path="*" element={<p>Select a tab above</p>} />
+      <Route path="*" element={<p>Please select a tab above</p>} />
     </Routes>
   </div>
 </div>

@@ -153,11 +153,13 @@ body {
   left: 0;
   display: flex;
   justify-content: center;
-  position: absolute;
+  position: fixed;
   z-index: 1000;
-  margin-bottom: 1000px;
+  margin: 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 0 20px;
+  padding: 0;
+  top: 0;
+  left: 0;
 }
 
 .navLinks {
@@ -166,6 +168,7 @@ body {
   align-items: center;
   width: 100%;
   max-width: 1200px;
+  margin: 0;
 }
 
 .navLinks a {
