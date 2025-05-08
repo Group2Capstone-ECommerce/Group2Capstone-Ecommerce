@@ -7,6 +7,7 @@ export default function Account() {
   const { token, setToken } = useAuth();
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
+  const [mailingAddress, setMailingAddress] = useState("");
   const [updateMessage, setUpdateMessage] = useState("");
   const [orders, setOrders] = useState([]);
 
@@ -68,6 +69,7 @@ export default function Account() {
         if (res.ok) {
           setUser(data);
           setEmail(data.email); // Prepopulate the email
+          setMailingAddress(data.mailing_address);
         } else {
           setError(data.error || "Failed to fetch user.");
         }
@@ -78,6 +80,34 @@ export default function Account() {
 
     fetchUser();
   }, [token]);
+
+  const handleUpdateMailingAddress = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const res = await fetch(UPDATE_EMAIL_API_URL, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ mailing_address: mailingAddress }),
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        setUser((prev) => ({ ...prev, mailing_address: mailingAddress }));
+        setUpdateMessage(data.message || "Mailing address updated successfully.");
+      } else {
+        setUpdateMessage(data.error || "Failed to update mailing address.");
+      }
+    } catch {
+      setUpdateMessage("An error occurred while updating mailing address.");
+    }
+  
+    setTimeout(() => setUpdateMessage(""), 3000);
+  };
 
   const handleUpdateEmail = async (e) => {
     e.preventDefault();
@@ -126,7 +156,7 @@ export default function Account() {
 
         <form onSubmit={handleUpdateEmail}>
           <div>
-            <label htmlFor="email">Update Email:</label>
+            <label htmlFor="email">Update Email: </label>
             <input
               type="email"
               id="email"
@@ -137,7 +167,19 @@ export default function Account() {
           <br/>
           <button type="submit">Update Email</button>
         </form>
-
+        <form onSubmit={handleUpdateMailingAddress}>
+          <div>
+            <label htmlFor="mailingAddress">Update Mailing Address: </label>
+            <input
+              type="text"
+              id="mailingAddress"
+              value={mailingAddress}
+              onChange={(e) => setMailingAddress(e.target.value)}
+            />
+          </div>
+          <br/>
+          <button type="submit">Update Address</button>
+        </form>
         {updateMessage && <p>{updateMessage}</p>}
         {error && <p>{error}</p>}
       </div>

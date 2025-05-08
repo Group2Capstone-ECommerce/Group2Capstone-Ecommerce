@@ -37,7 +37,8 @@ const {
     getOrdersByUserId,
     checkEmailExists,
     updateUserEmail,
-    getBillInfoByUserId
+    getBillInfoByUserId,
+    updateUserMailingAddress
 } = require("./db");
 
 function verifyToken(req, res, next) {
@@ -602,37 +603,47 @@ router.get('/users/billin_info/me', verifyToken, async(req, res, next) => {
 })
 
 // PUT /api/users/me
-router.put("/users/me", verifyToken, async (req, res, next) => {
-  const email = req.body.email.toLowerCase();
+router.put("/users/me", verifyToken, async (req, res) => {
+  const { email, mailing_address } = req.body;
   const userId = req.user.id;
 
-  if (!email) {
-    return res.status(400).json({ error: "Email is required." });
-  }
-
   try {
-    // Get the current user
     const currentUser = await getUserById(userId);
+    let needsUpdate = false;
 
-    // If it is the email, don't need to check for existing
-    if (email === currentUser.email) {
-      return res.status(200).json({ message: "Email is the same. No update needed." });
+    // Check if email is provided and different
+    if (email) {
+      const normalizedEmail = email.toLowerCase();
+      if (normalizedEmail !== currentUser.email.toLowerCase()) {
+        // Check if new email is already in use by another user
+        const existingUser = await getUserByEmail(normalizedEmail);
+        if (existingUser && existingUser.id !== userId) {
+          return res.status(409).json({ error: "Email is already in use." });
+        }
+
+        const updatedEmailUser = await updateUserEmail(userId, normalizedEmail);
+        if (!updatedEmailUser) {
+          return res.status(500).json({ error: "Error updating email." });
+        }
+        needsUpdate = true;
+      }
     }
 
-    // Check if the email is already in use by another user
-    const emailExists = await checkEmailExists(email);
-    if (emailExists) {
-      return res.status(409).json({ error: "Email is already in use." });
+    // Check if mailing address is provided and different
+    if (mailing_address && mailing_address !== currentUser.mailing_address) {
+      const updatedUser = await updateUserMailingAddress(userId, mailing_address);
+      if (!updatedUser) {
+        return res.status(500).json({ error: "Error updating mailing address." });
+      }
+      needsUpdate = true;
     }
 
-    // Proceed to update the user's email
-    const updatedUser = await updateUserEmail(userId, email);
-
-    if (!updatedUser) {
-      return res.status(500).json({ error: "Error updating email." });
+    if (!needsUpdate) {
+      return res.status(400).json({ error: "Nothing to update." });
     }
 
-    return res.status(200).json({ message: "Email updated successfully." });
+    return res.status(200).json({ message: "User info updated successfully." });
+
   } catch (err) {
     console.error("Error in PUT /users/me:", err);
     return res.status(500).json({ error: "Internal server error" });
