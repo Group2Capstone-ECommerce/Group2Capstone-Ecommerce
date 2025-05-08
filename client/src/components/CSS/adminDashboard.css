@@ -115,6 +115,7 @@
   font-size: 1rem;
   transition: border-color 0.3s ease;
   outline: none;
+  margin: 2px;
   background-color: #fff;
 }
 
@@ -156,6 +157,9 @@
     box-sizing: border-box;            
     text-align: center;
     transition: border-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.332);
+    margin: 2px;
+
 }
 
 .edit-form {

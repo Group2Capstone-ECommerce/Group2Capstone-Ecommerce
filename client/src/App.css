@@ -264,14 +264,26 @@ body {
   color: #B71C1C;
 }
 
+.add-cart-button {
+  background-color: #dde3ff;
+  color: #333;
+  margin: 1px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+}
+
 .seeDetailsBtn {
   background-color: #1976D2;
   color: white;
   border: none;
+  margin: 1px;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2 ease;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .seeDetailsBtn:hover {
@@ -323,6 +335,12 @@ body {
 .productInfo {
   flex: 1;
   text-align: left;
+}
+
+.go-back-button {
+  background-color: #1976D2;
+  color: white;
+
 }
 
 .productInfo button {
