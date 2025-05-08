@@ -121,6 +121,7 @@ export default function Account() {
           <h1>Account Info</h1>
           <p><b>Username: </b>{user ? user.username : ""}</p>
           <p><b>Email: </b>{user ? user.email : ""}</p>
+          <p><b>Mailing Address: </b>{user ? user.mailing_address : ""}</p>
         </div>
 
         <form onSubmit={handleUpdateEmail}>
