@@ -1,0 +1,132 @@
+/* cart.css */
+
+.cartItemsContainer {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 120px;
+    gap: 20px;
+    padding: 20px;
+  }
+
+.cartItemsContainer h3 {
+    width: 100%;
+    text-align: left;
+    margin: 0;
+    padding: 20px 0;
+    color:#726e6e;
+    position: relative;
+}
+  
+.cartCard {
+    width: 100%; 
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+.cartCard input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+.cartCard img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.delete {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    color:#888585
+}
+
+.cartActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+}
+  
+.cartActions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+}
+  
+.cartActions button:hover {
+    background-color: #45a049;
+}
+  
+.cartActions p {
+    font-size: 18px;
+    font-weight: bold;
+}
+  
+.loginButton, .registerButton {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+  
+.loginButton:hover, .registerButton:hover {
+    background-color: #1976D2;
+}
+
+.quantity-control {
+    display: flex;
+    margin: 0;
+    align-items: center;
+    gap: 10px; /* 元素之间间距 */
+    flex-wrap: wrap; /* 小屏时自动换行 */
+  }
+  
+.quantityEditButton {
+    padding: 5px 10px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 4px;
+}
+  
+.quantityInput {
+    width: 35px;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+  
+.quantity-control p {
+    margin-left: 20px;
+    font-weight: bold;
+}
+  
+  
+  
+div {
+    text-align: center;
+    margin-top: 20px;
+}

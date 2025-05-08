@@ -72,15 +72,15 @@ async function seedFakeData() {
     await pool.query('DELETE FROM users');
     const [bob, ellie, jack, donna, rick, lisa, denise, oliver, samuel, wendy] = await Promise.all([
       createUser({username: 'Bob', email: 'bob@email.com', password_hash: 'bob_pw', is_admin: false, mailing_address: 'bobmailingaddress', phone: '219-555-9235'}),
-      createUser({username: 'Ellie', email: 'Ellie@email.com', password_hash: 'ellie_pw', is_admin: true, mailing_address: 'elliemailingaddress', phone: '832-555-6172'}),
-      createUser({username: 'Jack', email: 'Jack@email.com', password_hash: 'jack_pw', is_admin: false, mailing_address: 'jackmailingaddress', phone: '926-555-0151'}),
-      createUser({username: 'Donna', email: 'Donna@email.com', password_hash: 'donna_pw', is_admin: false, mailing_address: 'donnamailingaddress', phone: '162-555-8458'}),
-      createUser({username: 'Rick', email: 'Rick@gmail.com', password_hash: 'rick_pw', is_admin: false, mailing_address: 'rickmailingaddress', phone: '293-555-1932'}),
-      createUser({username: 'Lisa', email: 'Lisa@email.com', password_hash: 'lisa_pw', is_admin: false, mailing_address: 'lisamailingaddress', phone: '816-555-4152'}),
-      createUser({username: 'Denise', email: 'Denise@email.com', password_hash: 'denise_pw', is_admin: false, mailing_address: 'denisemailingaddress', phone: '173-555-3047'}),
-      createUser({username: 'Oliver', email: 'Oliver@email.com', password_hash: 'oliver_pw', is_admin: true, mailing_address: 'olivermailingaddress', phone: '891-555-6327'}),
-      createUser({username: 'Samuel', email: 'Samuel@email.com', password_hash: 'samuel_pw', is_admin: false, mailing_address: 'samuelmailingaddress', phone: '216-555-1840'}),
-      createUser({username: 'Wendy', email: 'Wendy@email.com', password_hash: 'wendy_pw', is_admin: false, mailing_address: 'wendymailingaddress', phone: '252-555-1047'}),
+      createUser({username: 'Ellie', email: 'ellie@email.com', password_hash: 'ellie_pw', is_admin: true, mailing_address: 'elliemailingaddress', phone: '832-555-6172'}),
+      createUser({username: 'Jack', email: 'jack@email.com', password_hash: 'jack_pw', is_admin: false, mailing_address: 'jackmailingaddress', phone: '926-555-0151'}),
+      createUser({username: 'Donna', email: 'donna@email.com', password_hash: 'donna_pw', is_admin: false, mailing_address: 'donnamailingaddress', phone: '162-555-8458'}),
+      createUser({username: 'Rick', email: 'rick@gmail.com', password_hash: 'rick_pw', is_admin: false, mailing_address: 'rickmailingaddress', phone: '293-555-1932'}),
+      createUser({username: 'Lisa', email: 'lisa@email.com', password_hash: 'lisa_pw', is_admin: false, mailing_address: 'lisamailingaddress', phone: '816-555-4152'}),
+      createUser({username: 'Denise', email: 'denise@email.com', password_hash: 'denise_pw', is_admin: false, mailing_address: 'denisemailingaddress', phone: '173-555-3047'}),
+      createUser({username: 'Oliver', email: 'oliver@email.com', password_hash: 'oliver_pw', is_admin: true, mailing_address: 'olivermailingaddress', phone: '891-555-6327'}),
+      createUser({username: 'Samuel', email: 'samuel@email.com', password_hash: 'samuel_pw', is_admin: false, mailing_address: 'samuelmailingaddress', phone: '216-555-1840'}),
+      createUser({username: 'Wendy', email: 'wendy@email.com', password_hash: 'wendy_pw', is_admin: false, mailing_address: 'wendymailingaddress', phone: '252-555-1047'}),
     ])
 
     // CATEGORIES
@@ -138,7 +138,7 @@ async function seedFakeData() {
         createProductCategory({product_id: swimwear.id,category_id: allProducts.id}),
     ])
 
-    // CARTS
+    // Carts
     const [cartBob, cartJack, cartRick] = await Promise.all([
         createCart(bob.user.id, true),
         createCart(jack.user.id, true),

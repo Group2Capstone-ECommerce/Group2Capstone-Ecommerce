@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
+import AddToCart from "./AddtoCart";
 
 export default function ProductList({ products, setProducts }) {
   const PRODUCTS_API_URL = "http://localhost:3000/api/products";
@@ -19,7 +20,7 @@ export default function ProductList({ products, setProducts }) {
     };
 
     fetchProducts();
-  }, [setProducts]);
+  }, []);
 
   return (
     <div className="pageWrapper">
