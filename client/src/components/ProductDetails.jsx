@@ -39,12 +39,13 @@ export default function ProductDetails({product, setProduct}) {
                 alt={product.product_name}
           />
         <div className="productInfo">
-          <p><b>Description: </b>{product.descriptions}</p>
-          <p><b>Price: </b>${product.price}</p>
-          <p><b>Quantity Available: </b>{product.stock_quantity}</p>
-          <br />
-          <AddToCart product = {product}/>
-          <button onClick={() => navigate('/')}>Go Back</button>
+            <p><b>Description: </b>{product.descriptions}</p>
+            <p><b>Price: </b>${product.price}</p>
+            <p><b>Quantity Available: </b>{product.stock_quantity}</p>
+          <div className="productInfoBtns">
+            <AddToCart product = {product}/>
+            <button onClick={() => navigate('/')}>Go Back</button>
+          </div>
         </div>
         </div>
       </div>

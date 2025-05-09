@@ -245,6 +245,11 @@ body {
   flex: 1;
   text-align: left;
 }
+ 
+.productInfoBtns {
+  display: flex;
+  flex-direction: column;
+}
 
 .productInfo button {
   margin-top: 20px;
@@ -254,6 +259,7 @@ body {
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  width: 60%;
 }
 
 .productInfo button:hover {
