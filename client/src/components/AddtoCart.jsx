@@ -45,9 +45,7 @@ export default function AddToCart({product}) {
 
     return (
         <>
-            <div>
-                <button onClick={handleAddToCart}>Add to Cart</button>
-            </div>
+                <button className='addToCartBtn' onClick={handleAddToCart}>Add to Cart</button>
         </>
     )
 }

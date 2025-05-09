@@ -35,7 +35,6 @@ export default function ProductList({ products, setProducts }) {
               src={product.image_url || stockImage}
               alt={product.product_name}
               />
-            <div className='productActions'>
             {product.stock_quantity > 5 ? (
               <p id="productAvailableTxt">Available</p>
             ) : product.stock_quantity < 5 ? (
@@ -43,6 +42,8 @@ export default function ProductList({ products, setProducts }) {
             ) : product.stock_quantity === 0 (
               <p id="productNotAvailableTxt">Not Available</p>
             )}
+            <div className='productActions'>
+             <AddToCart product = {product}/>
             <Link to={`/products/${product.id}`}>
               <button className="seeDetailsBtn">See Details</button>
             </Link>

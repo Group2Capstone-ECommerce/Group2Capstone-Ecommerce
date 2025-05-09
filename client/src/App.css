@@ -186,6 +186,20 @@ body {
   background-color: #1565c0;
 }
 
+.addToCartBtn {
+  background-color: #1976D2;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2 ease;
+}
+
+.addToCartBtn:hover {
+  background-color: #1565c0;
+}
+
 .pageWrapper{
   background-color: #f0f0f0;
   padding: 40px clamp(16px, 5vw 40px);
