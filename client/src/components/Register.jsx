@@ -87,12 +87,8 @@ export default function Register() {
                 <div className='formGroup'>
                     Password: <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
                 </div>
-                <div>
-                    Mailing Address: 
-                    <input 
-                        value={mailingAddress} 
-                        onChange={(e) => setMailingAddress(e.target.value)} 
-                    />
+                <div className='formGroup'>
+                    Mailing Address: <input value={mailingAddress} onChange={(e) => setMailingAddress(e.target.value)}/>
                 </div>
                 <button>Submit</button>
             </form>
