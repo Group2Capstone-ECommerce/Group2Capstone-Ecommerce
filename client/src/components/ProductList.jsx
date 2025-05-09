@@ -30,7 +30,7 @@ export default function ProductList({ products, setProducts }) {
         ) : (
           products?.map((product) => (
             <div key={product.id} id={product.id} className="productCard">
-              <h3>Product Name: {product.product_name}</h3>
+              <h3>{product.product_name}</h3>
               <img
                 src={product.image_url || stockImage}
                 alt={product.product_name}

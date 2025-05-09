@@ -42,7 +42,7 @@ export default function ProductDetails({product, setProduct}) {
           />
           <br />
           <AddToCart product = {product}/>
-          <button onClick={() => navigate('/')}>Go Back</button>
+          <button className="go-back-button" onClick={() => navigate('/')}>Go Back</button>
         </div>
       </div>
     )}

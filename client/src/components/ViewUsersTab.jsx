@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../components/AuthContext.jsx";
+import './CSS/adminDashboard.css'
 
 export default function ViewUsersTab() {
     const { isAdmin, user } = useAuth();
@@ -55,16 +56,16 @@ export default function ViewUsersTab() {
     if (loading) return <p>Loading users...</p>;
 
     return (
-        <div>
-            <h2>View Users</h2>
+        <div className="users-container">
+            <h2 className="users-title">View Users</h2>
             {/* <p>Logged in as: {user?.username}</p> */}
 
             {users.length === 0 ? (
                 <p>No users found.</p>
             ) : (
-                <ul>
+                <ul className="users-list"> 
                 {users.map((user) => (
-                  <li key={user.id}>
+                  <li key={user.id} className="user-item">
                     <p><strong>Name:</strong> {user.username}</p>
                     <p><strong>Email:</strong> {user.email}</p>
                     <p><strong>Role:</strong> {user.is_admin ? "Admin" : "User"}</p>
