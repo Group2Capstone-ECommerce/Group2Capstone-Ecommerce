@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../components/AuthContext.jsx";
 import stockProductImg from '../assets/stockProductImg.png';
 import './CSS/adminDashboard.css'
+import { toast } from "react-toastify";
 
 export default function EditProductsTab() {
     const { isAdmin } = useAuth();
@@ -27,7 +28,7 @@ export default function EditProductsTab() {
     const ADMIN_PRODUCTS_URL = "http://localhost:3000/api/admin/products";
 
     useEffect(() => {
-        if (!isAdmin) return;
+        if (!isAdmin) return null;
     
         const fetchProducts = async () => {
           try {
@@ -65,8 +66,11 @@ export default function EditProductsTab() {
             if (res.ok) {
                 setProducts(products.filter((p) => p.id !== productId));
             }
+            console.error('Product deleted!');
+            toast.success('Product deleted!')
         } catch (err) {
             console.error("Failed to delete product", err);
+            toast.error(`Failed to delete product: ${err}`)
         }
     };
 
@@ -87,17 +91,19 @@ export default function EditProductsTab() {
                     image_url: form.image_url || null
                  }),
             });
-
+            console.log('res.ok =>', res.ok)
             if (res.ok) {
                 const data = await res.json(); 
                 setProducts([...products, data.product]);
                 setForm({ product_name:"", price:"", descriptions:"", image_url:"", stock_quantity:""});
+                toast.success('Product created!')
             } else {
                 const errorData = await res.json();
                 console.error("Failed to create new product:", errorData);
+                toast.error(`Failed to create product: ${errorData}`)
             }
         } catch (err) {
-            console.error("Failed to create new product:", err);
+            console.error("Failed to create new product");
         }
     };
 
@@ -133,9 +139,11 @@ export default function EditProductsTab() {
                 const updateProduct = await res.json();
                 setProducts(products.map(p => p.id === productId ? updateProduct : p));
                 setEditId(null);
+                toast.success('Product updated!')
             }
         } catch (err) {
             console.error("Failed to edit product:", err);
+            toast.error(`Failed to edit product: ${err}`)
         }
     };
 

@@ -5,6 +5,7 @@ import { Card } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import "../index.css";
+import "./CSS/login.css";
 import { useAuth } from "../components/AuthContext.jsx";
 
 export default function LoginForm() {

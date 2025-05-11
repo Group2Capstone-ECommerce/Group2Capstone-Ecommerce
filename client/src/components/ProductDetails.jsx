@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 import AddToCart from "./AddtoCart";
+import "./CSS/productDetail.css"
 
 export default function ProductDetails({product, setProduct}) {
   const PRODUCTS_API_URL = "http://localhost:3000/api/products";
@@ -31,18 +32,26 @@ export default function ProductDetails({product, setProduct}) {
       <p>Loading product details...</p>
     ) : (
       <div className="singleProductDetailsCard">
-        <div>
-          <h2>Product Name: {product.product_name}</h2>
-          <p><b>Description: </b>{product.descriptions}</p>
-          <p><b>Price: </b>${product.price}</p>
-          <p><b>Quantity Available: </b>{product.stock_quantity}</p>
+        <div className="productContent">
           <img
                 src={product.image_url || stockImage}
                 alt={product.product_name}
           />
-          <br />
+          <div className="productInfo">
+            <h2>Product Name: {product.product_name}</h2>
+            <p><b>Description: </b>{product.descriptions}</p>
+            <p><b>Price: </b>${product.price}</p>
+            <p><b>Quantity Available: </b>{product.stock_quantity}</p>
+          </div>
+        </div>
+        <div className="detailAction">
           <AddToCart product = {product}/>
-          <button onClick={() => navigate('/')}>Go Back</button>
+          <button 
+            className="goBackBtn"
+            onClick={() => navigate('/')}
+          >
+            Go Back
+          </button>
         </div>
       </div>
     )}

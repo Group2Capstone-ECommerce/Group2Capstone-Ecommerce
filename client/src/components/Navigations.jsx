@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import { useAuth } from "../components/AuthContext.jsx";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
+import "./CSS/nav.css"
 
 export default function Navigations() {
   const {token} = useAuth();
@@ -38,28 +39,28 @@ export default function Navigations() {
     <>
       <div id="navBar">
         <div className="navLinks">
-        <Link to="/">Products</Link>
-        {!token && (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-          </>
-        )}
-
-        {token && !isAdmin && (
-          <>
-          <Link to="/cart">Cart</Link>
-          <Link to="/account">My Account</Link>
-          </>
-        ) }
-        {token && isAdmin && (
-          <>
-          <Link to="/admin">Admin Dashboard</Link>
-          <Link to="/account">My Account</Link>
-          </>
+          <Link to="/">Products</Link>
+          {!token && (
+            <>
+              <Link to="/login">Login</Link>
+              <Link to="/register">Register</Link>
+            </>
           )}
 
-        {token && <Link to="/logout">Log Out</Link>}
+          {token && !isAdmin && (
+            <>
+            <Link to="/cart">Cart</Link>
+            <Link to="/account">My Account</Link>
+            </>
+          ) }
+          {token && isAdmin && (
+            <>
+            <Link to="/admin">Admin Dashboard</Link>
+            <Link to="/account">My Account</Link>
+            </>
+            )}
+
+          {token && <Link to="/logout">Log Out</Link>}
         </div>
       </div>
     </>

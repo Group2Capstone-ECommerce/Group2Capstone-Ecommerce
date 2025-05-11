@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 import AddToCart from "./AddtoCart";
+import "./CSS/productList.css"
 
 export default function ProductList({ products, setProducts }) {
   const PRODUCTS_API_URL = "http://localhost:3000/api/products";
@@ -30,7 +31,7 @@ export default function ProductList({ products, setProducts }) {
         ) : (
           products?.map((product) => (
             <div key={product.id} id={product.id} className="productCard">
-              <h3>Product Name: {product.product_name}</h3>
+              <h3>{product.product_name}</h3>
               <img
                 src={product.image_url || stockImage}
                 alt={product.product_name}
@@ -40,10 +41,13 @@ export default function ProductList({ products, setProducts }) {
               ) : (
                 <p id="productNotAvailableTxt">Not Available</p>
               )}
-              <AddToCart product = {product}/>
-              <Link to={`/products/${product.id}`}>
-                <button className="seeDetailsBtn">See Details</button>
-              </Link>
+              <div className="productActionButtons">
+                <AddToCart product = {product}/>
+                <Link to={`/products/${product.id}`}>
+                  <button className="seeDetailsBtn">See Details</button>
+                </Link>
+              </div>
+              
             </div>
           ))
         )}

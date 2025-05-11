@@ -1,17 +1,16 @@
 import { useAuth } from "../components/AuthContext.jsx";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
+import "./CSS/addToCart.css"
 
 export default function AddToCart({product}) {
     //console.log("product is =>", product)
     const { token } = useAuth();
     //console.log('token is =>', token)
-
+    const {isAdmin} = useAuth();
     const CARTITEM_API_URL = "http://localhost:3000/api/cart/items";
     const handleAddToCart = async() => {
         if (!token) {
-            toast.warning(
+            toast.warn(
                 "Please log in to add items to your cart.",
             );
             return;
@@ -35,6 +34,7 @@ export default function AddToCart({product}) {
             if (!response.ok) {
                 toast.error(result.error || "Failed to add to cart.");
             } else {
+                //console.log('In add to cart page, is admin value=>', isAdmin)
                 toast.success("✅ Added to cart!");
             }
         } catch (error) {
@@ -46,7 +46,13 @@ export default function AddToCart({product}) {
     return (
         <>
             <div>
-                <button onClick={handleAddToCart}>Add to Cart</button>
+                <button 
+                    className="addToCartBtn"
+                    onClick={handleAddToCart} 
+                    disabled={token && isAdmin === true}
+                >
+                    Add to Cart
+                </button>
             </div>
         </>
     )

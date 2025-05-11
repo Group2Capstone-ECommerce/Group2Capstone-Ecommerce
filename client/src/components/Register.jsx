@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import { useNavigate } from "react-router-dom";
 import { useAuth } from './AuthContext';
+import "./CSS/register.css"
 
 export default function Register() {
     const REGISTER_API_URL = 'http://localhost:3000/api/auth/register';  

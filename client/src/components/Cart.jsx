@@ -6,7 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 import { useAuth } from "../components/AuthContext.jsx";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import './CSS/cart.css'
 
 export default function Cart({setCreatedOrder}) {

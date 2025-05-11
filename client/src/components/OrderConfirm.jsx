@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 import { useAuth } from "../components/AuthContext.jsx";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import './CSS/orderConfirm.css'
 
 export default function OrderConfirm ({createdOrder}) {
     const ORDER_ITEMS_API_URL = "http://localhost:3000/api/order/items";
@@ -131,7 +131,7 @@ export default function OrderConfirm ({createdOrder}) {
             {orderCheckedout || orderCanceled ? (
                 <div className="successContainer">
                     <h2>{success}</h2>
-                    <button onClick={() => navigate('/')}>Go back</button>
+                    <button onClick={() => navigate('/')}>Home</button>
                 </div>
             ) : (
             <div className="orderContainer" style={{margin: "100px"}}>
@@ -143,38 +143,46 @@ export default function OrderConfirm ({createdOrder}) {
                     </div>
                 ) : (
                     <div className="shippingInfo">
-                    <h3>Shipping Info:</h3>
-                    <p>Name: {billingInfo?.info.full_name}</p>
-                    <p>Address:  {billingInfo?.info.address_line1 || billingInfo?.address_line2}</p>
-                    <p>Phone:  {billingInfo?.info.phone}</p>
-                    <p>Email:  {billingInfo?.info.email}</p>
-                </div>
+                        <h3>Shipping Info:</h3>
+                        <p>Name: {billingInfo?.info.full_name}</p>
+                        <p>Address:  {billingInfo?.info.address_line1 || billingInfo?.address_line2}</p>
+                        <p>Phone:  {billingInfo?.info.phone}</p>
+                        <p>Email:  {billingInfo?.info.email}</p>
+                    </div>
                 )}
                 {orderItems.length === 0 ? (
                     <p>Loading order...</p>
                 ) : (
-                    orderItems?.map((item) => {
-                        console.log(item);
+                    <div className="orderCardsWrapper">
+                        {orderItems?.map((item) => {
+                        //console.log(item);
                         return (
                             <div key={item.id} id={item.id} className="orderCard">
-                            <img
-                                src={item.image_url || stockImage}
-                                alt={item.product_name}
-                            />
-                            <p><b>{item.product_name}</b></p>
-                            <p><b>Qty: {item.quantity}</b></p>
-                            <p><b>${item.price_at_purchase}</b></p>
-                        </div>
+                                <img
+                                    src={item.image_url || stockImage}
+                                    alt={item.product_name}
+                                />
+                                <div className="itemDetails">
+                                    <p><b>{item.product_name}</b></p>
+                                    <p><b>Qty: {item.quantity}</b></p>
+                                    <p><b>Price: ${item.price_at_purchase}</b></p>
+                                </div>                
+                            </div>
                         )
-                    })
+                    })}
+                    </div>
+                    
                 )}
                 <div className="orderActions">
                     <p>Checking out items: {calculateQty()} </p>
                     <p>Total price: {calculateTotalPrice()}</p>
                     <p>Payment method: handle payment here</p>
-                    <button onClick={handleCancel}> Cancel Order</button>
-                    {/* {<button onClick={() => navigate('/cart')}>Go back</button>} */}
-                    <button onClick={handleConfirm}>Confirm</button>
+                    <div className="actionButtons">
+                        <button onClick={handleCancel}> Cancel Order</button>
+                        {/* {<button onClick={() => navigate('/cart')}>Go back</button>} */}
+                        <button onClick={handleConfirm}>Confirm</button>
+                    </div>
+                    
                 </div>
             </div>
             )}

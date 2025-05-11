@@ -1,0 +1,118 @@
+/* Container */
+.successContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 800px;
+  height: 600px;
+}
+
+.orderContainer {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 0;
+  margin: 100px auto;
+  width: 800px;
+  max-width: 1280px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  font-family: 'Arial', sans-serif;
+}
+
+/* Shipping Info */
+.shippingInfo {
+  background-color: #f5faff;
+  border-left: 4px solid #1976d2;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.shippingInfo h3 {
+  margin-top: 0;
+  font-weight: bold;
+}
+.shippingInfo p {
+  margin: 4px 0;
+}
+
+/* Order Cards */
+.orderCardsWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+.orderCard {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  width: 750px;
+  margin: 20 16 20 16;
+  padding: 16px;
+  gap: 16px;
+  align-items: center;
+}
+.orderCard img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.itemDetails{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 700px;
+  margin-top: 0;
+}
+
+.itemDetails p {
+  margin: 4px 0;
+}
+
+/* Order Actions */
+.orderActions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 30px;
+  background: #fff7f0;
+  padding: 16px;
+  border-radius: 8px;
+  border-top: 1px solid #eee;
+}
+.orderActions p {
+  margin: 8px 0;
+}
+.actionButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 36px;
+}
+.actionButtons button {
+  padding: 0.5rem 1.5rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  background-color: #1976d2;
+  color: white;
+  width: 200px;
+}
+.actionButtons button:hover {
+  background-color: #1976d2;
+}
+
+/* Success Container */
+.successContainer {
+  text-align: center;
+  margin-top: 100px;
+}

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import { ToastContainer } from "react-toastify"
-
+import "react-toastify/dist/ReactToastify.css";
 import ProductList from './components/ProductList'
 import ProductDetails from './components/ProductDetails'
 import LoginForm from './components/LoginForm'
