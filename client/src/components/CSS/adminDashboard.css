@@ -31,6 +31,9 @@
 }
 
 .admin-container {
+    margin-top: 100px;
+    margin-bottom: 30px;
+    height: 500px;
     padding: 2rem; 
     background-color: #f8f8f8; 
     border-radius: 8px; 
