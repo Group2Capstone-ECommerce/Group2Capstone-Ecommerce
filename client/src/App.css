@@ -1,4 +1,4 @@
-#root {
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -245,11 +245,18 @@ body {
   flex: 1;
   text-align: left;
 }
- 
 .productInfoBtns {
   display: flex;
   flex-direction: column;
 }
+
+/* .go-back-button {
+  background-color: #1976D2;
+  color: white;
+  margin: 1px;
+  border: 1px solid #ccc;
+  border-radius: 5px; 
+} */
 
 .productInfo button {
   margin-top: 20px;

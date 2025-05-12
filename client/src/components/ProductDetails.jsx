@@ -34,6 +34,7 @@ export default function ProductDetails({product, setProduct}) {
       <div className="singleProductDetailsCard">
           <h2 className="productTitle">Product Name: {product.product_name}</h2>
         <div className="productContent">
+
           <img
                 src={product.image_url || stockImage}
                 alt={product.product_name}
