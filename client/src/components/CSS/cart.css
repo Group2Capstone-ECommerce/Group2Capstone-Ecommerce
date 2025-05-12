@@ -129,3 +129,9 @@
 div {
     text-align: center;
 }
+
+.emptyText {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}

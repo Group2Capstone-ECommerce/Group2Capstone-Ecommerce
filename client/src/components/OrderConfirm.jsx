@@ -153,6 +153,7 @@ export default function OrderConfirm ({createdOrder}) {
 
     return(
         <>
+        <div className="pageWrapper">
             {orderCheckedout || orderCanceled ? (
                 <div className="successContainer">
                     <h2>{success}</h2>
@@ -208,6 +209,8 @@ export default function OrderConfirm ({createdOrder}) {
                 </div>
             </div>
             )}
+        </div>
+
             
         </>
     )
