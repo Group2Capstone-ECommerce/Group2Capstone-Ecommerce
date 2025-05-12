@@ -1010,6 +1010,21 @@ const checkEmailExists = async (email) => {
   }
 };
 
+async function getUserMailingInfo(userId) {
+  try {
+    const SQL = /*sql*/ `
+      SELECT mailing_address FROM users
+      WHERE id = $1
+      LIMIT 1;
+    `;
+    const { rows } = await pool.query(SQL, [userId]);
+    return rows[0] || null;
+  } catch (error) {
+    console.error('Error fetching mailing info:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   query: (text, params) => pool.query(text, params),
   pool,
@@ -1054,5 +1069,6 @@ module.exports = {
   updateUserEmail,
   checkEmailExists,
   getBillInfoByUserId,
-  updateUserMailingAddress
+  updateUserMailingAddress,
+  getUserMailingInfo
 }
