@@ -946,6 +946,29 @@ async function getOrdersByUserId(userId) {
   } 
 }
 
+// Update user mailing address
+async function updateUserMailingAddress(userId, mailing_address) {
+  const SQL = /*sql*/ `
+    UPDATE users
+    SET mailing_address = $1, updated_at = NOW()
+    WHERE id = $2
+    RETURNING *;
+  `;
+  try {
+    const result = await pool.query(SQL, [mailing_address, userId]);
+
+    // If no rows were updated, return null
+    if (result.rows.length === 0) {
+      return null;
+    }
+    
+    return result.rows[0]; // Return updated user data
+  } catch (error) {
+    console.error("Error updating mailing address:", error);
+    throw new Error("Error updating mailing address.");
+  }
+}
+
 // Update user email
 const updateUserEmail = async (userId, newEmail) => {
   const SQL = /*sql*/ `
@@ -1030,5 +1053,6 @@ module.exports = {
   getOrdersByUserId,
   updateUserEmail,
   checkEmailExists,
-  getBillInfoByUserId
+  getBillInfoByUserId,
+  updateUserMailingAddress
 }

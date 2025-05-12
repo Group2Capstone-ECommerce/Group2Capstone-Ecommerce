@@ -19,6 +19,7 @@ export default function Register() {
     const [usernameErrorMessage, setUsernameErrorMessage] = useState('');
     const [emailAvailable, setEmailAvailable] = useState(null);
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
+    const [mailingAddress, setMailingAddress] = useState('');
     const navigate = useNavigate();
     
     async function handleSubmit(event) {
@@ -35,6 +36,7 @@ export default function Register() {
                     email,
                     username,
                     password,
+                    mailing_address: mailingAddress
                 })
             })
             const data = await response.json();
@@ -85,6 +87,13 @@ export default function Register() {
                 </div>
                 <div className='formGroup'>
                     Password: <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
+                </div>
+                <div>
+                    Mailing Address: 
+                    <input 
+                        value={mailingAddress} 
+                        onChange={(e) => setMailingAddress(e.target.value)} 
+                    />
                 </div>
                 <button>Submit</button>
             </form>

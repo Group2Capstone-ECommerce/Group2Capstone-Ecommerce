@@ -240,10 +240,9 @@ export default function EditProductsTab() {
                             <p><strong>{product.product_name}</strong></p>
                             <p><strong>Price: ${product.price}</strong></p>
                             <p>{product.descriptions}</p>
-                            <img 
+                            <img className="product-image"
                              src={product.image_url || stockProductImg} //fallback image url
-                             alt={product.product_name || "Product Image"} 
-                             width={100} 
+                             alt={product.product_name || "Product Image"}  
                              onError={(e) => e.target.src = stockProductImg} 
                             />
                             <p><strong>Stock: {product.stock_quantity}</strong></p>
