@@ -54,6 +54,7 @@ export default function LoginForm() {
     };
 
     return (
+      <div className="pageWrapper">
       <section className="login-container">
       <Card className="login-card">
         <Card.Body>
@@ -63,21 +64,21 @@ export default function LoginForm() {
           <br />
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="username" className="field">
-              <Form.Label>Username</Form.Label>
+              <Form.Label>Username:</Form.Label>
               <Form.Control
                 name="username"
-                placeholder="Username"
+                // placeholder="Username"
                 value={form.username}
                 disabled={submitting}
                 onChange={(e) => setForm({ ...form, username: e.target.value })}
               />
             </Form.Group>
             <Form.Group controlId="password" className="field">
-              <Form.Label>Password</Form.Label>
+              <Form.Label>Password:</Form.Label>
               <Form.Control
                 type="password"
                 name="password"
-                placeholder="Password"
+                // placeholder="Password"
                 value={form.password}
                 disabled={submitting}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -94,5 +95,6 @@ export default function LoginForm() {
         </Card.Body>
       </Card>
     </section>
+    </div>
   );
 }

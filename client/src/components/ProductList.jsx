@@ -24,34 +24,34 @@ export default function ProductList({ products, setProducts }) {
   }, []);
 
   return (
-    <>
+    <div className="pageWrapper">
       <div className="productsContainer">
         {products.length === 0 ? (
           <p>Loading products...</p>
         ) : (
-          products?.map((product) => (
+          products.map((product) => (
             <div key={product.id} id={product.id} className="productCard">
               <h3>{product.product_name}</h3>
               <img
                 src={product.image_url || stockImage}
                 alt={product.product_name}
-              />
-              {product.is_available ? (
+                />
+              <div className='productActions'>
+              {product.stock_quantity > 5 ? (
                 <p id="productAvailableTxt">Available</p>
-              ) : (
+              ) : product.stock_quantity < 5 ? (
+                <p id="productLowStockTxt">Low Stock!</p>
+              ) : product.stock_quantity === 0 (
                 <p id="productNotAvailableTxt">Not Available</p>
               )}
-              <div className="productActionButtons">
-                <AddToCart product = {product}/>
-                <Link to={`/products/${product.id}`}>
-                  <button className="seeDetailsBtn">See Details</button>
-                </Link>
+              <Link to={`/products/${product.id}`}>
+                <button className="seeDetailsBtn">See Details</button>
+              </Link>
               </div>
-              
             </div>
           ))
         )}
       </div>
-    </>
+    </div>
   );
 }

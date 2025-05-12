@@ -32,6 +32,7 @@ export default function ProductDetails({product, setProduct}) {
       <p>Loading product details...</p>
     ) : (
       <div className="singleProductDetailsCard">
+        <h2 className="productTitle">Product Name: {product.product_name}</h2>
         <div className="productContent">
           <img
                 src={product.image_url || stockImage}
