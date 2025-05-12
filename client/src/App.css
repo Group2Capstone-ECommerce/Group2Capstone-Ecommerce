@@ -12,7 +12,8 @@ body {
 
 /* App container */
 #root {
-  max-width: 1960px; /* Optional: restrict max width */
+  /* max-width: 1960px; Optional: restrict max width */
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content:center;

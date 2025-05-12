@@ -97,12 +97,13 @@
 .pageWrapper{
   background-color: #f0f0f0;
   padding: 40px clamp(16px, 5vw 40px);
-  max-width: 100%;
+  width: 1960px;
   margin: 20px auto 0 auto;
   min-height: 100vh;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
   box-sizing: border-box;
-  display: block;
 }
   
 .productBtns {
