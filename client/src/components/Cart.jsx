@@ -206,7 +206,7 @@ export default function Cart({setCreatedOrder}) {
 
     return (
         <>
-
+            <div className="pageWrapper">
             {!token && (
                 <div>
                     <p>Login/Register to explore more!</p>
@@ -283,6 +283,8 @@ export default function Cart({setCreatedOrder}) {
                     </button>
                 </div>
             )}
+            </div>
+
         </>
     )
 
