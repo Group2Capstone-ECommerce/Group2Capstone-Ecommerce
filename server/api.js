@@ -652,8 +652,9 @@ router.put("/users/me", verifyToken, async (req, res) => {
 });
 
 // GET /api/users/:id/mailing-info
-router.get('/users/:id/mailing-info', async (req, res, next) => {
-  const userId = req.params.id;
+router.get('/users/mailing-info', verifyToken, async (req, res, next) => {
+  const userId = req.user.id
+  console.log('user id' , userId);
 
   try {
     const mailingInfo = await getUserMailingInfo(userId);

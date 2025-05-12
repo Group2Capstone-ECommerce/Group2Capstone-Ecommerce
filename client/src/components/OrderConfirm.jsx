@@ -9,10 +9,12 @@ export default function OrderConfirm ({createdOrder}) {
     const ORDER_ITEMS_API_URL = "http://localhost:3000/api/order/items";
     const ORDER_API_URL = "http://localhost:3000/api/order";
     const Billing_Info_API_URL = "http://localhost:3000/api//users/billin_info/me";
+    const MAILING_INFO_API_URL = "http://localhost:3000/api/users/:id/mailing-info";
 
     const navigate = useNavigate();
     
     const [billingInfo, setBillingInfo] = useState(null)
+    const [mailingInfo, setMailingInfo] = useState(null);
 
     const { token } = useAuth();
     if (!token) {
@@ -88,6 +90,18 @@ export default function OrderConfirm ({createdOrder}) {
             setBillingInfo(result.message)
         }
         setBillingInfo(result)
+    }
+
+    // Fetch user's mailing info
+    const fetchMailingInfo = async() => {
+        const response = await fetch (MAILING_INFO_API_URL)
+        console.log('response => ', response);
+        const result = await response.json()
+        console.log('result => ', result);
+        if(!response.ok) {
+            setMailingInfo(result.message)
+        }
+        setMailingInfo(result);
     }
 
     //handle cancel order
