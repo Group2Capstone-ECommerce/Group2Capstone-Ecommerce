@@ -158,9 +158,18 @@
     text-align: center;
     transition: border-color 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.332);
-    margin: 2px;
+    margin: 10px;
+
 
 }
+
+.product-image {
+    width: 150px;        
+    height: 150px;       
+    object-fit: cover;   
+    border-radius: 8px;  
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); 
+  }
 
 .edit-form {
     padding: 2rem; 
