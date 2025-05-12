@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../components/AuthContext.jsx";
 import stockProductImg from '../assets/stockProductImg.png';
+import './CSS/adminDashboard.css'
 
 export default function EditProductsTab() {
     const { isAdmin } = useAuth();
@@ -145,102 +146,101 @@ export default function EditProductsTab() {
     if (loading) return <p>Loading products...</p>;
 
     return (
-        <div>
-            <h2>Edit Products</h2>
+        <div className="edit-container">
+            <h2 className="edit-title">Edit Products</h2>
 
-            <form onSubmit={handleCreate}>
-                <input 
+            <form className="create-form" onSubmit={handleCreate}>
+                <input className="create-input"
                  type="text"
                  placeholder="Product Name" 
                  value={form.product_name || ""} 
                  onChange={(e) => setForm({ ...form, product_name: e.target.value })} 
                  required 
                 />
-                <input 
+                <input className="create-input"
                  type="number"
                  placeholder="Price"  
                  value={form.price} 
                  onChange={(e) => setForm({ ...form, price: e.target.value })} 
                  required 
                 />
-                <input 
+                <input className="create-input"
                  type="text" 
                  placeholder="Description" 
                  value={form.descriptions || ""} 
                  onChange={(e) => setForm({ ...form, descriptions: e.target.value })} 
                  required 
                 />
-                <input 
+                <input className="create-input"
                  type="text" 
                  placeholder="Image URL (optional)" 
                  value={form.image_url} 
                  onChange={(e) => setForm({ ...form, image_url: e.target.value })}
                 />
-                <input 
+                <input className="create-input"
                  type="number"
                  placeholder="Stock Quantity"
                  value={form.stock_quantity}
                  onChange={(e) => setForm({ ...form, stock_quantity: e.target.value })}
                  required
                 />
-                <button type="submit">Create Product</button>
+                <button className="submit-button" type="submit">Create Product</button>
             </form>
 
-            <ul>
+            <ul className="products-list">
                 {products.map((product) => (
-                    <li key={product.id}>
+                    <li className="product-item" key={product.id}>
                        {editId === product.id ? (
-                        <form onSubmit={(e) => handleEditSubmit(e, product.id)}>
-                            <input 
+                        <form className="edit-form" onSubmit={(e) => handleEditSubmit(e, product.id)}>
+                            <input className="edit-input"
                              type="text"
                              placeholder={product.product_name}
                              value={editForm.product_name}
                              onChange={(e) => setEditForm({ ...editForm, product_name: e.target.value })}
                              required
                             />
-                            <input
+                            <input className="edit-input"
                              type="number"
                              value={editForm.price}
                              onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
                              required
                             />
-                            <input
+                            <input className="edit-input"
                              type="text"
                              placeholder={product.descriptions}
                              value={editForm.descriptions}
                              onChange={(e) => setEditForm({ ...editForm, descriptions: e.target.value})}
                              required
                             />
-                            <input 
+                            <input className="edit-input"
                              type="text"
                              placeholder="New Image URL"
                              value={editForm.image_url || ""}
                              onChange={(e) => setEditForm({ ...editForm, image_url: e.target.value })}
                             />
-                            <input
+                            <input className="edit-input"
                              type="number"
                              placeholder="Stock Quantity"
                              value={editForm.stock_quantity}
                              onChange={(e) => setEditForm({ ...editForm, stock_quantity: e.target.value })}
                             />
-                            <button type="submit">Save</button>
-                            <button type="button" onClick={() => setEditId(null)}>Cancel</button>
+                            <button className="submit-button" type="submit">Save</button>
+                            <button className="submit-button" type="button" onClick={() => setEditId(null)}>Cancel</button>
                         </form>
                        ) : (
                          <>
                             <p><strong>{product.product_name}</strong></p>
                             <p><strong>Price: ${product.price}</strong></p>
                             <p>{product.descriptions}</p>
-                            <img 
+                            <img className="product-image"
                              src={product.image_url || stockProductImg} //fallback image url
-                             alt={product.product_name || "Product Image"} 
-                             width={100} 
+                             alt={product.product_name || "Product Image"}  
                              onError={(e) => e.target.src = stockProductImg} 
                             />
                             <p><strong>Stock: {product.stock_quantity}</strong></p>
                             <br />
-                            <button onClick={() => handleEditToggle(product)}>Edit</button>    
-                            <button onClick={() => handleDelete(product.id)}>Delete</button>
+                            <button className="submit-button" onClick={() => handleEditToggle(product)}>Edit</button>    
+                            <button className="submit-button" onClick={() => handleDelete(product.id)}>Delete</button>
                          </>  
                        )}
                     </li>

@@ -1,0 +1,197 @@
+.tab-buttons {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+    gap: 1rem;
+}
+
+.tab-buttons li {
+    margin-bottom: 1rem; 
+}
+
+.tab-button {
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #333;
+    background-color: #dde3ff;
+    transition: background-color 0.2s;
+}
+
+.tab-button:hover {
+    background-color: #c1ccff;
+}
+
+.tab-button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.admin-container {
+    padding: 2rem; 
+    background-color: #f8f8f8; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.332);
+}
+
+.admin-title {
+    font-size: 3rem;
+    font-weight: bold;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin-bottom: 2rem; 
+    text-align: center; 
+    color: #333; 
+}
+
+.users-container {
+    padding: 2rem; 
+    background-color: #f8f8f8; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.users-title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 2rem; 
+    text-align: center; 
+    color: #333; 
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+}
+
+.users-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+    gap: 20px; /* Space between items */
+    padding: 20px;
+}
+
+.user-item {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 2px solid #ccc;           
+    border-radius: 8px;                
+    box-sizing: border-box;            
+    text-align: left;
+    transition: border-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.332);
+
+
+}
+
+.edit-container {
+    padding: 2rem; 
+    background-color: #f8f8f8; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 2rem; 
+    text-align: center; 
+    color: #333; 
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+}
+
+.create-form {
+    padding: 2rem; 
+    background-color: #dce5ff; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.create-input {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  outline: none;
+  margin: 2px;
+  background-color: #fff;
+}
+
+.create-input:focus {
+ border-color: #007BFF;
+ box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.submit-button {
+    padding: 0.6rem 1.2rem;
+    background-color: #007BFF; /* primary blue */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    margin: 1rem;  
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);  
+}
+
+.products-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    padding: 20px;
+}
+
+.product-item {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 2px solid #ccc;           
+    border-radius: 8px;                
+    box-sizing: border-box;            
+    text-align: center;
+    transition: border-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.332);
+    margin: 10px;
+
+
+}
+
+.product-image {
+    width: 150px;        
+    height: 150px;       
+    object-fit: cover;   
+    border-radius: 8px;  
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); 
+  }
+
+.edit-form {
+    padding: 2rem; 
+    background-color: #dce5ff; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-input {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  outline: none;
+  background-color: #fff;
+  color: #707070;
+}
+
+.edit-input:focus {
+ border-color: #007BFF;
+ box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+
