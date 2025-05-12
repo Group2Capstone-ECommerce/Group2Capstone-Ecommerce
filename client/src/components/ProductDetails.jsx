@@ -39,7 +39,6 @@ export default function ProductDetails({product, setProduct}) {
                 alt={product.product_name}
           />
           <div className="productInfo">
-            <h2>Product Name: {product.product_name}</h2>
             <p><b>Description: </b>{product.descriptions}</p>
             <p><b>Price: </b>${product.price}</p>
             <p><b>Quantity Available: </b>{product.stock_quantity}</p>
