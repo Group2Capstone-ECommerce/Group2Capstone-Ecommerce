@@ -8,30 +8,33 @@ import './CSS/orderConfirm.css'
 export default function OrderConfirm ({createdOrder}) {
     const ORDER_ITEMS_API_URL = "http://localhost:3000/api/order/items";
     const ORDER_API_URL = "http://localhost:3000/api/order";
-    const Billing_Info_API_URL = "http://localhost:3000/api//users/billin_info/me";
+    const MAILING_INFO_API_URL = "http://localhost:3000/api/users/mailing-info";
 
     const navigate = useNavigate();
     
-    const [billingInfo, setBillingInfo] = useState(null)
-
     const { token } = useAuth();
     if (!token) {
         toast.warn('You must be logged in to view your order.')
     }
 
-    const orderId = createdOrder?.order.id
+    const orderId = createdOrder?.order?.id
     if (!orderId) {
         toast.warn('Order ID is missing.')
     }
 
     console.log("order id =>", orderId)
 
+    const [mailingInfo, setMailingInfo] = useState(null);
     const [orderItems, setOrderItems] = useState([])
     const [orderCheckedout, setOrderCheckedout] = useState(false)
     const [orderCanceled, setOrderCanceled] = useState(false)
     const [success, setSuccess] = useState('')
 
     useEffect(()=> {
+        if (!token) {
+            toast.warn("You must be logged in to view your order.");
+            return;
+        }
         const fetchOrderItems = async() => {
             try {
                 const response = await fetch(`${ORDER_ITEMS_API_URL}/${orderId}`, {
@@ -52,10 +55,32 @@ export default function OrderConfirm ({createdOrder}) {
                 console.error('Error fetching order items:', error)
             }
         }
+
+        const fetchMailingInfo = async () => {
+            try {
+            const response = await fetch(MAILING_INFO_API_URL, {
+                method: 'GET',
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log(response);
+            const result = await response.json();
+            console.log(result);
+            if (!response.ok) {
+                toast.error(result.message);
+                return;
+            }
+            setMailingInfo(result.mailingInfo); // fixed
+            } catch (err) {
+            console.error('Failed to fetch mailing info:', err);
+            }
+        };
+
         console.log('Order items =>', orderItems)
         fetchOrderItems();
-        fetchBillInfo();
-    }, [orderId, orderCheckedout, orderCanceled])
+        fetchMailingInfo();
+    }, [token, orderId, orderCheckedout, orderCanceled])
 
     //calculate total itmes quantity
     const calculateQty = () => {
@@ -80,15 +105,15 @@ export default function OrderConfirm ({createdOrder}) {
         return totalPrice
     }
 
-    //fetch user's billing info
-    const fetchBillInfo = async() => {
-        const response = await fetch (Billing_Info_API_URL)
-        const result = await response.json()
-        if(!response.ok) {
-            setBillingInfo(result.message)
-        }
-        setBillingInfo(result)
-    }
+    // //fetch user's billing info
+    // const fetchBillInfo = async() => {
+    //     const response = await fetch (Billing_Info_API_URL)
+    //     const result = await response.json()
+    //     if(!response.ok) {
+    //         setBillingInfo(result.message)
+    //     }
+    //     setBillingInfo(result)
+    // }
 
     //handle cancel order
     const handleCancel = async(e) => {
@@ -135,7 +160,7 @@ export default function OrderConfirm ({createdOrder}) {
                 </div>
             ) : (
             <div className="orderContainer" style={{margin: "100px"}}>
-                {!billingInfo || !billingInfo.info ? 
+                {!mailingInfo ? 
                 (
                     <div className="shippingInfo">
                         <h3>No Shipping Info</h3>
@@ -144,10 +169,7 @@ export default function OrderConfirm ({createdOrder}) {
                 ) : (
                     <div className="shippingInfo">
                         <h3>Shipping Info:</h3>
-                        <p>Name: {billingInfo?.info.full_name}</p>
-                        <p>Address:  {billingInfo?.info.address_line1 || billingInfo?.address_line2}</p>
-                        <p>Phone:  {billingInfo?.info.phone}</p>
-                        <p>Email:  {billingInfo?.info.email}</p>
+                        <p>Address: {mailingInfo.mailing_address}</p>
                     </div>
                 )}
                 {orderItems.length === 0 ? (
