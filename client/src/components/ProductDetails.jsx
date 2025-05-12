@@ -32,10 +32,10 @@ export default function ProductDetails({product, setProduct}) {
     ) : (
       <div className="singleProductDetailsCard">
         <div>
-          <h2>Product Name: {product.product_name}</h2>
-          <p><b>Description: </b>{product.descriptions}</p>
-          <p><b>Price: </b>${product.price}</p>
-          <p><b>Quantity Available: </b>{product.stock_quantity}</p>
+          <h2>{product.product_name}</h2>
+          <p><b></b>{product.descriptions}</p>
+          <p><b></b>${product.price}</p>
+          <p><b>In stock: </b>{product.stock_quantity}</p>
           <img
                 src={product.image_url || stockImage}
                 alt={product.product_name}
