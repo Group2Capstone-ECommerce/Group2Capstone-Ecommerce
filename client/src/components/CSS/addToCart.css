@@ -1,10 +1,10 @@
 
-.addtToCartBtn:hover {
+.addToCartBtn:hover {
     background-color: #1565c0;
 }
 
 button.addToCartBtn {
-    background-color: #1976D2 !important;
+    background-color: #1976D2;
     color: white;
     width: 110px;
     padding: 8px 14px;
