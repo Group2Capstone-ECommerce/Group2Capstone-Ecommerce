@@ -48,6 +48,7 @@
 
 .productActions {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   margin-top: 4px;
@@ -107,4 +108,32 @@
   display: flex;
   flex-direction: column;
   margin-top: 20px;
+}
+
+
+#productAvailableTxt, #productNotAvailableTxt, #productLowStockTxt {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  min-width: fit-content;
+  text-align: center;
+  color: white;
+  line-height: 1;
+}
+
+#productAvailableTxt {
+  background-color: #A5D6A7;
+  color: #1B5E20;
+}
+
+#productNotAvailableTxt {
+  background-color: #E53935;
+  color: #B71C1C;
+}
+
+#productLowStockTxt {
+  background-color: #FFEB3B;
+  color: #795548;
 }

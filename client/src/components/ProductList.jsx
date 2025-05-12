@@ -37,16 +37,19 @@ export default function ProductList({ products, setProducts }) {
                 alt={product.product_name}
                 />
               <div className='productActions'>
-              {product.stock_quantity > 5 ? (
-                <p id="productAvailableTxt">Available</p>
-              ) : product.stock_quantity < 5 ? (
-                <p id="productLowStockTxt">Low Stock!</p>
-              ) : product.stock_quantity === 0 (
-                <p id="productNotAvailableTxt">Not Available</p>
-              )}
-              <Link to={`/products/${product.id}`}>
-                <button className="seeDetailsBtn">See Details</button>
-              </Link>
+                {product.stock_quantity > 5 ? (
+                  <p id="productAvailableTxt">Available</p>
+                ) : product.stock_quantity < 5 ? (
+                  <p id="productLowStockTxt">Low Stock!</p>
+                ) : product.stock_quantity === 0 (
+                  <p id="productNotAvailableTxt">Not Available</p>
+                )}
+                <div className="productBtns">
+                  <AddToCart product = {product}/>
+                  <Link to={`/products/${product.id}`}>
+                    <button className="seeDetailsBtn">See Details</button>
+                  </Link>
+                </div>
               </div>
             </div>
           ))
