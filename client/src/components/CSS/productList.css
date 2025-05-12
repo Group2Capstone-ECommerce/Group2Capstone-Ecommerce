@@ -97,7 +97,7 @@
 .pageWrapper{
   background-color: #f0f0f0;
   padding: 40px clamp(16px, 5vw 40px);
-  width: 1960px;
+  width: 100%;
   margin: 20px auto 0 auto;
   min-height: 100vh;
   display: flex;
