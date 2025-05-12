@@ -28,33 +28,35 @@ export default function ProductDetails({product, setProduct}) {
 
   return (
     <>
-    {!product ? (
-      <p>Loading product details...</p>
-    ) : (
-      <div className="singleProductDetailsCard">
-        <div className="productContent">
-          <img
-                src={product.image_url || stockImage}
-                alt={product.product_name}
-          />
-          <div className="productInfo">
-            <h2 className="productTitle">Product Name: {product.product_name}</h2>
-            <p><b>Description: </b>{product.descriptions}</p>
-            <p><b>Price: </b>${product.price}</p>
-            <p><b>Quantity Available: </b>{product.stock_quantity}</p>
+      <div className="pageWrapper">
+        {!product ? (
+          <p>Loading product details...</p>
+        ) : (
+          <div className="singleProductDetailsCard">
+            <div className="productContent">
+              <img
+                    src={product.image_url || stockImage}
+                    alt={product.product_name}
+              />
+              <div className="productInfo">
+                <h2 className="productTitle">Product Name: {product.product_name}</h2>
+                <p><b>Description: </b>{product.descriptions}</p>
+                <p><b>Price: </b>${product.price}</p>
+                <p><b>Quantity Available: </b>{product.stock_quantity}</p>
+              </div>
+            </div>
+            <div className="detailAction">
+              <AddToCart product = {product}/>
+              <button 
+                className="goBackBtn"
+                onClick={() => navigate('/')}
+              >
+                Go Back
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="detailAction">
-          <AddToCart product = {product}/>
-          <button 
-            className="goBackBtn"
-            onClick={() => navigate('/')}
-          >
-            Go Back
-          </button>
-        </div>
+        )}
       </div>
-    )}
     </>
   )
 };
