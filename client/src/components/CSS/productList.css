@@ -49,6 +49,7 @@
 .productActions {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   justify-content: space-between;
   align-items: center;
   margin-top: 4px;
