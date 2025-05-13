@@ -12,9 +12,9 @@ export default function Account() {
   const [updateMessage, setUpdateMessage] = useState("");
   const [orders, setOrders] = useState([]);
 
-  const USER_ORDERS_API_URL = "http://localhost:3000/api/orders/me";
-  const USER_API_URL = "http://localhost:3000/api/users/me";
-  const UPDATE_EMAIL_API_URL = "http://localhost:3000/api/users/me";
+  const USER_ORDERS_API_URL = "https://group2capstone-ecommerce.onrender.com/api/orders/me";
+  const USER_API_URL = "https://group2capstone-ecommerce.onrender.com/api/users/me";
+  const UPDATE_EMAIL_API_URL = "https://group2capstone-ecommerce.onrender.com/api/users/me";
 
   const navigate = useNavigate();
 

@@ -7,7 +7,7 @@ import AddToCart from "./AddtoCart";
 import "./CSS/productDetail.css"
 
 export default function ProductDetails({product, setProduct}) {
-  const PRODUCTS_API_URL = "http://localhost:3000/api/products";
+  const PRODUCTS_API_URL = "https://group2capstone-ecommerce.onrender.com/api/products";
 
   const { productId } = useParams();
   const navigate = useNavigate();
