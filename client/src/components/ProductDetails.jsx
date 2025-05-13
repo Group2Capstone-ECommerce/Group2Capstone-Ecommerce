@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 import AddToCart from "./AddtoCart";
+import "./CSS/productDetail.css"
 
 export default function ProductDetails({product, setProduct}) {
   const PRODUCTS_API_URL = "http://localhost:3000/api/products";
@@ -27,25 +28,35 @@ export default function ProductDetails({product, setProduct}) {
 
   return (
     <>
-    {!product ? (
-      <p>Loading product details...</p>
-    ) : (
-      <div className="singleProductDetailsCard">
-        <div>
-          <h2>{product.product_name}</h2>
-          <p><b></b>{product.descriptions}</p>
-          <p><b></b>${product.price}</p>
-          <p><b>In stock: </b>{product.stock_quantity}</p>
-          <img
-                src={product.image_url || stockImage}
-                alt={product.product_name}
-          />
-          <br />
-          <AddToCart product = {product}/>
-          <button className="go-back-button" onClick={() => navigate('/')}>Go Back</button>
-        </div>
+      <div className="pageWrapper">
+        {!product ? (
+          <p>Loading product details...</p>
+        ) : (
+          <div className="singleProductDetailsCard">
+            <div className="productContent">
+              <img
+                    src={product.image_url || stockImage}
+                    alt={product.product_name}
+              />
+              <div className="productInfo">
+                <h2 className="productTitle">Product Name: {product.product_name}</h2>
+                <p><b>Description: </b>{product.descriptions}</p>
+                <p><b>Price: </b>${product.price}</p>
+                <p><b>Quantity Available: </b>{product.stock_quantity}</p>
+              </div>
+            </div>
+            <div className="detailAction">
+              <AddToCart product = {product}/>
+              <button 
+                className="goBackBtn"
+                onClick={() => navigate('/')}
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-    )}
     </>
   )
 };

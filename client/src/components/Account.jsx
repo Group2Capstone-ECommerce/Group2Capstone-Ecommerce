@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../components/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
+import './CSS/myAccount.css'
 
 export default function Account() {
   const [user, setUser] = useState(null);
@@ -144,8 +145,7 @@ export default function Account() {
 
   return (
     <>
-      <br/>
-      <br/>
+    <div className="accountContainer">
       <div id="accountContainer">
         <div id="userAccountInfo">
           <h1>Account Info</h1>
@@ -183,7 +183,6 @@ export default function Account() {
         {updateMessage && <p>{updateMessage}</p>}
         {error && <p>{error}</p>}
       </div>
-      <br/>
       <div id="ordersContainer">
         <h1>Orders</h1>
         {orders.length === 0 ? 
@@ -203,6 +202,8 @@ export default function Account() {
             </ul>
           )}
       </div>
+    </div>
+      
     </>
   );
 }

@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import { useNavigate } from "react-router-dom";
 import { useAuth } from './AuthContext';
+import "./CSS/register.css"
 
 export default function Register() {
     const REGISTER_API_URL = 'http://localhost:3000/api/auth/register';  
@@ -66,6 +67,8 @@ export default function Register() {
     } 
 
     return (
+        <div className="pageWrapper">
+            <div className='register-container'>
         <div className='registerPage'>
             <h1>Register</h1>
             {successMessage && <div className="success">{successMessage}</div>}
@@ -73,19 +76,19 @@ export default function Register() {
             <br />
             <form onSubmit={handleSubmit}>
                 {/*  input boxes */}
-                <div>
+                <div className='formGroup'>
                     Name: <input value={name} onChange={(e) => setName(e.target.value)} required/>
                 </div>
-                <div>
+                <div className='formGroup'>
                     Email: <input value={email} onChange={(e) => setEmail(e.target.value)} required/>
                 </div>
-                <div>
+                <div className='formGroup'>
                     Username: <input value={username} onChange={(e) => setUsername(e.target.value)} required/>
                 </div>
-                <div>
+                <div className='formGroup'>
                     Password: <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
                 </div>
-                <div>
+                <div className='formGroup'>
                     Mailing Address: 
                     <input 
                         value={mailingAddress} 
@@ -94,6 +97,8 @@ export default function Register() {
                 </div>
                 <button>Submit</button>
             </form>
+        </div>
+        </div>
         </div>
     )
 }

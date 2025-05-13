@@ -6,7 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 import { useAuth } from "../components/AuthContext.jsx";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import './CSS/cart.css'
 
 export default function Cart({setCreatedOrder}) {
@@ -206,83 +206,88 @@ export default function Cart({setCreatedOrder}) {
 
     return (
         <>
-
-            {!token && (
-                <div>
-                    <p>Login/Register to explore more!</p>
-                    <Link to={'/login'}>
-                        <button className="loginButton">Login</button>
-                    </Link>
-                    <Link>
-                        <button className="registerButton">Register</button>
-                    </Link>
-                </div>
-            )}
-            {token && (
-                <div className="cartItemsContainer">
-                    <h3>🛒Products in My Cart: {cartItems.length}</h3>
-                    {!cartItems.length ? (
-                        <p>Empty cart...Let's shop something you like!</p>
-                        ) : (
-                        cartItems?.map((item) => 
-                            <div key={item.product_id} className="cartCard">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedItems.includes(item.product_id)}
-                                    onChange={() => toggleSelect(item.product_id)}
-                                />
-                                <img
-                                    src={item.image_url || stockImage}
-                                    alt={item.product_name}
-                                />
-                                    <Link to={`/products/${item.product_id}`}>
-                                        <h4>{item.product_name}</h4>
-                                    </Link>
-                                    <div className="quantity-control">
-                                        {/* {<label>Quantity: </label>} */}
-                                        <button 
-                                            className='quantityEditButton' 
-                                            onClick={()=> quantityAdd(item.product_id, item.quantity)}>
-                                            + 
-                                        </button>
-                                        <input
-                                            type="number"
-                                            className="quantityInput"
-                                            value={item.quantity}
-                                            onChange={(e) => handleEditQuantity(item.product_id, parseInt(e.target.value))}
-                                        />
-                                        <button 
-                                            className='quantityEditButton' 
-                                            onClick={()=> quantityMinus(item.product_id, item.quantity)}> 
-                                            - 
-                                        </button>
-                                    </div>
-                                    <p>Price: ${item.price}</p>
-                                    <button 
-                                        className="delete" 
-                                        onClick={() => handleDelete(item.product_id)}> 
-                                        Delete 
-                                    </button>
+            <div className="pageWrapper">
+                {!token && (
+                    <div>
+                        <p>Login/Register to explore more!</p>
+                        <Link to={'/login'}>
+                            <button className="loginButton">Login</button>
+                        </Link>
+                        <Link>
+                            <button className="registerButton">Register</button>
+                        </Link>
+                    </div>
+                )}
+                {token && (
+                    <div className="cartItemsContainer">
+                        <h3>🛒Products in My Cart: {cartItems.length}</h3>
+                        {!cartItems.length ? (
+                            <div className="emptyText">
+                                <p>Empty cart...Let's shop something you like!</p>
                             </div>
-                        )
-                    )}
-                </div>
-            )}
-            {cartItems.length > 0 && (
-                <div className="cartActions">
-                    <button onClick={handleSelectAll} disabled={cartItems.length === 0}>
-                        {selectAll ? "Unselect All" : "Select All"}
-                    </button>
+                            
+                            ) : (
+                            cartItems?.map((item) => 
+                                <div key={item.product_id} className="cartCard">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedItems.includes(item.product_id)}
+                                        onChange={() => toggleSelect(item.product_id)}
+                                    />
+                                    <img
+                                        src={item.image_url || stockImage}
+                                        alt={item.product_name}
+                                    />
+                                        <Link to={`/products/${item.product_id}`}>
+                                            <h4>{item.product_name}</h4>
+                                        </Link>
+                                        <div className="quantity-control">
+                                            {/* {<label>Quantity: </label>} */}
+                                            <button 
+                                                className='quantityEditButton' 
+                                                onClick={()=> quantityAdd(item.product_id, item.quantity)}>
+                                                + 
+                                            </button>
+                                            <input
+                                                type="number"
+                                                className="quantityInput"
+                                                value={item.quantity}
+                                                onChange={(e) => handleEditQuantity(item.product_id, parseInt(e.target.value))}
+                                            />
+                                            <button 
+                                                className='quantityEditButton' 
+                                                onClick={()=> quantityMinus(item.product_id, item.quantity)}> 
+                                                - 
+                                            </button>
+                                        </div>
+                                        <p>Price: ${item.price}</p>
+                                        <button 
+                                            className="delete" 
+                                            onClick={() => handleDelete(item.product_id)}> 
+                                            Delete 
+                                        </button>
+                                </div>
+                            )
+                        )}
+                    </div>
+                )}
+                {cartItems.length > 0 && (
+                    <div className="cartActions">
+                        <button onClick={handleSelectAll} disabled={cartItems.length === 0}>
+                            {selectAll ? "Unselect All" : "Select All"}
+                        </button>
 
-                    <p>Total Price: ${calculateTotal()}</p>
+                        <p>Total Price: ${calculateTotal()}</p>
 
-                    <button 
-                        onClick={handleCheckout} 
-                        disabled={selectedItems.length === 0}>
-                        Checkout
-                    </button>
-                </div>
-            )}
+                        <button 
+                            onClick={handleCheckout} 
+                            disabled={selectedItems.length === 0}>
+                            Checkout
+                        </button>
+                    </div>
+                )}
+            </div>
+
         </>
     )
 

@@ -38,7 +38,8 @@ const {
     checkEmailExists,
     updateUserEmail,
     getBillInfoByUserId,
-    updateUserMailingAddress
+    updateUserMailingAddress,
+    getUserMailingInfo
 } = require("./db");
 
 function verifyToken(req, res, next) {
@@ -647,6 +648,22 @@ router.put("/users/me", verifyToken, async (req, res) => {
   } catch (err) {
     console.error("Error in PUT /users/me:", err);
     return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// GET /api/users/:id/mailing-info
+router.get('/users/mailing-info', verifyToken, async (req, res, next) => {
+  const userId = req.user.id
+  console.log('user id' , userId);
+
+  try {
+    const mailingInfo = await getUserMailingInfo(userId);
+    if (!mailingInfo) {
+      return res.status(404).json({ message: 'Mailing info not found.' });
+    }
+    res.json({ mailingInfo });
+  } catch (error) {
+    next(error);
   }
 });
 

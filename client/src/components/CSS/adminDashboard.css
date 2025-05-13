@@ -31,10 +31,13 @@
 }
 
 .admin-container {
+    margin-top: 100px;
+    margin-bottom: 30px;
+    height: 500px;
     padding: 2rem; 
     background-color: #f8f8f8; 
     border-radius: 8px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.332);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .admin-title {
@@ -60,7 +63,6 @@
     text-align: center; 
     color: #333; 
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-
 }
 
 .users-list {
@@ -80,8 +82,6 @@
     text-align: left;
     transition: border-color 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.332);
-
-
 }
 
 .edit-container {
@@ -98,7 +98,6 @@
     text-align: center; 
     color: #333; 
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-
 }
 
 .create-form {
@@ -159,8 +158,6 @@
     transition: border-color 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.332);
     margin: 10px;
-
-
 }
 
 .product-image {

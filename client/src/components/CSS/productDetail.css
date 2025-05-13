@@ -1,0 +1,89 @@
+/* Product Details Page */
+
+.singleProductDetailsCard {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 900px;
+    height: fit-content;
+    margin-top: 100px;
+    margin-bottom: 30px;
+    /* margin: auto; */
+}
+
+
+.productTitle {
+  text-align: left;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.productContent {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.productContent img {
+  border: 2px #000 solid;
+  height: 400px;
+  width: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.productInfo {
+  flex: 1;
+  text-align: left;
+}
+
+.productInfo button {
+  margin-top: 20px;
+  padding: 10px 16px;
+  background-color: #1976D2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.productInfo button:hover {
+  background-color: #1565c0;
+}
+
+.detailAction {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.goBackBtn {
+  background-color: #1976D2 !important;
+  color: white;
+  width: 110px;
+  padding: 8px 14px;
+  border: none;
+  margin-top: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2 ease;
+}
+
+
+@media (max-width: 600px) {
+  .productsContainer {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    padding: 10px;
+  }
+
+  .productCard {
+    max-width: 100%;
+  }
+
+  .pageWrapper {
+    padding: 20px;
+  }
+}
