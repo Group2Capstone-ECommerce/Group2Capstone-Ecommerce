@@ -1,8 +1,6 @@
 const {client, connectDB, createTables, createUser, authenticateUser } = require("./db.js");
 const { seedFakeData } = require("./seed.js");
 
-const path = require('path');
-
 const cors = require('cors');
 
 const express = require("express");
@@ -22,8 +20,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
-
-app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
 //to use /api as root path
 app.use('/api', router)
