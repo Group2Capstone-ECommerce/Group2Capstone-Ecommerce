@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 import { useAuth } from "../components/AuthContext.jsx";
 import { toast } from "react-toastify";
-import "./CSS/orderConfirm.css";
+import "./CSS/orderconfirm.css";
 
 export default function OrderConfirm ({createdOrder}) {
     const ORDER_ITEMS_API_URL = "https://deployment-capstone.onrender.com/api/order/items";
