@@ -5,7 +5,8 @@ const cors = require('cors');
 
 const express = require("express");
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
+
 // import the routes from api.js
 const router = require('./api')
 
@@ -37,7 +38,7 @@ const init = async () => {
 
   console.log('----------');
   
-  app.listen(port, () => console.log(`listening on PORT ${port}`));
+  app.listen(PORT, () => {console.log(`Server running on port ${PORT}`);});
 }
 
 init();
