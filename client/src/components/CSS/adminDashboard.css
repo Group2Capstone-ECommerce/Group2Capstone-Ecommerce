@@ -116,6 +116,7 @@
   outline: none;
   margin: 2px;
   background-color: #fff;
+  color: #707070;
 }
 
 .create-input:focus {
