@@ -6,9 +6,9 @@ import { toast } from "react-toastify";
 import "./CSS/orderConfirm.css";
 
 export default function OrderConfirm ({createdOrder}) {
-    const ORDER_ITEMS_API_URL = "https://group2capstone-ecommerce.onrender.com/api/order/items";
-    const ORDER_API_URL = "https://group2capstone-ecommerce.onrender.com/api/order";
-    const MAILING_INFO_API_URL = "https://group2capstone-ecommerce.onrender.com/api/users/mailing-info";
+    const ORDER_ITEMS_API_URL = "https://deployment-capstone.onrender.com/api/order/items";
+    const ORDER_API_URL = "https://deployment-capstone.onrender.com/api/order";
+    const MAILING_INFO_API_URL = "https://deployment-capstone.onrender.com/api/users/mailing-info";
 
     const navigate = useNavigate();
     

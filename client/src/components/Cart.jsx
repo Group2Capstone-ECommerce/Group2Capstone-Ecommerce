@@ -15,8 +15,8 @@ export default function Cart({setCreatedOrder}) {
     const [selectAll, setSelectAll] = useState(false);
     const navigate = useNavigate()
     const [refreshCart, setRefreshCart] = useState(false);
-    const Cart_API_URL = 'https://group2capstone-ecommerce.onrender.com/api/cart';
-    const Create_Order_API_URL = 'https://group2capstone-ecommerce.onrender.com/api/order/create';
+    const Cart_API_URL = 'https://deployment-capstone.onrender.com/api/cart';
+    const Create_Order_API_URL = 'https://deployment-capstone.onrender.com/api/order/create';
     const { token } = useAuth();
     //console.log('token is =>', token)
 
