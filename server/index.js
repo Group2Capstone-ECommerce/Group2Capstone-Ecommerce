@@ -6,20 +6,22 @@ const cors = require('cors');
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
+const path = require("path")
 
 // import the routes from api.js
 const router = require('./api')
 
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'https://group2capstone-ecommerce.onrender.com'],
   methods: 'GET,POST,PUT,DELETE',
   allowedHeaders: ['Content-Type', 'Authorization'], // Make sure Authorization is allowed
-  credentials: true,
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
 
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, '../dist')))
 
 //to use /api as root path
 app.use('/api', router)
