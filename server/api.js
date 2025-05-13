@@ -667,4 +667,8 @@ router.get('/users/mailing-info', verifyToken, async (req, res, next) => {
   }
 });
 
+router.get('/', (req, res) => {
+  res.send('API is running!');
+});
+
 module.exports = router
