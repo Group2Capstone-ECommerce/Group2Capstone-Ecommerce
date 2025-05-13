@@ -21,10 +21,13 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, '../dist')))
+app.use(express.static(path.join(__dirname, '../client/dist')))
 
 //to use /api as root path
 app.use('/api', router)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'))
+})
 const init = async () => {
   await connectDB();
   await createTables();
