@@ -4,9 +4,9 @@ import { useAuth } from './AuthContext';
 import "./CSS/register.css"
 
 export default function Register() {
-    const REGISTER_API_URL = 'https://deployment-capstone.onrender.com/api/auth/register';  
-    const CHECK_USER_API_URL = "https://deployment-capstone.onrender.com/api/auth/check-username";
-    const CHECK_EMAIL_API_URL = "https://deployment-capstone.onrender.com/api/auth/check-email";
+    const REGISTER_API_URL = 'https://group2capstone-ecommerce.onrender.com/api/auth/register';  
+    const CHECK_USER_API_URL = "https://group2capstone-ecommerce.onrender.com/api/auth/check-username";
+    const CHECK_EMAIL_API_URL = "https://group2capstone-ecommerce.onrender.com/api/auth/check-email";
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');

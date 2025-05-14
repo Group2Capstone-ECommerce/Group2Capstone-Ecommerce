@@ -9,7 +9,7 @@ import "./CSS/login.css";
 import { useAuth } from "../components/AuthContext.jsx";
 
 export default function LoginForm() {
-  const LOGIN_API_URL = "https://deployment-capstone.onrender.com/api/auth/login";
+  const LOGIN_API_URL = "https://group2capstone-ecommerce.onrender.com/api/auth/login";
 
     const navigate = useNavigate();
     const [form, setForm] = useState({ username: "", password: ""});

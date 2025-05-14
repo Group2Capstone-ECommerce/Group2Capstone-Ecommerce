@@ -7,7 +7,7 @@ export default function AddToCart({product}) {
     const { token } = useAuth();
     //console.log('token is =>', token)
     const {isAdmin} = useAuth();
-    const CARTITEM_API_URL = "https://deployment-capstone.onrender.com/api/cart/items";
+    const CARTITEM_API_URL = "https://group2capstone-ecommerce.onrender.com/api/cart/items";
     const handleAddToCart = async() => {
         if (!token) {
             toast.warn(
