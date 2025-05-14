@@ -25,7 +25,7 @@ export default function EditProductsTab() {
         stock_quantity: ""
     });
         
-    const ADMIN_PRODUCTS_URL = "https://deployment-capstone.onrender.com/api/admin/products";
+    const ADMIN_PRODUCTS_URL = "https://group2capstone-ecommerce.onrender.com/api/admin/products";
 
     useEffect(() => {
         if (!isAdmin) return null;
