@@ -3,12 +3,12 @@ import { useNavigate, Link } from "react-router-dom";
 import stockImage from '../assets/stockProductImg.png';
 import { useAuth } from "../components/AuthContext.jsx";
 import { toast } from "react-toastify";
-import './CSS/orderConfirm.css'
+import "./CSS/orderconfirm.css";
 
 export default function OrderConfirm ({createdOrder}) {
-    const ORDER_ITEMS_API_URL = "http://localhost:3000/api/order/items";
-    const ORDER_API_URL = "http://localhost:3000/api/order";
-    const MAILING_INFO_API_URL = "http://localhost:3000/api/users/mailing-info";
+    const ORDER_ITEMS_API_URL = "https://deployment-capstone.onrender.com/api/order/items";
+    const ORDER_API_URL = "https://deployment-capstone.onrender.com/api/order";
+    const MAILING_INFO_API_URL = "https://deployment-capstone.onrender.com/api/users/mailing-info";
 
     const navigate = useNavigate();
     

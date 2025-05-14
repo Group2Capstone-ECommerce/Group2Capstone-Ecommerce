@@ -8,7 +8,7 @@ export default function ViewUsersTab() {
     const { isAdmin, user } = useAuth();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const ADMIN_USERS_URL = "http://localhost:3000/api/admin/users";
+    const ADMIN_USERS_URL = "https://deployment-capstone.onrender.com/api/admin/users";
 
     useEffect(() => {
         if (!isAdmin) return;

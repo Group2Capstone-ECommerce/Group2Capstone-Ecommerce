@@ -6,7 +6,7 @@ import AddToCart from "./AddtoCart";
 import "./CSS/productList.css"
 
 export default function ProductList({ products, setProducts }) {
-  const PRODUCTS_API_URL = "http://localhost:3000/api/products";
+  const PRODUCTS_API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/products`;
 
   useEffect(() => {
     const fetchProducts = async () => {

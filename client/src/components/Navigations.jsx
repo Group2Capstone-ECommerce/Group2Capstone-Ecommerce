@@ -11,7 +11,7 @@ export default function Navigations() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/users/me', {
+        const response = await fetch('https://deployment-capstone.onrender.com/api/users/me', {
           method:'GET',
           headers:{
               Authorization: `Bearer ${token}`,
